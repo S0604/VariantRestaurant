@@ -2,6 +2,8 @@
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
+using System.Collections;
+using Unity.VisualScripting;
 
 public class CookingMenuUI : MonoBehaviour
 {
@@ -169,11 +171,50 @@ public class CookingMenuUI : MonoBehaviour
 
         Debug.Log($"🎉 选择了酱料: {sauceData.ingredientName}");
 
-        int targetIndex = GetSauceInsertIndex();
+        // 先清除旧的酱料
+        ClearSauce();
+
+        // 生成新的酱料
         GameObject newSauce = Instantiate(sauceData.saucePrefab, stackPanel);
-        newSauce.transform.SetSiblingIndex(targetIndex);
+        newSauce.transform.SetSiblingIndex(GetSauceInsertIndex());
+
+        // **设置酱料 Y 轴偏移**
+        RectTransform sauceRect = newSauce.GetComponent<RectTransform>();
+        if (sauceRect != null)
+        {
+            float yOffset = GetSauceYOffset(); // 计算偏移量
+            Vector3 newPosition = sauceRect.anchoredPosition;
+            newPosition.y = yOffset; // 直接设置 Y 轴
+            sauceRect.anchoredPosition = newPosition;
+        }
+
+        // **播放动画**
+        Animator ketchup = newSauce.GetComponent<Animator>();
+        if (ketchup != null)
+        {
+            ketchup.CrossFade("ketchup", 0.1f);
+            StartCoroutine(StopAnimationAfterPlay(ketchup, "ketchup"));
+        }
+
         spawnedSauces.Add(newSauce);
     }
+    private IEnumerator StopAnimationAfterPlay(Animator animator, string animationName)
+    {
+        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length); // 等待动画播放完
+
+        animator.Play(animationName, 0, 1); // **跳转到动画最后一帧**
+        animator.speed = 0; // **停止动画**
+    }
+
+    private void ClearSauce()
+    {
+        foreach (GameObject sauce in spawnedSauces)
+        {
+            Destroy(sauce);
+        }
+        spawnedSauces.Clear();
+    }
+
 
     private int GetSauceInsertIndex()
     {
@@ -194,4 +235,18 @@ public class CookingMenuUI : MonoBehaviour
 
         return stackPanel.childCount;
     }
+    private float GetSauceYOffset()
+    {
+        int ingredientCount = ingredientStack.Count;
+
+        switch (ingredientCount)
+        {
+            case 0: return -20f;   // 没有食材，酱料稍微往下
+            case 1: return -10f;  // 1 个食材，稍微上移
+            case 2: return 10;  // 2 个食材，接近顶部
+            case 3: return 30f;  // 3 个食材，酱料放在最高层
+            default: return 10f;  // 兜底情况
+        }
+    }
+
 }
