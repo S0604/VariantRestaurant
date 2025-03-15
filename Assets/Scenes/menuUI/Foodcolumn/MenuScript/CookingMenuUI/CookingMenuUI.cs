@@ -215,7 +215,7 @@ public class CookingMenuUI : MonoBehaviour
 
         switch (ingredientCount)
         {
-            case 0: return 0f;   // 没有食材，保持默认位置
+            case 0: return -60f;   // 没有食材，保持默认位置
             case 1: return -40f;  // 1 个食材，酱料稍微上移
             case 2: return -20f;  // 2 个食材，酱料更高
             case 3: return 0f; // 3 个食材，酱料放在最高层
