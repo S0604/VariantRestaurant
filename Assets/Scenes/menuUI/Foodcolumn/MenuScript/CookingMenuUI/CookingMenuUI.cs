@@ -169,9 +169,24 @@ public class CookingMenuUI : MonoBehaviour
 
         Debug.Log($"🎉 选择了酱料: {sauceData.ingredientName}");
 
+        // 计算酱料的插入索引
         int targetIndex = GetSauceInsertIndex();
+
+        // 生成酱料，并设定父对象为 stackPanel
         GameObject newSauce = Instantiate(sauceData.saucePrefab, stackPanel);
         newSauce.transform.SetSiblingIndex(targetIndex);
+
+        // **调整 Y 轴位置**
+        RectTransform sauceRect = newSauce.GetComponent<RectTransform>();
+        if (sauceRect != null)
+        {
+            float yOffset = GetSauceYOffset();
+            Vector3 newPosition = sauceRect.anchoredPosition;
+            newPosition.y += yOffset;
+            sauceRect.anchoredPosition = newPosition;
+        }
+
+        // 存入列表，方便后续清理
         spawnedSauces.Add(newSauce);
     }
 
@@ -193,5 +208,18 @@ public class CookingMenuUI : MonoBehaviour
         }
 
         return stackPanel.childCount;
+    }
+    private float GetSauceYOffset()
+    {
+        int ingredientCount = ingredientStack.Count; // 直接使用 ingredientStack 计算食材数量
+
+        switch (ingredientCount)
+        {
+            case 0: return 0f;   // 没有食材，保持默认位置
+            case 1: return -40f;  // 1 个食材，酱料稍微上移
+            case 2: return -20f;  // 2 个食材，酱料更高
+            case 3: return 0f; // 3 个食材，酱料放在最高层
+            default: return 0f;  // 兜底情况
+        }
     }
 }
