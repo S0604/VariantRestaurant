@@ -2,6 +2,8 @@
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
+using System.Collections;
+using Unity.VisualScripting;
 
 public class CookingMenuUI : MonoBehaviour
 {
@@ -169,29 +171,32 @@ public class CookingMenuUI : MonoBehaviour
 
         Debug.Log($"🎉 选择了酱料: {sauceData.ingredientName}");
 
-        // **先清除之前的酱料**
+        // 先清除旧的酱料
         ClearSauce();
 
-        // 计算酱料的插入索引
-        int targetIndex = GetSauceInsertIndex();
-
-        // 生成新的酱料，并设定父对象为 stackPanel
+        // 生成新的酱料
         GameObject newSauce = Instantiate(sauceData.saucePrefab, stackPanel);
-        newSauce.transform.SetSiblingIndex(targetIndex);
+        newSauce.transform.SetSiblingIndex(GetSauceInsertIndex());
 
-        // **调整 Y 轴位置**
-        RectTransform sauceRect = newSauce.GetComponent<RectTransform>();
-        if (sauceRect != null)
+        // **获取 Animator 并播放动画**
+        Animator ketchup = newSauce.GetComponent<Animator>();
+        if (ketchup != null)
         {
-            float yOffset = GetSauceYOffset();
-            Vector3 newPosition = sauceRect.anchoredPosition;
-            newPosition.y += yOffset;
-            sauceRect.anchoredPosition = newPosition;
+            ketchup.CrossFade("ketchup",21f); // 播放动画
+            StartCoroutine(StopAnimationAfterPlay(ketchup, "ketchup"));
         }
 
         // 存入列表，方便后续清理
         spawnedSauces.Add(newSauce);
     }
+    private IEnumerator StopAnimationAfterPlay(Animator animator, string animationName)
+    {
+        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length); // 等待动画播放完
+
+        animator.Play(animationName, 0, 1); // **跳转到动画最后一帧**
+        animator.speed = 0; // **停止动画**
+    }
+
     private void ClearSauce()
     {
         foreach (GameObject sauce in spawnedSauces)
