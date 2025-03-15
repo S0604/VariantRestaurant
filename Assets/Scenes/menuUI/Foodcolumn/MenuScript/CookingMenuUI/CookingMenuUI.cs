@@ -178,15 +178,24 @@ public class CookingMenuUI : MonoBehaviour
         GameObject newSauce = Instantiate(sauceData.saucePrefab, stackPanel);
         newSauce.transform.SetSiblingIndex(GetSauceInsertIndex());
 
-        // **获取 Animator 并播放动画**
+        // **设置酱料 Y 轴偏移**
+        RectTransform sauceRect = newSauce.GetComponent<RectTransform>();
+        if (sauceRect != null)
+        {
+            float yOffset = GetSauceYOffset(); // 计算偏移量
+            Vector3 newPosition = sauceRect.anchoredPosition;
+            newPosition.y = yOffset; // 直接设置 Y 轴
+            sauceRect.anchoredPosition = newPosition;
+        }
+
+        // **播放动画**
         Animator ketchup = newSauce.GetComponent<Animator>();
         if (ketchup != null)
         {
-            ketchup.CrossFade("ketchup",21f); // 播放动画
+            ketchup.CrossFade("ketchup", 0.1f);
             StartCoroutine(StopAnimationAfterPlay(ketchup, "ketchup"));
         }
 
-        // 存入列表，方便后续清理
         spawnedSauces.Add(newSauce);
     }
     private IEnumerator StopAnimationAfterPlay(Animator animator, string animationName)
@@ -228,15 +237,16 @@ public class CookingMenuUI : MonoBehaviour
     }
     private float GetSauceYOffset()
     {
-        int ingredientCount = ingredientStack.Count; // 直接使用 ingredientStack 计算食材数量
+        int ingredientCount = ingredientStack.Count;
 
         switch (ingredientCount)
         {
-            case 0: return -60f;   // 没有食材，保持默认位置
-            case 1: return -40f;  // 1 个食材，酱料稍微上移
-            case 2: return -20f;  // 2 个食材，酱料更高
-            case 3: return 0f; // 3 个食材，酱料放在最高层
-            default: return 0f;  // 兜底情况
+            case 0: return -20f;   // 没有食材，酱料稍微往下
+            case 1: return -10f;  // 1 个食材，稍微上移
+            case 2: return 10;  // 2 个食材，接近顶部
+            case 3: return 30f;  // 3 个食材，酱料放在最高层
+            default: return 10f;  // 兜底情况
         }
     }
+
 }
