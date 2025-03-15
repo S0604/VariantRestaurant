@@ -169,10 +169,13 @@ public class CookingMenuUI : MonoBehaviour
 
         Debug.Log($"🎉 选择了酱料: {sauceData.ingredientName}");
 
+        // **先清除之前的酱料**
+        ClearSauce();
+
         // 计算酱料的插入索引
         int targetIndex = GetSauceInsertIndex();
 
-        // 生成酱料，并设定父对象为 stackPanel
+        // 生成新的酱料，并设定父对象为 stackPanel
         GameObject newSauce = Instantiate(sauceData.saucePrefab, stackPanel);
         newSauce.transform.SetSiblingIndex(targetIndex);
 
@@ -189,6 +192,15 @@ public class CookingMenuUI : MonoBehaviour
         // 存入列表，方便后续清理
         spawnedSauces.Add(newSauce);
     }
+    private void ClearSauce()
+    {
+        foreach (GameObject sauce in spawnedSauces)
+        {
+            Destroy(sauce);
+        }
+        spawnedSauces.Clear();
+    }
+
 
     private int GetSauceInsertIndex()
     {
