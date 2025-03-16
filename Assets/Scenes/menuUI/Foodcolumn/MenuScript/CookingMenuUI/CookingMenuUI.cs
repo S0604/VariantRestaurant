@@ -7,18 +7,15 @@ using Unity.VisualScripting;
 
 public class CookingMenuUI : MonoBehaviour
 {
-    public static CookingMenuUI Instance;
-
     [SerializeField] private Transform stackPanel; // 在 Inspector 里手动赋值
+    public static CookingMenuUI Instance;
     public Image TopBunImage;            // 面包顶部
     public Image TopIngredientImage;     // 对应 ItemSlot(2)
     public Image MiddleIngredientImage;  // 对应 ItemSlot(1)
     public Image BottomIngredientImage;  // 对应 ItemSlot(0)
     public Image BottomBunImage;         // 面包底部
     private List<GameObject> spawnedSauces = new List<GameObject>(); // 存放已生成的酱料对象
-
     public ItemSlot[] itemSlots; // 0:底部, 1:中部, 2:顶部, 3:基底格
-
     private List<IngredientData> ingredientStack = new List<IngredientData>(); // 存放当前食材
 
     private void Awake()
@@ -33,7 +30,6 @@ public class CookingMenuUI : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
     public void CloseUI()
     {
         foreach (var slot in itemSlots)
@@ -42,7 +38,6 @@ public class CookingMenuUI : MonoBehaviour
         }
         gameObject.SetActive(false);
     }
-
     public void OpenUI()
     {
         gameObject.SetActive(true);
@@ -53,7 +48,6 @@ public class CookingMenuUI : MonoBehaviour
             slot.ClearSlot(); // 重新打开时确保 slot 为空
         }
     }
-
     private void ClearAllIngredientData()
     {
         foreach (var slot in itemSlots)
@@ -69,7 +63,6 @@ public class CookingMenuUI : MonoBehaviour
         }
         spawnedSauces.Clear();
     }
-
     public void UpdateStackPanel()
     {
         ingredientStack.Clear(); // 清空旧数据
@@ -146,7 +139,6 @@ public class CookingMenuUI : MonoBehaviour
             BottomBunImage.enabled = false;
         }
     }
-
     private void UpdateIngredientImage(Image image, IngredientData ingredient)
     {
         if (ingredient != null)
@@ -160,7 +152,6 @@ public class CookingMenuUI : MonoBehaviour
             image.enabled = false;
         }
     }
-
     public void SelectSauce(IngredientData sauceData)
     {
         if (sauceData == null || sauceData.saucePrefab == null)
@@ -171,10 +162,13 @@ public class CookingMenuUI : MonoBehaviour
 
         Debug.Log($"🎉 选择了酱料: {sauceData.ingredientName}");
 
-        // 先清除旧的酱料
+        // **先清除旧的酱料**
         ClearSauce();
 
-        // 生成新的酱料
+        // **临时移动 TopBunImage**
+        StartCoroutine(MoveTopBun(false)); // 把上面包移到一旁
+
+        // **生成新的酱料**
         GameObject newSauce = Instantiate(sauceData.saucePrefab, stackPanel);
         newSauce.transform.SetSiblingIndex(GetSauceInsertIndex());
 
@@ -182,9 +176,9 @@ public class CookingMenuUI : MonoBehaviour
         RectTransform sauceRect = newSauce.GetComponent<RectTransform>();
         if (sauceRect != null)
         {
-            float yOffset = GetSauceYOffset(); // 计算偏移量
+            float yOffset = GetSauceYOffset();
             Vector3 newPosition = sauceRect.anchoredPosition;
-            newPosition.y = yOffset; // 直接设置 Y 轴
+            newPosition.y = yOffset;
             sauceRect.anchoredPosition = newPosition;
         }
 
@@ -204,8 +198,9 @@ public class CookingMenuUI : MonoBehaviour
 
         animator.Play(animationName, 0, 1); // **跳转到动画最后一帧**
         animator.speed = 0; // **停止动画**
+        // **动画播放完，移动 TopBunImage 回归原位置**
+        StartCoroutine(MoveTopBun(true));
     }
-
     private void ClearSauce()
     {
         foreach (GameObject sauce in spawnedSauces)
@@ -214,8 +209,6 @@ public class CookingMenuUI : MonoBehaviour
         }
         spawnedSauces.Clear();
     }
-
-
     private int GetSauceInsertIndex()
     {
         int ingredientCount = ingredientStack.Count;
@@ -248,5 +241,27 @@ public class CookingMenuUI : MonoBehaviour
             default: return 10f;  // 兜底情况
         }
     }
+    private IEnumerator MoveTopBun(bool moveBack)
+    {
+        RectTransform topBunRect = TopBunImage.GetComponent<RectTransform>();
+        if (topBunRect == null) yield break;
 
+        float moveDistance = 200f; // **移动的距离**
+        float moveTime = 1f; // **移动的时间**
+        float elapsedTime = 0f;
+
+        Vector3 startPos = topBunRect.anchoredPosition;
+        Vector3 targetPos = startPos + new Vector3(moveBack ? -moveDistance : moveDistance, 0, 0);
+
+        while (elapsedTime < moveTime)
+        {
+            elapsedTime = Mathf.Min(elapsedTime + Time.deltaTime, moveTime); // **确保不会超时**
+            float t = Mathf.Clamp01(elapsedTime / moveTime); // **避免数值溢出**
+            topBunRect.anchoredPosition = Vector3.Lerp(startPos, targetPos, t);
+            yield return null;
+        }
+
+        // **最终位置强制设定，避免误差**
+        topBunRect.anchoredPosition = targetPos;
+    }
 }
