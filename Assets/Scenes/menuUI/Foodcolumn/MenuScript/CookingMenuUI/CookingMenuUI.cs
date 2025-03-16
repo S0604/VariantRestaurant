@@ -166,30 +166,20 @@ public class CookingMenuUI : MonoBehaviour
         ClearSauce();
 
         // **临时移动 TopBunImage**
-        StartCoroutine(MoveTopBun(false)); // 把上面包移到一旁
 
         // **生成新的酱料**
         GameObject newSauce = Instantiate(sauceData.saucePrefab, stackPanel);
         newSauce.transform.SetSiblingIndex(GetSauceInsertIndex());
 
-        // **设置酱料 Y 轴偏移**
-        RectTransform sauceRect = newSauce.GetComponent<RectTransform>();
-        if (sauceRect != null)
-        {
-            float yOffset = GetSauceYOffset();
-            Vector3 newPosition = sauceRect.anchoredPosition;
-            newPosition.y = yOffset;
-            sauceRect.anchoredPosition = newPosition;
-        }
-
-        // **播放动画**
+        // **获取 Animator 并播放动画**
         Animator ketchup = newSauce.GetComponent<Animator>();
         if (ketchup != null)
         {
-            ketchup.CrossFade("ketchup", 0.1f);
+            ketchup.CrossFade("ketchup",21f); // 播放动画
             StartCoroutine(StopAnimationAfterPlay(ketchup, "ketchup"));
         }
 
+        // 存入列表，方便后续清理
         spawnedSauces.Add(newSauce);
     }
     private IEnumerator StopAnimationAfterPlay(Animator animator, string animationName)
@@ -199,7 +189,6 @@ public class CookingMenuUI : MonoBehaviour
         animator.Play(animationName, 0, 1); // **跳转到动画最后一帧**
         animator.speed = 0; // **停止动画**
         // **动画播放完，移动 TopBunImage 回归原位置**
-        StartCoroutine(MoveTopBun(true));
     }
     private void ClearSauce()
     {
@@ -230,38 +219,15 @@ public class CookingMenuUI : MonoBehaviour
     }
     private float GetSauceYOffset()
     {
-        int ingredientCount = ingredientStack.Count;
+        int ingredientCount = ingredientStack.Count; // 直接使用 ingredientStack 计算食材数量
 
         switch (ingredientCount)
         {
-            case 0: return -20f;   // 没有食材，酱料稍微往下
-            case 1: return -10f;  // 1 个食材，稍微上移
-            case 2: return 10;  // 2 个食材，接近顶部
-            case 3: return 30f;  // 3 个食材，酱料放在最高层
-            default: return 10f;  // 兜底情况
+            case 0: return -60f;   // 没有食材，保持默认位置
+            case 1: return -40f;  // 1 个食材，酱料稍微上移
+            case 2: return -20f;  // 2 个食材，酱料更高
+            case 3: return 0f; // 3 个食材，酱料放在最高层
+            default: return 0f;  // 兜底情况
         }
-    }
-    private IEnumerator MoveTopBun(bool moveBack)
-    {
-        RectTransform topBunRect = TopBunImage.GetComponent<RectTransform>();
-        if (topBunRect == null) yield break;
-
-        float moveDistance = 200f; // **移动的距离**
-        float moveTime = 1f; // **移动的时间**
-        float elapsedTime = 0f;
-
-        Vector3 startPos = topBunRect.anchoredPosition;
-        Vector3 targetPos = startPos + new Vector3(moveBack ? -moveDistance : moveDistance, 0, 0);
-
-        while (elapsedTime < moveTime)
-        {
-            elapsedTime = Mathf.Min(elapsedTime + Time.deltaTime, moveTime); // **确保不会超时**
-            float t = Mathf.Clamp01(elapsedTime / moveTime); // **避免数值溢出**
-            topBunRect.anchoredPosition = Vector3.Lerp(startPos, targetPos, t);
-            yield return null;
-        }
-
-        // **最终位置强制设定，避免误差**
-        topBunRect.anchoredPosition = targetPos;
     }
 }
