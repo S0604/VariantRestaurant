@@ -4065,7 +4065,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 30451f4883c635b46bb2b3a79638bf01, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 30451f4883c635b46bb2b3a79638bf01, type: 3}
@@ -11938,6 +11938,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: "\u901F\u98DF\u5E97.fbx_Tables"
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: cbbc4b8ccb15b8c449cf27a84bdbf431, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cbbc4b8ccb15b8c449cf27a84bdbf431, type: 3}
 --- !u!1 &1032039078
@@ -13394,7 +13398,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 65a6cf3f82d100743ba47c8ee775951e, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 65a6cf3f82d100743ba47c8ee775951e, type: 3}
@@ -20954,7 +20958,7 @@ Camera:
   far clip plane: 49.2
   field of view: 45
   orthographic: 1
-  orthographic size: 5.2
+  orthographic size: 6
   m_Depth: 10
   m_CullingMask:
     serializedVersion: 2
@@ -22859,6 +22863,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 395cef26d7af46e48a3e645f84367f34, type: 3}
       propertyPath: m_Name
       value: "\u901F\u98DF\u5E97.fbx_Chairs"
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 395cef26d7af46e48a3e645f84367f34, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 395cef26d7af46e48a3e645f84367f34, type: 3}
