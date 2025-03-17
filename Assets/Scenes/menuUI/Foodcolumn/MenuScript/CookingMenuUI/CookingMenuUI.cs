@@ -16,7 +16,7 @@ public class CookingMenuUI : MonoBehaviour
     public Image BottomIngredientImage;  // 对应 ItemSlot(0)
     public Image BottomBunImage;         // 面包底部
     private List<GameObject> spawnedSauces = new List<GameObject>(); // 存放已生成的酱料对象
-
+    private bool isSaucePlaying = false; // 防止重复调用
     public ItemSlot[] itemSlots; // 0:底部, 1:中部, 2:顶部, 3:基底格
 
     private List<IngredientData> ingredientStack = new List<IngredientData>(); // 存放当前食材
@@ -43,16 +43,7 @@ public class CookingMenuUI : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void OpenUI()
-    {
-        gameObject.SetActive(true);
-        ClearAllIngredientData(); // **清除所有存储的食材数据**
-        UpdateStackPanel();
-        foreach (var slot in itemSlots)
-        {
-            slot.ClearSlot(); // 重新打开时确保 slot 为空
-        }
-    }
+  
 
     private void ClearAllIngredientData()
     {
@@ -169,34 +160,14 @@ public class CookingMenuUI : MonoBehaviour
             return;
         }
 
-        Debug.Log($"🎉 选择了酱料: {sauceData.ingredientName}");
-
-        // 先清除旧的酱料
-        ClearSauce();
-
-        // 生成新的酱料
-        GameObject newSauce = Instantiate(sauceData.saucePrefab, stackPanel);
-        newSauce.transform.SetSiblingIndex(GetSauceInsertIndex());
-
-        // **设置酱料 Y 轴偏移**
-        RectTransform sauceRect = newSauce.GetComponent<RectTransform>();
-        if (sauceRect != null)
+        if (isSaucePlaying)
         {
-            float yOffset = GetSauceYOffset(); // 计算偏移量
-            Vector3 newPosition = sauceRect.anchoredPosition;
-            newPosition.y = yOffset; // 直接设置 Y 轴
-            sauceRect.anchoredPosition = newPosition;
+            Debug.Log("⏳ 酱料动画正在播放，等待完成...");
+            return; // 防止多次点击时重复触发
         }
 
-        // **播放动画**
-        Animator ketchup = newSauce.GetComponent<Animator>();
-        if (ketchup != null)
-        {
-            ketchup.CrossFade("ketchup", 0.1f);
-            StartCoroutine(StopAnimationAfterPlay(ketchup, "ketchup"));
-        }
-
-        spawnedSauces.Add(newSauce);
+        isSaucePlaying = true; // 标记正在播放动画
+        StartCoroutine(HandleSauceAnimation(sauceData));
     }
     private IEnumerator StopAnimationAfterPlay(Animator animator, string animationName)
     {
@@ -247,6 +218,51 @@ public class CookingMenuUI : MonoBehaviour
             case 3: return 30f;  // 3 个食材，酱料放在最高层
             default: return 10f;  // 兜底情况
         }
+    }
+    private IEnumerator HandleSauceAnimation(IngredientData sauceData)
+    {
+        // 1️⃣ **移动 TopBunImage**
+        Vector3 originalPosition = TopBunImage.rectTransform.anchoredPosition;
+        Vector3 offsetPosition = originalPosition + new Vector3(200, 0, 0); // 向上移动 50 像素
+        float moveDuration = 0.3f;
+
+        yield return StartCoroutine(MoveUIElement(TopBunImage.rectTransform, offsetPosition, moveDuration));
+
+        // 2️⃣ **清除旧的酱料**
+        ClearSauce();
+
+        // 3️⃣ **生成新的酱料**
+        GameObject newSauce = Instantiate(sauceData.saucePrefab, stackPanel);
+        newSauce.transform.SetSiblingIndex(GetSauceInsertIndex());
+        spawnedSauces.Add(newSauce);
+
+        // 4️⃣ **播放酱料动画**
+        Animator sauceAnimator = newSauce.GetComponent<Animator>();
+        if (sauceAnimator != null)
+        {
+            sauceAnimator.CrossFade("ketchup", 0.1f);
+            yield return new WaitForSeconds(sauceAnimator.GetCurrentAnimatorStateInfo(0).length);
+        }
+
+        // 5️⃣ **TopBunImage 回归原位**
+        yield return StartCoroutine(MoveUIElement(TopBunImage.rectTransform, originalPosition, moveDuration));
+
+        isSaucePlaying = false; // 标记动画完成
+    }
+    private IEnumerator MoveUIElement(RectTransform rectTransform, Vector3 targetPosition, float duration)
+    {
+        Vector3 startPosition = rectTransform.anchoredPosition;
+        float elapsedTime = 0;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float progress = Mathf.Clamp01(elapsedTime / duration);
+            rectTransform.anchoredPosition = Vector3.Lerp(startPosition, targetPosition, progress);
+            yield return null;
+        }
+
+        rectTransform.anchoredPosition = targetPosition; // 确保最终位置准确
     }
 
 }
