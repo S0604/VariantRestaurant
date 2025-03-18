@@ -208,35 +208,48 @@ public class CookingMenuUI : MonoBehaviour
     }
     private float GetSauceYOffset()
     {
-        int ingredientCount = ingredientStack.Count;
+        if (ingredientStack.Count == 0)
+            return BottomBunImage.rectTransform.anchoredPosition.y; // 没有食材时，酱料放在底部
 
-        switch (ingredientCount)
-        {
-            case 0: return -30f;   // 没有食材，酱料稍微往下
-            case 1: return -10f;  // 1 个食材，稍微上移
-            case 2: return 10f;  // 2 个食材，接近顶部
-            case 3: return 30f;  // 3 个食材，酱料放在最高层
-            default: return 10f;  // 兜底情况
-        }
+        // 计算当前最上层食材的 Y 轴位置
+        Image topImage = ingredientStack.Count == 1 ? BottomIngredientImage :
+                         (ingredientStack.Count == 2 ? MiddleIngredientImage : TopIngredientImage);
+
+        float topY = topImage.rectTransform.anchoredPosition.y;
+        float sauceOffset = 170f; // 酱料稍微上移一点，避免与食材重叠
+
+        return topY + sauceOffset;
     }
+
     private IEnumerator HandleSauceAnimation(IngredientData sauceData)
     {
-        // 1️⃣ **移动 TopBunImage**
-        Vector3 originalPosition = TopBunImage.rectTransform.anchoredPosition;
-        Vector3 offsetPosition = originalPosition + new Vector3(200, 0, 0); // 向上移动 50 像素
-        float moveDuration = 0.3f;
+        if (ingredientStack.Count == 0)
+            yield break;
 
-        yield return StartCoroutine(MoveUIElement(TopBunImage.rectTransform, offsetPosition, moveDuration));
+        Image movingImage = ingredientStack.Count == 1 ? MiddleIngredientImage :
+                            (ingredientStack.Count == 2 ? TopIngredientImage : TopBunImage);
 
-        // 2️⃣ **清除旧的酱料**
+        Vector3 originalPosition = movingImage.rectTransform.anchoredPosition;
+        Quaternion originalRotation = movingImage.rectTransform.rotation;
+
+        Vector3 upPosition = originalPosition + new Vector3(0, 50, 0);
+        Vector3 rightPosition = upPosition + new Vector3(200, 0, 0);
+        Quaternion tiltRotation = Quaternion.Euler(0, 0, -15);
+
+        float moveDuration = 0.5f;
+
+        yield return StartCoroutine(MoveAndRotateUIElement(movingImage.rectTransform, upPosition, tiltRotation, moveDuration));
+        yield return StartCoroutine(MoveAndRotateUIElement(movingImage.rectTransform, rightPosition, tiltRotation, moveDuration));
+
         ClearSauce();
-
-        // 3️⃣ **生成新的酱料**
         GameObject newSauce = Instantiate(sauceData.saucePrefab, stackPanel);
         newSauce.transform.SetSiblingIndex(GetSauceInsertIndex());
         spawnedSauces.Add(newSauce);
 
-        // 4️⃣ **播放酱料动画**
+        // **修正 Y 轴**
+        RectTransform sauceRect = newSauce.GetComponent<RectTransform>();
+        sauceRect.anchoredPosition = new Vector2(sauceRect.anchoredPosition.x, GetSauceYOffset());
+
         Animator sauceAnimator = newSauce.GetComponent<Animator>();
         if (sauceAnimator != null)
         {
@@ -244,25 +257,35 @@ public class CookingMenuUI : MonoBehaviour
             yield return new WaitForSeconds(sauceAnimator.GetCurrentAnimatorStateInfo(0).length);
         }
 
-        // 5️⃣ **TopBunImage 回归原位**
-        yield return StartCoroutine(MoveUIElement(TopBunImage.rectTransform, originalPosition, moveDuration));
+        yield return StartCoroutine(MoveAndRotateUIElement(movingImage.rectTransform, upPosition, originalRotation, moveDuration));
+        yield return StartCoroutine(MoveAndRotateUIElement(movingImage.rectTransform, originalPosition, originalRotation, moveDuration));
 
-        isSaucePlaying = false; // 标记动画完成
+        isSaucePlaying = false;
     }
-    private IEnumerator MoveUIElement(RectTransform rectTransform, Vector3 targetPosition, float duration)
+
+    private IEnumerator MoveAndRotateUIElement(RectTransform rectTransform, Vector3 targetPosition, Quaternion targetRotation, float duration)
     {
         Vector3 startPosition = rectTransform.anchoredPosition;
+        Quaternion startRotation = rectTransform.rotation;
         float elapsedTime = 0;
 
         while (elapsedTime < duration)
         {
             elapsedTime += Time.deltaTime;
             float progress = Mathf.Clamp01(elapsedTime / duration);
+
+            // 插值移动
             rectTransform.anchoredPosition = Vector3.Lerp(startPosition, targetPosition, progress);
+
+            // 插值旋转
+            rectTransform.rotation = Quaternion.Lerp(startRotation, targetRotation, progress);
+
             yield return null;
         }
 
-        rectTransform.anchoredPosition = targetPosition; // 确保最终位置准确
+        // 确保最终位置和角度正确
+        rectTransform.anchoredPosition = targetPosition;
+        rectTransform.rotation = targetRotation;
     }
 
 }
