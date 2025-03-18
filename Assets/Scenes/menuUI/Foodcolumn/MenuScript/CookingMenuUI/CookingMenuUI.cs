@@ -239,7 +239,51 @@ public class CookingMenuUI : MonoBehaviour
     {
         int ingredientCount = ingredientStack.Count;
 
+<<<<<<< Updated upstream
         switch (ingredientCount)
+=======
+        // 计算当前最上层食材的 Y 轴位置
+        Image topImage = ingredientStack.Count == 1 ? BottomIngredientImage :
+                         (ingredientStack.Count == 2 ? MiddleIngredientImage : TopIngredientImage);
+
+        float topY = topImage.rectTransform.anchoredPosition.y;
+        float sauceOffset = 170f; // 酱料稍微上移一点，避免与食材重叠
+
+        return topY + sauceOffset;
+    }
+
+    private IEnumerator HandleSauceAnimation(IngredientData sauceData)
+    {
+        if (ingredientStack.Count == 0)
+            yield break;
+
+        Image movingImage = ingredientStack.Count == 1 ? MiddleIngredientImage :
+                            (ingredientStack.Count == 2 ? TopIngredientImage : TopBunImage);
+
+        Vector3 originalPosition = movingImage.rectTransform.anchoredPosition;
+        Quaternion originalRotation = movingImage.rectTransform.rotation;
+
+        Vector3 upPosition = originalPosition + new Vector3(0, 50, 0);
+        Vector3 rightPosition = upPosition + new Vector3(200, 0, 0);
+        Quaternion tiltRotation = Quaternion.Euler(0, 0, -15);
+
+        float moveDuration = 1f;
+
+        yield return StartCoroutine(MoveAndRotateUIElement(movingImage.rectTransform, upPosition, tiltRotation, moveDuration));
+        yield return StartCoroutine(MoveAndRotateUIElement(movingImage.rectTransform, rightPosition, tiltRotation, moveDuration));
+
+        ClearSauce();
+        GameObject newSauce = Instantiate(sauceData.saucePrefab, stackPanel);
+        newSauce.transform.SetSiblingIndex(GetSauceInsertIndex());
+        spawnedSauces.Add(newSauce);
+
+        // **修正 Y 轴**
+        RectTransform sauceRect = newSauce.GetComponent<RectTransform>();
+        sauceRect.anchoredPosition = new Vector2(sauceRect.anchoredPosition.x, GetSauceYOffset());
+
+        Animator sauceAnimator = newSauce.GetComponent<Animator>();
+        if (sauceAnimator != null)
+>>>>>>> Stashed changes
         {
             case 0: return -30f;   // 没有食材，酱料稍微往下
             case 1: return -10f;  // 1 个食材，稍微上移
