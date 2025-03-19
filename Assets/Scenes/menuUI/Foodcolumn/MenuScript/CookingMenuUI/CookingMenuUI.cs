@@ -312,7 +312,7 @@ public class CookingMenuUI : MonoBehaviour
         }
         // 更新酱料瓶的 Y 轴位置
         bottleRect.anchoredPosition = new Vector2(fixedX, offsetY);        // **让酱料瓶慢慢显示（淡入）**
-        yield return StartCoroutine(FadeInCanvasGroup(canvasGroup, 0.8f)); // 逐渐显示
+        yield return StartCoroutine(FadeInCanvasGroup(canvasGroup, 0.8f)); // 酱料瓶逐渐显示時間
 
         // **生成酱料**
         ClearSauce();
@@ -331,8 +331,7 @@ public class CookingMenuUI : MonoBehaviour
         }
        
         yield return StartCoroutine(MoveAndRotateUIElement(movingImage.rectTransform, upPosition, originalRotation, moveDuration));
-        // **让酱料瓶慢慢消失**
-        StartCoroutine(FadeOutAndDestroy(sauceBottleImage.gameObject, 0.8f));
+        StartCoroutine(FadeOutAndDestroy(sauceBottleImage.gameObject, 0.8f)); // 让酱料瓶慢慢消失時間
         yield return StartCoroutine(MoveAndRotateUIElement(movingImage.rectTransform, originalPosition, originalRotation, moveDuration));
         // **动画结束，启用按钮**
         SetButtonsInteractable(buttonList, true);
