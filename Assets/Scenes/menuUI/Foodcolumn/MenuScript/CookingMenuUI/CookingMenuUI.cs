@@ -236,17 +236,70 @@ public class CookingMenuUI : MonoBehaviour
         Vector3 rightPosition = upPosition + new Vector3(200, 0, 0);
         Quaternion tiltRotation = Quaternion.Euler(0, 0, -15);
 
-        float moveDuration = 0.5f;//上層麵包移動速度
+        float moveDuration = 0.8f;
 
         yield return StartCoroutine(MoveAndRotateUIElement(movingImage.rectTransform, upPosition, tiltRotation, moveDuration));
         yield return StartCoroutine(MoveAndRotateUIElement(movingImage.rectTransform, rightPosition, tiltRotation, moveDuration));
 
+        // **生成酱料瓶**
+        GameObject sauceBottleObj = new GameObject("SauceBottle");
+        sauceBottleObj.transform.SetParent(stackPanel, false);
+
+        Image sauceBottleImage = sauceBottleObj.AddComponent<Image>();
+        sauceBottleImage.sprite = sauceData.sauceBottleImage; // 设置图片
+        sauceBottleImage.SetNativeSize(); // 让 UI 适应图片大小
+
+        // 为图片添加 CanvasGroup 来控制透明度
+        CanvasGroup canvasGroup = sauceBottleObj.AddComponent<CanvasGroup>();
+        canvasGroup.alpha = 0; // 初始时透明
+
+        RectTransform bottleRect = sauceBottleObj.GetComponent<RectTransform>();
+        bottleRect.rotation = Quaternion.Euler(0, 0, 90); // 让瓶子倾斜
+
+        // 根据 ingredientStack 的数量调整 Y 轴位置
+        float offsetY = 0f; // 初始的 Y 偏移量
+        float fixedX = 140f; // X 轴位置可以设定为一个常量，确保在同一位置
+        // 根据不同的食材层数计算酱料瓶的 Y 偏移
+        if (ingredientStack.Count == 0)
+        {
+            offsetY = 0f; // 还没有食材时，酱料瓶放在底部
+        }
+        else
+        {
+            // 根据食材层数设置酱料瓶的位置
+            float topY = 0f;
+
+            // 根据食材栈层数决定酱料瓶的 Y 轴偏移
+            switch (ingredientStack.Count)
+            {
+                case 1:
+                    topY = BottomIngredientImage.rectTransform.anchoredPosition.y;
+                    offsetY = 210f; // 第一层食材上方
+                    break;
+                case 2:
+                    topY = MiddleIngredientImage.rectTransform.anchoredPosition.y;
+                    offsetY = 230f; // 第二层食材上方
+                    break;
+                case 3:
+                    topY = TopIngredientImage.rectTransform.anchoredPosition.y;
+                    offsetY = 250; // 第三层食材上方
+                    break;
+                default:
+                    topY = TopIngredientImage.rectTransform.anchoredPosition.y;
+                    offsetY = 260; // 更多层数时的偏移
+                    break;
+            }
+        }
+        // 更新酱料瓶的 Y 轴位置
+        bottleRect.anchoredPosition = new Vector2(fixedX, offsetY);        // **让酱料瓶慢慢显示（淡入）**
+        yield return StartCoroutine(FadeInCanvasGroup(canvasGroup, 0.8f)); // 逐渐显示
+
+        // **生成酱料**
         ClearSauce();
         GameObject newSauce = Instantiate(sauceData.saucePrefab, stackPanel);
         newSauce.transform.SetSiblingIndex(GetSauceInsertIndex());
         spawnedSauces.Add(newSauce);
 
-        // **修正 Y 轴**
         RectTransform sauceRect = newSauce.GetComponent<RectTransform>();
         sauceRect.anchoredPosition = new Vector2(sauceRect.anchoredPosition.x, GetSauceYOffset());
 
@@ -260,9 +313,64 @@ public class CookingMenuUI : MonoBehaviour
         yield return StartCoroutine(MoveAndRotateUIElement(movingImage.rectTransform, upPosition, originalRotation, moveDuration));
         yield return StartCoroutine(MoveAndRotateUIElement(movingImage.rectTransform, originalPosition, originalRotation, moveDuration));
 
+        // **让酱料瓶慢慢消失**
+        StartCoroutine(FadeOutAndDestroy(sauceBottleImage.gameObject, 0.8f));
+
         isSaucePlaying = false;
     }
 
+    private IEnumerator FadeInCanvasGroup(CanvasGroup canvasGroup, float duration)
+    {
+        float startAlpha = canvasGroup.alpha;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float alpha = Mathf.Lerp(startAlpha, 1, elapsedTime / duration);
+            canvasGroup.alpha = alpha;
+            yield return null;
+        }
+
+        canvasGroup.alpha = 1; // 确保完全显示
+    }
+
+    private IEnumerator RotateOverTime(RectTransform rectTransform, Quaternion targetRotation, float duration)
+    {
+        Quaternion startRotation = rectTransform.rotation;
+        float elapsedTime = 0;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float progress = Mathf.Clamp01(elapsedTime / duration);
+            rectTransform.rotation = Quaternion.Lerp(startRotation, targetRotation, progress);
+            yield return null;
+        }
+
+        rectTransform.rotation = targetRotation;
+    }
+
+    private IEnumerator FadeOutAndDestroy(GameObject obj, float duration)
+    {
+        CanvasGroup canvasGroup = obj.GetComponent<CanvasGroup>();
+        if (canvasGroup == null)
+        {
+            Destroy(obj);
+            yield break;
+        }
+
+        float elapsedTime = 0;
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float alpha = Mathf.Lerp(1, 0, elapsedTime / duration);
+            canvasGroup.alpha = alpha;
+            yield return null;
+        }
+
+        Destroy(obj);
+    }
     private IEnumerator MoveAndRotateUIElement(RectTransform rectTransform, Vector3 targetPosition, Quaternion targetRotation, float duration)
     {
         Vector3 startPosition = rectTransform.anchoredPosition;
