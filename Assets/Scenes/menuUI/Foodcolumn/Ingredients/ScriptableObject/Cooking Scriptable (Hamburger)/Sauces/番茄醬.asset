@@ -19,4 +19,5 @@ MonoBehaviour:
   bunTopImage: {fileID: 0}
   bunBottomImage: {fileID: 0}
   isSauce: 1
+  sauceBottleImage: {fileID: 21300000, guid: 4f9f72dff8d752f458615d814c19de92, type: 3}
   saucePrefab: {fileID: 5371275936233864063, guid: 8d4ae23d4e1871f4488ca4a706d83dba, type: 3}
