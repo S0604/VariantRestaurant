@@ -20,9 +20,25 @@ public class CookingMenuUI : MonoBehaviour
     public ItemSlot[] itemSlots; // 0:底部, 1:中部, 2:顶部, 3:基底格
 
     private List<IngredientData> ingredientStack = new List<IngredientData>(); // 存放当前食材
+    public List<Button> buttonList;
+
+    private void Start()
+    {
+        // 确保所有按钮都已正确设置
+        foreach (Button btn in buttonList)
+        {
+            if (btn == null)
+            {
+                Debug.LogWarning("UI 按钮列表中有未赋值的按钮，请检查 Inspector 设置！");
+            }
+        }
+    }
 
     private void Awake()
     {
+        // 获取所有 Button 组件（可根据需要筛选特定按钮）
+        buttonList.AddRange(GetComponentsInChildren<Button>());
+
         if (Instance == null)
         {
             Instance = this;
@@ -152,6 +168,7 @@ public class CookingMenuUI : MonoBehaviour
         }
     }
 
+
     public void SelectSauce(IngredientData sauceData)
     {
         if (sauceData == null || sauceData.saucePrefab == null)
@@ -221,10 +238,13 @@ public class CookingMenuUI : MonoBehaviour
         return topY + sauceOffset;
     }
 
+
     private IEnumerator HandleSauceAnimation(IngredientData sauceData)
     {
         if (ingredientStack.Count == 0)
             yield break;
+
+        SetButtonsInteractable(buttonList, false);
 
         Image movingImage = ingredientStack.Count == 1 ? MiddleIngredientImage :
                             (ingredientStack.Count == 2 ? TopIngredientImage : TopBunImage);
@@ -309,30 +329,46 @@ public class CookingMenuUI : MonoBehaviour
             sauceAnimator.CrossFade("ketchup", 0.1f);
             yield return new WaitForSeconds(sauceAnimator.GetCurrentAnimatorStateInfo(0).length);
         }
-
+       
         yield return StartCoroutine(MoveAndRotateUIElement(movingImage.rectTransform, upPosition, originalRotation, moveDuration));
-        yield return StartCoroutine(MoveAndRotateUIElement(movingImage.rectTransform, originalPosition, originalRotation, moveDuration));
-
         // **让酱料瓶慢慢消失**
         StartCoroutine(FadeOutAndDestroy(sauceBottleImage.gameObject, 0.8f));
-
+        yield return StartCoroutine(MoveAndRotateUIElement(movingImage.rectTransform, originalPosition, originalRotation, moveDuration));
+        // **动画结束，启用按钮**
+        SetButtonsInteractable(buttonList, true);
         isSaucePlaying = false;
     }
-
-    private IEnumerator FadeInCanvasGroup(CanvasGroup canvasGroup, float duration)
+    private void SetButtonsInteractable(List<Button> buttons, bool interactable)
     {
-        float startAlpha = canvasGroup.alpha;
-        float elapsedTime = 0f;
-
-        while (elapsedTime < duration)
+        foreach (Button button in buttons)
         {
-            elapsedTime += Time.deltaTime;
-            float alpha = Mathf.Lerp(startAlpha, 1, elapsedTime / duration);
-            canvasGroup.alpha = alpha;
-            yield return null;
+            if (button != null)
+            {
+                button.interactable = interactable;
+            }
         }
+    }
 
-        canvasGroup.alpha = 1; // 确保完全显示
+    private void DisableButtons()
+    {
+        foreach (Button btn in buttonList)
+        {
+            if (btn != null)
+            {
+                btn.interactable = false;
+            }
+        }
+    }
+
+    private void EnableButtons()
+    {
+        foreach (Button btn in buttonList)
+        {
+            if (btn != null)
+            {
+                btn.interactable = true;
+            }
+        }
     }
 
     private IEnumerator RotateOverTime(RectTransform rectTransform, Quaternion targetRotation, float duration)
@@ -370,6 +406,21 @@ public class CookingMenuUI : MonoBehaviour
         }
 
         Destroy(obj);
+    }
+    private IEnumerator FadeInCanvasGroup(CanvasGroup canvasGroup, float duration)
+    {
+        float startAlpha = canvasGroup.alpha;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float alpha = Mathf.Lerp(startAlpha, 1, elapsedTime / duration);
+            canvasGroup.alpha = alpha;
+            yield return null;
+        }
+
+        canvasGroup.alpha = 1; // 确保完全显示
     }
     private IEnumerator MoveAndRotateUIElement(RectTransform rectTransform, Vector3 targetPosition, Quaternion targetRotation, float duration)
     {
