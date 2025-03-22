@@ -6336,6 +6336,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   recipeImage: {fileID: 605997122}
+  recipeNameText: {fileID: 1641800292}
 --- !u!114 &452168660
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6396,7 +6397,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   captureCamera: {fileID: 456098319}
-  screenshotBaseName: BurgerScreenshot
 --- !u!20 &456098319
 Camera:
   m_ObjectHideFlags: 0
@@ -10505,9 +10505,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1988700573}
-        m_TargetAssemblyTypeName: CookButtonHandler, Assembly-CSharp
-        m_MethodName: OnCookButtonClick
+      - m_Target: {fileID: 1988700575}
+        m_TargetAssemblyTypeName: RenameUIHandler, Assembly-CSharp
+        m_MethodName: OnConfirmRename
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -14539,9 +14539,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: RecipeButton, Assembly-CSharp
-        m_MethodName: OnMakeRecipeButton
+      - m_Target: {fileID: 1988700573}
+        m_TargetAssemblyTypeName: CookButtonHandler, Assembly-CSharp
+        m_MethodName: OnCookButtonClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -19529,7 +19529,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1641800289}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -21350,10 +21350,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 369575825}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 1735404536}
+        m_TargetAssemblyTypeName: ClearInputField, Assembly-CSharp
+        m_MethodName: ClearText
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -21362,9 +21362,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-      - m_Target: {fileID: 1735404536}
-        m_TargetAssemblyTypeName: ClearInputField, Assembly-CSharp
-        m_MethodName: ClearText
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: CookButtonHandler, Assembly-CSharp
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -24120,6 +24120,7 @@ GameObject:
   - component: {fileID: 1988700572}
   - component: {fileID: 1988700571}
   - component: {fileID: 1988700573}
+  - component: {fileID: 1988700575}
   - component: {fileID: 1988700574}
   m_Layer: 0
   m_Name: CookingSystemObject
@@ -24170,8 +24171,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cookingSystem: {fileID: 1988700571}
-  newRecipeUI: {fileID: 452168655}
-  newRecipeText: {fileID: 1641800292}
+  renameUI: {fileID: 369575825}
+  renameUIHandler: {fileID: 1988700575}
   itemSlots:
   - {fileID: 909221562794323978}
   - {fileID: 63466817}
@@ -24229,6 +24230,23 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1988700575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1988700570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ae7bb4b15b348f4199ef9828637f2c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nameInputField: {fileID: 1791731275}
+  renameUI: {fileID: 369575825}
+  newRecipeUI: {fileID: 452168655}
+  newRecipeUIHandler: {fileID: 452168659}
+  cookingSystem: {fileID: 1988700571}
 --- !u!1001 &2022583561
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -24777,7 +24795,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2065198783}
   - component: {fileID: 2065198782}
-  - component: {fileID: 2065198784}
   m_Layer: 0
   m_Name: RecipeManagerObject
   m_TagString: Untagged
@@ -24812,31 +24829,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2065198784
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2065198781}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6cdda7a62f34a7d4cb5d6e9f88fee700, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  recipeManager: {fileID: 2065198782}
-  renameUI: {fileID: 369575825}
-  uiToCloseOnDuplicate:
-  - {fileID: 810587673}
-  - {fileID: 1238752714}
-  - {fileID: 315762531}
-  - {fileID: 2073300826}
-  makeRecipeButton: {fileID: 1238752716}
-  ingredientSlots:
-  - {fileID: 909221562794323978}
-  - {fileID: 63466817}
-  - {fileID: 758578938}
-  - {fileID: 1233957015}
 --- !u!1 &2073300826
 GameObject:
   m_ObjectHideFlags: 0
