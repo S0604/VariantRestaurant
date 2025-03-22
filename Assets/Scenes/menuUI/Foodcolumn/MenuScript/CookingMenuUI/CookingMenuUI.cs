@@ -268,11 +268,15 @@ public class CookingMenuUI : MonoBehaviour
         Vector3 rightPosition = upPosition + new Vector3(200, 0, 0);
         Quaternion tiltRotation = Quaternion.Euler(0, 0, -15);
 
+<<<<<<< Updated upstream
 <<<<<<< HEAD
         float moveDuration = 1f;
 =======
         float moveDuration = 0.8f;
 >>>>>>> main
+=======
+        float moveDuration = 1f;
+>>>>>>> Stashed changes
 
         yield return StartCoroutine(MoveAndRotateUIElement(movingImage.rectTransform, upPosition, tiltRotation, moveDuration));
         yield return StartCoroutine(MoveAndRotateUIElement(movingImage.rectTransform, rightPosition, tiltRotation, moveDuration));
