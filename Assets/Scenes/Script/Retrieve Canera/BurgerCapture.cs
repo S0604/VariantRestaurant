@@ -6,9 +6,15 @@ public class BurgerCapture : MonoBehaviour
 {
     public Camera captureCamera; // 专门用来截图的相机
     public string screenshotBaseName = "BurgerScreenshot"; // 截图文件基础名称
-    private int screenshotIndex = 0; // 截图编号
+    private int screenshotIndex;
 
-    public void CaptureStackPanel()
+    private void Start()
+    {
+        // 读取上次的截图索引，确保编号不会重复
+        screenshotIndex = PlayerPrefs.GetInt("ScreenshotIndex", 0);
+    }
+
+    public void CaptureStackPanel(string recipeKey)
     {
         StartCoroutine(CaptureRenderTextureCoroutine());
     }
@@ -17,36 +23,35 @@ public class BurgerCapture : MonoBehaviour
     {
         yield return new WaitForEndOfFrame();
 
-        int width = Screen.width;
-        int height = Screen.height;
+        int width = 512;  // 固定截图大小，避免 UI 过大
+        int height = 512;
 
-        // 创建 RenderTexture
-        RenderTexture rt = new RenderTexture(width, height, 24, RenderTextureFormat.ARGB32);
+        RenderTexture rt = new RenderTexture(width, height, 24, RenderTextureFormat.Default);
         captureCamera.targetTexture = rt;
         captureCamera.clearFlags = CameraClearFlags.SolidColor;
-        captureCamera.backgroundColor = new Color(0, 0, 0, 0); // 透明背景
+        captureCamera.backgroundColor = new Color(0, 0, 0, 0);
         captureCamera.Render();
 
-        // 读取 RenderTexture 数据
         RenderTexture.active = rt;
         Texture2D screenshot = new Texture2D(width, height, TextureFormat.RGBA32, false);
         screenshot.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+        screenshot.Apply(); // 确保贴图更新
 
         // 确保文件夹存在
-        string directoryPath = Application.dataPath + "/Resources/Screenshots/";
+        string directoryPath = Application.persistentDataPath + "/Screenshots/";
         if (!Directory.Exists(directoryPath))
         {
             Directory.CreateDirectory(directoryPath);
         }
 
         // 生成唯一文件名
-        string screenshotName = screenshotBaseName + screenshotIndex + ".png";
+        string screenshotName = $"{screenshotBaseName}{screenshotIndex}.png";
         string path = Path.Combine(directoryPath, screenshotName);
 
         // 保存 PNG
         byte[] bytes = screenshot.EncodeToPNG();
         File.WriteAllBytes(path, bytes);
-        Debug.Log("Screenshot saved at: " + path);
+        Debug.Log($"📸 截图已保存: {path}");
 
         // 释放资源
         captureCamera.targetTexture = null;
@@ -59,8 +64,12 @@ public class BurgerCapture : MonoBehaviour
         UnityEditor.AssetDatabase.Refresh();
 #endif
 
+        // 更新索引并存储
         screenshotIndex++;
+        PlayerPrefs.SetInt("ScreenshotIndex", screenshotIndex);
+        PlayerPrefs.Save();
 
+        // 显示新料理 UI
         NewRecipeUI newRecipeUI = FindObjectOfType<NewRecipeUI>();
         if (newRecipeUI != null)
         {
