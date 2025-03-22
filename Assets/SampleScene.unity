@@ -1318,7 +1318,7 @@ MonoBehaviour:
   m_text: "\u78BA\u8A8D"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e7eed9eb412b4ce47a09237bee04911a, type: 2}
-  m_sharedMaterial: {fileID: 7647929406206656915, guid: ecfa8e054b2b2174e82babad0ea8e0af, type: 2}
+  m_sharedMaterial: {fileID: 6980752366538299113, guid: e7eed9eb412b4ce47a09237bee04911a, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -8646,7 +8646,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &671848604
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12571,6 +12571,30 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 315762531}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 85211312}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!114 &1074062096
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14261,6 +14285,30 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 315762531}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 85211312}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!114 &1234061190
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14395,21 +14443,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 810587673}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 1327012848}
         m_TargetAssemblyTypeName: InventoryManager, Assembly-CSharp
-        m_MethodName: ResetInventory
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -14418,6 +14454,18 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 810587677}
+        m_TargetAssemblyTypeName: ClearIngredientData, Assembly-CSharp
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 85211312}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
@@ -14431,7 +14479,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-      - m_Target: {fileID: 219398776}
+      - m_Target: {fileID: 457452982}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
         m_Mode: 6
@@ -14443,10 +14491,22 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 810587673}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 1238752714}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+        m_MethodName: 
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -14457,8 +14517,8 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 315762531}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+        m_MethodName: 
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -14469,8 +14529,8 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 2073300826}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+        m_MethodName: 
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -14479,9 +14539,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 810587677}
-        m_TargetAssemblyTypeName: ClearIngredientData, Assembly-CSharp
-        m_MethodName: CloseUI
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: RecipeButton, Assembly-CSharp
+        m_MethodName: OnMakeRecipeButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -17103,6 +17163,7 @@ MonoBehaviour:
   buttonList:
   - {fileID: 1238752716}
   - {fileID: 663517246}
+  - {fileID: 1735404533}
   SelectionUI: {fileID: 457452982}
   NextStepUI: {fileID: 219398776}
 --- !u!1 &1469660540
@@ -21242,7 +21303,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 860.5, y: 4.4}
+  m_AnchoredPosition: {x: 874, y: -9}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1735404533
@@ -21780,7 +21841,7 @@ MonoBehaviour:
   m_text: "\u78BA\u5B9A\u8981<color=yellow>\u66FF\u63DB\u4E3B\u9910</color>\u55CE?\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e7eed9eb412b4ce47a09237bee04911a, type: 2}
-  m_sharedMaterial: {fileID: 7647929406206656915, guid: ecfa8e054b2b2174e82babad0ea8e0af, type: 2}
+  m_sharedMaterial: {fileID: 6980752366538299113, guid: e7eed9eb412b4ce47a09237bee04911a, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -24632,7 +24693,7 @@ MonoBehaviour:
   m_text: "\u53D6\u6D88"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e7eed9eb412b4ce47a09237bee04911a, type: 2}
-  m_sharedMaterial: {fileID: 7647929406206656915, guid: ecfa8e054b2b2174e82babad0ea8e0af, type: 2}
+  m_sharedMaterial: {fileID: 6980752366538299113, guid: e7eed9eb412b4ce47a09237bee04911a, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -24716,6 +24777,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2065198783}
   - component: {fileID: 2065198782}
+  - component: {fileID: 2065198784}
   m_Layer: 0
   m_Name: RecipeManagerObject
   m_TagString: Untagged
@@ -24750,6 +24812,31 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2065198784
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2065198781}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6cdda7a62f34a7d4cb5d6e9f88fee700, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  recipeManager: {fileID: 2065198782}
+  renameUI: {fileID: 369575825}
+  uiToCloseOnDuplicate:
+  - {fileID: 810587673}
+  - {fileID: 1238752714}
+  - {fileID: 315762531}
+  - {fileID: 2073300826}
+  makeRecipeButton: {fileID: 1238752716}
+  ingredientSlots:
+  - {fileID: 909221562794323978}
+  - {fileID: 63466817}
+  - {fileID: 758578938}
+  - {fileID: 1233957015}
 --- !u!1 &2073300826
 GameObject:
   m_ObjectHideFlags: 0
