@@ -16,13 +16,29 @@ public class CookingMenuUI : MonoBehaviour
     public Image BottomIngredientImage;  // 对应 ItemSlot(0)
     public Image BottomBunImage;         // 面包底部
     private List<GameObject> spawnedSauces = new List<GameObject>(); // 存放已生成的酱料对象
-
+    private bool isSaucePlaying = false; // 防止重复调用
     public ItemSlot[] itemSlots; // 0:底部, 1:中部, 2:顶部, 3:基底格
 
     private List<IngredientData> ingredientStack = new List<IngredientData>(); // 存放当前食材
+    public List<Button> buttonList;
+
+    private void Start()
+    {
+        // 确保所有按钮都已正确设置
+        foreach (Button btn in buttonList)
+        {
+            if (btn == null)
+            {
+                Debug.LogWarning("UI 按钮列表中有未赋值的按钮，请检查 Inspector 设置！");
+            }
+        }
+    }
 
     private void Awake()
     {
+        // 获取所有 Button 组件（可根据需要筛选特定按钮）
+        buttonList.AddRange(GetComponentsInChildren<Button>());
+
         if (Instance == null)
         {
             Instance = this;
@@ -43,16 +59,7 @@ public class CookingMenuUI : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void OpenUI()
-    {
-        gameObject.SetActive(true);
-        ClearAllIngredientData(); // **清除所有存储的食材数据**
-        UpdateStackPanel();
-        foreach (var slot in itemSlots)
-        {
-            slot.ClearSlot(); // 重新打开时确保 slot 为空
-        }
-    }
+  
 
     private void ClearAllIngredientData()
     {
@@ -161,6 +168,7 @@ public class CookingMenuUI : MonoBehaviour
         }
     }
 
+
     public void SelectSauce(IngredientData sauceData)
     {
         if (sauceData == null || sauceData.saucePrefab == null)
@@ -169,34 +177,14 @@ public class CookingMenuUI : MonoBehaviour
             return;
         }
 
-        Debug.Log($"🎉 选择了酱料: {sauceData.ingredientName}");
-
-        // 先清除旧的酱料
-        ClearSauce();
-
-        // 生成新的酱料
-        GameObject newSauce = Instantiate(sauceData.saucePrefab, stackPanel);
-        newSauce.transform.SetSiblingIndex(GetSauceInsertIndex());
-
-        // **设置酱料 Y 轴偏移**
-        RectTransform sauceRect = newSauce.GetComponent<RectTransform>();
-        if (sauceRect != null)
+        if (isSaucePlaying)
         {
-            float yOffset = GetSauceYOffset(); // 计算偏移量
-            Vector3 newPosition = sauceRect.anchoredPosition;
-            newPosition.y = yOffset; // 直接设置 Y 轴
-            sauceRect.anchoredPosition = newPosition;
+            Debug.Log("⏳ 酱料动画正在播放，等待完成...");
+            return; // 防止多次点击时重复触发
         }
 
-        // **播放动画**
-        Animator ketchup = newSauce.GetComponent<Animator>();
-        if (ketchup != null)
-        {
-            ketchup.CrossFade("ketchup", 0.1f);
-            StartCoroutine(StopAnimationAfterPlay(ketchup, "ketchup"));
-        }
-
-        spawnedSauces.Add(newSauce);
+        isSaucePlaying = true; // 标记正在播放动画
+        StartCoroutine(HandleSauceAnimation(sauceData));
     }
     private IEnumerator StopAnimationAfterPlay(Animator animator, string animationName)
     {
@@ -237,11 +225,15 @@ public class CookingMenuUI : MonoBehaviour
     }
     private float GetSauceYOffset()
     {
-        int ingredientCount = ingredientStack.Count;
+        if (ingredientStack.Count == 0)
+            return BottomBunImage.rectTransform.anchoredPosition.y; // 没有食材时，酱料放在底部
 
+<<<<<<< HEAD
 <<<<<<< Updated upstream
         switch (ingredientCount)
 =======
+=======
+>>>>>>> main
         // 计算当前最上层食材的 Y 轴位置
         Image topImage = ingredientStack.Count == 1 ? BottomIngredientImage :
                          (ingredientStack.Count == 2 ? MiddleIngredientImage : TopIngredientImage);
@@ -252,11 +244,20 @@ public class CookingMenuUI : MonoBehaviour
         return topY + sauceOffset;
     }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
     private IEnumerator HandleSauceAnimation(IngredientData sauceData)
     {
         if (ingredientStack.Count == 0)
             yield break;
 
+<<<<<<< HEAD
+=======
+        SetButtonsInteractable(buttonList, false);
+
+>>>>>>> main
         Image movingImage = ingredientStack.Count == 1 ? MiddleIngredientImage :
                             (ingredientStack.Count == 2 ? TopIngredientImage : TopBunImage);
 
@@ -267,11 +268,16 @@ public class CookingMenuUI : MonoBehaviour
         Vector3 rightPosition = upPosition + new Vector3(200, 0, 0);
         Quaternion tiltRotation = Quaternion.Euler(0, 0, -15);
 
+<<<<<<< HEAD
         float moveDuration = 1f;
+=======
+        float moveDuration = 0.8f;
+>>>>>>> main
 
         yield return StartCoroutine(MoveAndRotateUIElement(movingImage.rectTransform, upPosition, tiltRotation, moveDuration));
         yield return StartCoroutine(MoveAndRotateUIElement(movingImage.rectTransform, rightPosition, tiltRotation, moveDuration));
 
+<<<<<<< HEAD
         ClearSauce();
         GameObject newSauce = Instantiate(sauceData.saucePrefab, stackPanel);
         newSauce.transform.SetSiblingIndex(GetSauceInsertIndex());
@@ -284,13 +290,191 @@ public class CookingMenuUI : MonoBehaviour
         Animator sauceAnimator = newSauce.GetComponent<Animator>();
         if (sauceAnimator != null)
 >>>>>>> Stashed changes
+=======
+        // **生成酱料瓶**
+        GameObject sauceBottleObj = new GameObject("SauceBottle");
+        sauceBottleObj.transform.SetParent(stackPanel, false);
+
+        Image sauceBottleImage = sauceBottleObj.AddComponent<Image>();
+        sauceBottleImage.sprite = sauceData.sauceBottleImage; // 设置图片
+        sauceBottleImage.SetNativeSize(); // 让 UI 适应图片大小
+
+        // 为图片添加 CanvasGroup 来控制透明度
+        CanvasGroup canvasGroup = sauceBottleObj.AddComponent<CanvasGroup>();
+        canvasGroup.alpha = 0; // 初始时透明
+
+        RectTransform bottleRect = sauceBottleObj.GetComponent<RectTransform>();
+        bottleRect.rotation = Quaternion.Euler(0, 0, 90); // 让瓶子倾斜
+
+        // 根据 ingredientStack 的数量调整 Y 轴位置
+        float offsetY = 0f; // 初始的 Y 偏移量
+        float fixedX = 140f; // X 轴位置可以设定为一个常量，确保在同一位置
+        // 根据不同的食材层数计算酱料瓶的 Y 偏移
+        if (ingredientStack.Count == 0)
+>>>>>>> main
         {
-            case 0: return -30f;   // 没有食材，酱料稍微往下
-            case 1: return -10f;  // 1 个食材，稍微上移
-            case 2: return 10f;  // 2 个食材，接近顶部
-            case 3: return 30f;  // 3 个食材，酱料放在最高层
-            default: return 10f;  // 兜底情况
+            offsetY = 0f; // 还没有食材时，酱料瓶放在底部
         }
+        else
+        {
+            // 根据食材层数设置酱料瓶的位置
+            float topY = 0f;
+
+            // 根据食材栈层数决定酱料瓶的 Y 轴偏移
+            switch (ingredientStack.Count)
+            {
+                case 1:
+                    topY = BottomIngredientImage.rectTransform.anchoredPosition.y;
+                    offsetY = 210f; // 第一层食材上方
+                    break;
+                case 2:
+                    topY = MiddleIngredientImage.rectTransform.anchoredPosition.y;
+                    offsetY = 230f; // 第二层食材上方
+                    break;
+                case 3:
+                    topY = TopIngredientImage.rectTransform.anchoredPosition.y;
+                    offsetY = 250; // 第三层食材上方
+                    break;
+                default:
+                    topY = TopIngredientImage.rectTransform.anchoredPosition.y;
+                    offsetY = 260; // 更多层数时的偏移
+                    break;
+            }
+        }
+        // 更新酱料瓶的 Y 轴位置
+        bottleRect.anchoredPosition = new Vector2(fixedX, offsetY);        // **让酱料瓶慢慢显示（淡入）**
+        yield return StartCoroutine(FadeInCanvasGroup(canvasGroup, 0.8f)); // 酱料瓶逐渐显示時間
+
+        // **生成酱料**
+        ClearSauce();
+        GameObject newSauce = Instantiate(sauceData.saucePrefab, stackPanel);
+        newSauce.transform.SetSiblingIndex(GetSauceInsertIndex());
+        spawnedSauces.Add(newSauce);
+
+        RectTransform sauceRect = newSauce.GetComponent<RectTransform>();
+        sauceRect.anchoredPosition = new Vector2(sauceRect.anchoredPosition.x, GetSauceYOffset());
+
+        Animator sauceAnimator = newSauce.GetComponent<Animator>();
+        if (sauceAnimator != null)
+        {
+            sauceAnimator.CrossFade("ketchup", 0.1f);
+            yield return new WaitForSeconds(sauceAnimator.GetCurrentAnimatorStateInfo(0).length);
+        }
+       
+        yield return StartCoroutine(MoveAndRotateUIElement(movingImage.rectTransform, upPosition, originalRotation, moveDuration));
+        StartCoroutine(FadeOutAndDestroy(sauceBottleImage.gameObject, 0.8f)); // 让酱料瓶慢慢消失時間
+        yield return StartCoroutine(MoveAndRotateUIElement(movingImage.rectTransform, originalPosition, originalRotation, moveDuration));
+        // **动画结束，启用按钮**
+        SetButtonsInteractable(buttonList, true);
+        isSaucePlaying = false;
+    }
+    private void SetButtonsInteractable(List<Button> buttons, bool interactable)
+    {
+        foreach (Button button in buttons)
+        {
+            if (button != null)
+            {
+                button.interactable = interactable;
+            }
+        }
+    }
+
+    private void DisableButtons()
+    {
+        foreach (Button btn in buttonList)
+        {
+            if (btn != null)
+            {
+                btn.interactable = false;
+            }
+        }
+    }
+
+    private void EnableButtons()
+    {
+        foreach (Button btn in buttonList)
+        {
+            if (btn != null)
+            {
+                btn.interactable = true;
+            }
+        }
+    }
+
+    private IEnumerator RotateOverTime(RectTransform rectTransform, Quaternion targetRotation, float duration)
+    {
+        Quaternion startRotation = rectTransform.rotation;
+        float elapsedTime = 0;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float progress = Mathf.Clamp01(elapsedTime / duration);
+            rectTransform.rotation = Quaternion.Lerp(startRotation, targetRotation, progress);
+            yield return null;
+        }
+
+        rectTransform.rotation = targetRotation;
+    }
+
+    private IEnumerator FadeOutAndDestroy(GameObject obj, float duration)
+    {
+        CanvasGroup canvasGroup = obj.GetComponent<CanvasGroup>();
+        if (canvasGroup == null)
+        {
+            Destroy(obj);
+            yield break;
+        }
+
+        float elapsedTime = 0;
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float alpha = Mathf.Lerp(1, 0, elapsedTime / duration);
+            canvasGroup.alpha = alpha;
+            yield return null;
+        }
+
+        Destroy(obj);
+    }
+    private IEnumerator FadeInCanvasGroup(CanvasGroup canvasGroup, float duration)
+    {
+        float startAlpha = canvasGroup.alpha;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float alpha = Mathf.Lerp(startAlpha, 1, elapsedTime / duration);
+            canvasGroup.alpha = alpha;
+            yield return null;
+        }
+
+        canvasGroup.alpha = 1; // 确保完全显示
+    }
+    private IEnumerator MoveAndRotateUIElement(RectTransform rectTransform, Vector3 targetPosition, Quaternion targetRotation, float duration)
+    {
+        Vector3 startPosition = rectTransform.anchoredPosition;
+        Quaternion startRotation = rectTransform.rotation;
+        float elapsedTime = 0;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float progress = Mathf.Clamp01(elapsedTime / duration);
+
+            // 插值移动
+            rectTransform.anchoredPosition = Vector3.Lerp(startPosition, targetPosition, progress);
+
+            // 插值旋转
+            rectTransform.rotation = Quaternion.Lerp(startRotation, targetRotation, progress);
+
+            yield return null;
+        }
+
+        // 确保最终位置和角度正确
+        rectTransform.anchoredPosition = targetPosition;
+        rectTransform.rotation = targetRotation;
     }
 
 }

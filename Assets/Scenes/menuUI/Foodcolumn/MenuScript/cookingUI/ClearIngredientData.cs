@@ -6,6 +6,7 @@ public class ClearIngredientData : MonoBehaviour
 {
     public ItemSlot[] itemSlots; // CookingUI 里的所有 ItemSlot
     public Image BottomBunImage, TopIngredientImage, MiddleIngredientImage, BottomIngredientImage, TopBunImage; // StackPanel 内的 UI 组件
+    public Transform stackPanel; // 用于引用 StackPanel Transform
 
     public void OpenUI()
     {
@@ -19,7 +20,6 @@ public class ClearIngredientData : MonoBehaviour
         ClearStackPanelImages();
     }
 
-
     public void CloseUI()
     {
         // 清除所有 ItemSlot 的 IngredientData
@@ -30,6 +30,9 @@ public class ClearIngredientData : MonoBehaviour
 
         // 清空 StackPanel 中的 Image 组件
         ClearStackPanelImages();
+
+        // 清除 StackPanel 中的 Sauces(Clone) 游戏对象
+        ClearSaucesFromStackPanel();
 
         gameObject.SetActive(false);
 
@@ -58,5 +61,18 @@ public class ClearIngredientData : MonoBehaviour
         MiddleIngredientImage.enabled = false;
         BottomIngredientImage.enabled = false;
         TopBunImage.enabled = false;
+    }
+
+    private void ClearSaucesFromStackPanel()
+    {
+        // 遍历 StackPanel 下的所有子对象
+        foreach (Transform child in stackPanel)
+        {
+            // 如果子对象的名字包含 "Sauces(Clone)"，则销毁该对象
+            if (child.gameObject.name.Contains("Sauces(Clone)"))
+            {
+                Destroy(child.gameObject); // 销毁该子对象
+            }
+        }
     }
 }

@@ -12,5 +12,6 @@ public class IngredientData : ScriptableObject
     public Sprite bunBottomImage;   // 面包下层
 
     public bool isSauce;            //  是否是酱料
+    public Sprite sauceBottleImage; // 酱料瓶的图片
     public GameObject saucePrefab;  //  酱料的预制体（带动画）
 }
