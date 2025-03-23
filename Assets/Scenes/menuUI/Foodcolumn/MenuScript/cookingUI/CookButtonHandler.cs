@@ -8,9 +8,21 @@ public class CookButtonHandler : MonoBehaviour
     public CookingSystem cookingSystem;
     public GameObject renameUI;
     public RenameUIHandler renameUIHandler;
+    public ClearIngredientData clearIngredientData;
     public List<ItemSlot> itemSlots;
     private List<IngredientData> selectedIngredients = new List<IngredientData>();
+    public List<GameObject> uiToCloseOnOldRecipe; // 在 Inspector 裡拖 UI 進來
 
+    private void CloseAllUIFromList()
+    {
+        foreach (GameObject ui in uiToCloseOnOldRecipe)
+        {
+            if (ui != null)
+            {
+                ui.SetActive(false);
+            }
+        }
+    }
     public void OnCookButtonClick()
     {
         selectedIngredients.Clear();
@@ -35,7 +47,9 @@ public class CookButtonHandler : MonoBehaviour
         else
         {
             Debug.Log("舊料理，不顯示 UI");
-            // 這裡可以加關閉多個 UI 的邏輯
+            CloseAllUIFromList();
+            clearIngredientData.CloseUI();
+            InventoryManager.Instance.ResetInventory();
         }
     }
 }
