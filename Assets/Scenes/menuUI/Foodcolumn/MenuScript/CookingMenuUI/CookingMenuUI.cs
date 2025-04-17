@@ -237,8 +237,6 @@ public class CookingMenuUI : MonoBehaviour
 
         return topY + sauceOffset;
     }
-
-
     private IEnumerator HandleSauceAnimation(IngredientData sauceData)
     {
         if (ingredientStack.Count == 0)
