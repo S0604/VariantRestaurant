@@ -228,12 +228,6 @@ public class CookingMenuUI : MonoBehaviour
         if (ingredientStack.Count == 0)
             return BottomBunImage.rectTransform.anchoredPosition.y; // 没有食材时，酱料放在底部
 
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-        switch (ingredientCount)
-=======
-=======
->>>>>>> main
         // 计算当前最上层食材的 Y 轴位置
         Image topImage = ingredientStack.Count == 1 ? BottomIngredientImage :
                          (ingredientStack.Count == 2 ? MiddleIngredientImage : TopIngredientImage);
@@ -243,21 +237,13 @@ public class CookingMenuUI : MonoBehaviour
 
         return topY + sauceOffset;
     }
-
-<<<<<<< HEAD
-=======
-
->>>>>>> main
     private IEnumerator HandleSauceAnimation(IngredientData sauceData)
     {
         if (ingredientStack.Count == 0)
             yield break;
 
-<<<<<<< HEAD
-=======
         SetButtonsInteractable(buttonList, false);
 
->>>>>>> main
         Image movingImage = ingredientStack.Count == 1 ? MiddleIngredientImage :
                             (ingredientStack.Count == 2 ? TopIngredientImage : TopBunImage);
 
@@ -268,33 +254,11 @@ public class CookingMenuUI : MonoBehaviour
         Vector3 rightPosition = upPosition + new Vector3(200, 0, 0);
         Quaternion tiltRotation = Quaternion.Euler(0, 0, -15);
 
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-        float moveDuration = 1f;
-=======
         float moveDuration = 0.8f;
->>>>>>> main
-=======
-        float moveDuration = 1f;
->>>>>>> Stashed changes
 
         yield return StartCoroutine(MoveAndRotateUIElement(movingImage.rectTransform, upPosition, tiltRotation, moveDuration));
         yield return StartCoroutine(MoveAndRotateUIElement(movingImage.rectTransform, rightPosition, tiltRotation, moveDuration));
 
-<<<<<<< HEAD
-        ClearSauce();
-        GameObject newSauce = Instantiate(sauceData.saucePrefab, stackPanel);
-        newSauce.transform.SetSiblingIndex(GetSauceInsertIndex());
-        spawnedSauces.Add(newSauce);
-
-        // **修正 Y 轴**
-        RectTransform sauceRect = newSauce.GetComponent<RectTransform>();
-        sauceRect.anchoredPosition = new Vector2(sauceRect.anchoredPosition.x, GetSauceYOffset());
-
-        Animator sauceAnimator = newSauce.GetComponent<Animator>();
-        if (sauceAnimator != null)
->>>>>>> Stashed changes
-=======
         // **生成酱料瓶**
         GameObject sauceBottleObj = new GameObject("SauceBottle");
         sauceBottleObj.transform.SetParent(stackPanel, false);
@@ -315,7 +279,6 @@ public class CookingMenuUI : MonoBehaviour
         float fixedX = 140f; // X 轴位置可以设定为一个常量，确保在同一位置
         // 根据不同的食材层数计算酱料瓶的 Y 偏移
         if (ingredientStack.Count == 0)
->>>>>>> main
         {
             offsetY = 0f; // 还没有食材时，酱料瓶放在底部
         }
