@@ -237,14 +237,12 @@ public class CookingMenuUI : MonoBehaviour
 
         return topY + sauceOffset;
     }
+
     private IEnumerator HandleSauceAnimation(IngredientData sauceData)
     {
         if (ingredientStack.Count == 0)
-            yield break;
-
-        SetButtonsInteractable(buttonList, false);
-
-        Image movingImage = ingredientStack.Count == 1 ? MiddleIngredientImage :
+         yield break;
+         Image movingImage = ingredientStack.Count == 1 ? MiddleIngredientImage :
                             (ingredientStack.Count == 2 ? TopIngredientImage : TopBunImage);
 
         Vector3 originalPosition = movingImage.rectTransform.anchoredPosition;
@@ -253,12 +251,9 @@ public class CookingMenuUI : MonoBehaviour
         Vector3 upPosition = originalPosition + new Vector3(0, 50, 0);
         Vector3 rightPosition = upPosition + new Vector3(200, 0, 0);
         Quaternion tiltRotation = Quaternion.Euler(0, 0, -15);
-
-        float moveDuration = 0.8f;
-
+        float moveDuration = 1f;
         yield return StartCoroutine(MoveAndRotateUIElement(movingImage.rectTransform, upPosition, tiltRotation, moveDuration));
         yield return StartCoroutine(MoveAndRotateUIElement(movingImage.rectTransform, rightPosition, tiltRotation, moveDuration));
-
         // **生成酱料瓶**
         GameObject sauceBottleObj = new GameObject("SauceBottle");
         sauceBottleObj.transform.SetParent(stackPanel, false);
