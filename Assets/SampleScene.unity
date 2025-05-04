@@ -4483,40 +4483,37 @@ MonoBehaviour:
   m_GameObject: {fileID: 1005209214}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60c4fd16598322847837bc65974ffc68, type: 3}
+  m_Script: {fileID: 11500000, guid: b83311c908fe66b40b9faa0a87b04126, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cookingUI: {fileID: 307486566}
-  timerBar: {fileID: 682191531}
-  backgroundImage: {fileID: 1041638306}
-  defaultBackground: {fileID: 21300000, guid: 98e3b9ea8df9a274a8fa0a8897f5302a, type: 3}
-  player: {fileID: 1683407087}
-  timeLimit: 10
-  endDelay: 0.5
-  upIcon: {fileID: 21300000, guid: ab2d3e4a08d3f6c409bbd2b018dde3eb, type: 3}
-  downIcon: {fileID: 21300000, guid: 6a35063786a1b0a408a9ef69e19897e8, type: 3}
-  leftIcon: {fileID: 21300000, guid: afcc76688877f1442bb40e133c54fae8, type: 3}
-  rightIcon: {fileID: 21300000, guid: a7375750cbbc90c438dddbb41659a735, type: 3}
-  upCorrectIcon: {fileID: 21300000, guid: 5b0984b771870e04c98ccdd77cef553f, type: 3}
-  downCorrectIcon: {fileID: 21300000, guid: 343023e6d1faa7d4288bc770c0aad785, type: 3}
-  leftCorrectIcon: {fileID: 21300000, guid: 2ffba4321f251344c96a67416bccd81b, type: 3}
-  rightCorrectIcon: {fileID: 21300000, guid: 4b2aac421aa9be54995bab1031ab66b0, type: 3}
-  upWrongIcon: {fileID: 21300000, guid: bd89631a42ffea042879840853d18371, type: 3}
-  downWrongIcon: {fileID: 21300000, guid: 43645ad715845744bae1e6147247c887, type: 3}
-  leftWrongIcon: {fileID: 21300000, guid: f67fee2a156d1da45a53ee7c2010c9c0, type: 3}
-  rightWrongIcon: {fileID: 21300000, guid: b651e0061415c224ea3366ea4a33b2e2, type: 3}
-  wrongIconResetDelay: 0.2
+  cookingUI: {fileID: 0}
+  timerBar: {fileID: 0}
+  backgroundImage: {fileID: 0}
+  defaultBackground: {fileID: 0}
+  player: {fileID: 0}
+  timeLimit: 5
+  endDelay: 1.5
+  upIcon: {fileID: 0}
+  downIcon: {fileID: 0}
+  leftIcon: {fileID: 0}
+  rightIcon: {fileID: 0}
+  upCorrectIcon: {fileID: 0}
+  downCorrectIcon: {fileID: 0}
+  leftCorrectIcon: {fileID: 0}
+  rightCorrectIcon: {fileID: 0}
+  upWrongIcon: {fileID: 0}
+  downWrongIcon: {fileID: 0}
+  leftWrongIcon: {fileID: 0}
+  rightWrongIcon: {fileID: 0}
+  wrongIconResetDelay: 0.5
   randomEvents: []
-  sequenceContainer: {fileID: 790980341}
-  sequenceIconPrefab: {fileID: 156826865}
-  stackContainer: {fileID: 1148007681}
-  stackItemPrefab: {fileID: 548333175}
-  stackItemSpacing: 27
-  endAnimationContainer: {fileID: 704424664}
-  endAnimations:
-  - {fileID: 492737275}
-  - {fileID: 1592481164}
-  - {fileID: 210242807}
+  sequenceContainer: {fileID: 0}
+  sequenceIconPrefab: {fileID: 0}
+  stackContainer: {fileID: 0}
+  stackItemPrefab: {fileID: 0}
+  stackItemSpacing: 40
+  endAnimationContainer: {fileID: 0}
+  endAnimations: []
 --- !u!4 &1005209216
 Transform:
   m_ObjectHideFlags: 0
