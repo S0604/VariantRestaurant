@@ -113,7 +113,7 @@ public class CookingMinigame : MonoBehaviour
 
         ShowSequenceIcons();
 
-        player.isCooking = true;
+        //player.isCooking = true;
     }
 
     void Update()
@@ -346,7 +346,7 @@ public class CookingMinigame : MonoBehaviour
         isPlaying = true;
 
         // 鎖定玩家移動
-        player.isCooking = true;
+        //player.isCooking = true;
 
         int rank = 0;
         if (success)
@@ -375,7 +375,7 @@ public class CookingMinigame : MonoBehaviour
 
         // 關閉 UI、小遊戲結束
         cookingUI.SetActive(false);
-        player.isCooking = false; // 解鎖玩家移動
+        //player.isCooking = false; // 解鎖玩家移動
         onCompleteCallback?.Invoke(success, rank);
     }
 
