@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Scenes/Script/Player/Light.cs.meta
+guid: 6ef7fac110420534ebec9bc0331f9cbe
+========
+guid: 60c4fd16598322847837bc65974ffc68
+>>>>>>>> UI20250422_1:Assets/Scenes/Script/Player/CookingMinigame.cs.meta
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
