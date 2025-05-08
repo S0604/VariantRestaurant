@@ -10,6 +10,10 @@ public class OrderDisplayManager : MonoBehaviour
     public GameObject oneSlotOrderPrefab;
     public GameObject twoSlotOrderPrefab;
 
+    [Header("數量燈圖示（0~3）")]
+    public Sprite[] quantityLightSprites;
+
+    private int MaxLights => quantityLightSprites.Length - 1;
     private Dictionary<Customer, GameObject> activeDisplays = new Dictionary<Customer, GameObject>();
 
     void Update()
@@ -22,19 +26,15 @@ public class OrderDisplayManager : MonoBehaviour
         var queue = CustomerQueueManager.Instance.GetCurrentQueue();
         var firstFour = queue.Take(4).ToList();
 
-        // 移除不在前四名的 UI
         var toRemove = activeDisplays.Keys.Except(firstFour).ToList();
         foreach (var customer in toRemove)
         {
             if (activeDisplays[customer] != null)
                 Destroy(activeDisplays[customer]);
             activeDisplays.Remove(customer);
-
-            // 停止耐心顯示
             customer.GetComponent<CustomerPatience>()?.StopPatience();
         }
 
-        // 建立 UI 並更新
         for (int i = 0; i < firstFour.Count; i++)
         {
             var customer = firstFour[i];
@@ -61,7 +61,6 @@ public class OrderDisplayManager : MonoBehaviour
                 activeDisplays.Add(customer, display);
             }
 
-            // ✅ 耐心控制（只有第一位顧客才開啟）
             var patience = customer.GetComponent<CustomerPatience>();
             if (i == 0)
                 patience?.StartPatience();
@@ -74,19 +73,41 @@ public class OrderDisplayManager : MonoBehaviour
 
     void UpdateOrderDisplayImages(GameObject displayObj, List<MenuItem> items)
     {
-        Transform slot0 = displayObj.transform.Find("Panel/圖樣");
-        Transform slot1 = displayObj.transform.Find("Panel/圖樣(1)");
+        var groupedByTag = items
+            .GroupBy(i => i.itemTag)
+            .Select(g => new {
+                tag = g.Key,
+                sprite = g.First().itemImage,
+                count = g.Count()
+            })
+            .ToList();
 
-        if (slot0 != null && items.Count > 0)
+        Transform[] slots =
         {
-            Image img0 = slot0.GetComponent<Image>();
-            if (img0 != null) img0.sprite = items[0].itemImage;
-        }
+            displayObj.transform.Find("Panel/圖樣"),
+            displayObj.transform.Find("Panel/圖樣(1)")
+        };
 
-        if (slot1 != null && items.Count > 1)
+        for (int i = 0; i < slots.Length; i++)
         {
-            Image img1 = slot1.GetComponent<Image>();
-            if (img1 != null) img1.sprite = items[1].itemImage;
+            if (i >= groupedByTag.Count) break;
+
+            var slot = slots[i];
+            var group = groupedByTag[i];
+
+            if (slot != null)
+            {
+                var img = slot.GetComponent<Image>();
+                if (img != null)
+                    img.sprite = group.sprite;
+
+                var lightImage = slot.Find("數量燈")?.GetComponent<Image>();
+                if (lightImage != null)
+                {
+                    int count = Mathf.Clamp(group.count, 0, MaxLights);
+                    lightImage.sprite = quantityLightSprites[count];
+                }
+            }
         }
     }
 

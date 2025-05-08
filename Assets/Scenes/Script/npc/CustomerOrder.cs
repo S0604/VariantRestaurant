@@ -18,16 +18,11 @@ public class CustomerOrder : MonoBehaviour
         }
 
         int count = Random.Range(minItems, maxItems + 1);
-        List<int> usedIndices = new List<int>();
 
-        while (selectedItems.Count < count)
+        for (int i = 0; i < count; i++)
         {
             int index = Random.Range(0, database.allMenuItems.Length);
-            if (!usedIndices.Contains(index))
-            {
-                selectedItems.Add(database.allMenuItems[index]);
-                usedIndices.Add(index);
-            }
+            selectedItems.Add(database.allMenuItems[index]); // ✅ 允許重複
         }
 
         IsOrderReady = true;

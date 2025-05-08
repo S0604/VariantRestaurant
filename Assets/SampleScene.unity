@@ -8258,6 +8258,11 @@ MonoBehaviour:
   orderPanelContainer: {fileID: 1134422353}
   oneSlotOrderPrefab: {fileID: 9052770318621430426, guid: 83cd6ca65e9f7254983d7592a40654ab, type: 3}
   twoSlotOrderPrefab: {fileID: 752871403906336043, guid: 2dc71311cc2c38c499d5f7842dde7366, type: 3}
+  quantityLightSprites:
+  - {fileID: 21300000, guid: e3c86faf251435342bf688ce2b68528d, type: 3}
+  - {fileID: 21300000, guid: 230ce25f46f5ae847a60ef8729b9dd92, type: 3}
+  - {fileID: 21300000, guid: 09ebdbd039f59744eb0d4c912306170b, type: 3}
+  - {fileID: 21300000, guid: e8e3118e4bd72774685a8eb797d4bcdc, type: 3}
 --- !u!114 &1134422355
 MonoBehaviour:
   m_ObjectHideFlags: 0
