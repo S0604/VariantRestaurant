@@ -4,25 +4,25 @@ using UnityEngine.EventSystems;
 
 public class TextColor : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    public TMP_Text buttonText; // 按钮内的文本
+    public TMP_Text buttonText;                // 按钮内的文本
+    public Color hoverColor = Color.black;     // 滑鼠懸停時的顏色，可在 Inspector 自訂
 
-    private Color originalColor; // 记录原始颜色
+    private Color originalColor;               // 原始顏色
 
     private void Start()
     {
-        // 确保按钮有 TextMeshPro 组件
         if (buttonText == null)
         {
             buttonText = GetComponentInChildren<TMP_Text>();
         }
-        originalColor = buttonText.color; // 记录原来的颜色
+        originalColor = buttonText.color;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (buttonText != null)
         {
-            buttonText.color = Color.black; // 鼠标悬停时变黄
+            buttonText.color = hoverColor;
         }
     }
 
@@ -30,7 +30,7 @@ public class TextColor : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     {
         if (buttonText != null)
         {
-            buttonText.color = originalColor; // 鼠标移开时恢复原来的颜色
+            buttonText.color = originalColor;
         }
     }
 }

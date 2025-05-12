@@ -31,8 +31,13 @@ public class OrderDisplayManager : MonoBehaviour
         {
             if (activeDisplays[customer] != null)
                 Destroy(activeDisplays[customer]);
+
             activeDisplays.Remove(customer);
-            customer.GetComponent<CustomerPatience>()?.StopPatience();
+
+            if (customer != null && !customer.Equals(null)) // 🔐 防止 MissingReferenceException
+            {
+                customer.GetComponent<CustomerPatience>()?.StopPatience();
+            }
         }
 
         for (int i = 0; i < firstFour.Count; i++)
