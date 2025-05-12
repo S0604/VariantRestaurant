@@ -194,6 +194,7 @@ MonoBehaviour:
   agent: {fileID: 1972943304902563031}
   animator: {fileID: 1972943304902563049}
   menuDatabase: {fileID: 11400000, guid: 963e4d495a2df49449c6a1b5ee99799c, type: 2}
+  targetCamera: {fileID: 0}
 --- !u!114 &7325009104746697601
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -206,7 +207,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c0344bfb2fef6e45bb95d9b3a8be2f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  totalPatienceTime: 6
+  totalPatienceTime: 5
   patienceUIPrefab: {fileID: 8460288403528722513, guid: 0589a37977e98b24bb08346bcb0a986f, type: 3}
   uiAnchor: {fileID: 7873407814884844372}
 --- !u!1 &8588640244262489049

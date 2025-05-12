@@ -23,21 +23,34 @@ public class OrderDisplayManager : MonoBehaviour
 
     void UpdateOrderDisplays()
     {
+        // 先移除已經被 Destroy 的顧客（Unity 中會 == null）
+        var invalidCustomers = activeDisplays.Keys.Where(c => c == null).ToList();
+        foreach (var c in invalidCustomers)
+            activeDisplays.Remove(c);
+
+        // 取得排隊中前四位
         var queue = CustomerQueueManager.Instance.GetCurrentQueue();
         var firstFour = queue.Take(4).ToList();
 
+        // 移除已經不在前四位的顧客（但還活著）
         var toRemove = activeDisplays.Keys.Except(firstFour).ToList();
         foreach (var customer in toRemove)
         {
             if (activeDisplays[customer] != null)
                 Destroy(activeDisplays[customer]);
+
             activeDisplays.Remove(customer);
-            customer.GetComponent<CustomerPatience>()?.StopPatience();
+
+            if (customer != null)
+                customer.GetComponent<CustomerPatience>()?.StopPatience();
         }
 
+        // 前四位更新 UI
         for (int i = 0; i < firstFour.Count; i++)
         {
             var customer = firstFour[i];
+            if (customer == null) continue;
+
             var order = customer.GetComponent<CustomerOrder>();
             if (order == null || !order.IsOrderReady) continue;
 

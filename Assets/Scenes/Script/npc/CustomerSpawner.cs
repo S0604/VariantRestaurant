@@ -52,7 +52,7 @@ public class CustomerSpawner : MonoBehaviour
         Customer customerScript = customer.GetComponent<Customer>();
         if (customerScript != null)
         {
-            customerScript.spawnPoint = chosenSpawnPoint;
+            customerScript.spawnPoint = chosenSpawnPoint;   
         }
     }
 }
