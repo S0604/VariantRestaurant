@@ -1,46 +1,81 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class CustomerQueueManager : MonoBehaviour
 {
-    public static CustomerQueueManager Instance { get; private set; }
+    public static CustomerQueueManager Instance;
 
-    public List<Transform> queuePositions;
+    public List<Transform> queuePathPoints;
+    public float queueSpacing = 1.5f;
+    public int maxQueueSize = 5;
 
-    // ✅ 關鍵宣告：確保這行存在
-    private List<Customer> customers = new List<Customer>();
+    private List<Customer> customersInQueue = new List<Customer>();
 
     private void Awake()
     {
-        Instance = this;
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
     }
 
     public void JoinQueue(Customer customer)
     {
-        customers.Add(customer);
+        if (customersInQueue.Count >= maxQueueSize)
+        {
+            customer.LeaveAndDespawn();
+            return;
+        }
+
+        customersInQueue.Add(customer);
         UpdateQueuePositions();
+
+        // ❌ 此處不再提早生成訂單
     }
 
     public void LeaveQueue(Customer customer)
     {
-        customers.Remove(customer);
-        UpdateQueuePositions();
+        if (customersInQueue.Contains(customer))
+        {
+            customersInQueue.Remove(customer);
+            UpdateQueuePositions();
+        }
     }
 
     private void UpdateQueuePositions()
     {
-        for (int i = 0; i < customers.Count; i++)
+        for (int i = 0; i < customersInQueue.Count; i++)
         {
-            if (i < queuePositions.Count)
-            {
-                Vector3 pos = queuePositions[i].position;
-                Vector3 dir = queuePositions[i].forward;
-                customers[i].SetQueuePosition(pos, dir);
-            }
-            else
-            {
-                Debug.LogWarning($"【QueueManager】沒有足夠的排隊位置給第 {i} 位顧客");
-            }
+            GetQueuePositionAndDirection(i, out Vector3 pos, out Vector3 faceDir);
+            customersInQueue[i].SetQueuePosition(pos, faceDir);
         }
+    }
+
+    private void GetQueuePositionAndDirection(int index, out Vector3 position, out Vector3 faceDirection)
+    {
+        float distance = index * queueSpacing;
+
+        for (int i = 0; i < queuePathPoints.Count - 1; i++)
+        {
+            Vector3 start = queuePathPoints[i].position;
+            Vector3 end = queuePathPoints[i + 1].position;
+            float segmentLength = Vector3.Distance(start, end);
+
+            if (distance <= segmentLength)
+            {
+                Vector3 dir = (start - end).normalized;
+                position = start + (end - start).normalized * distance;
+                faceDirection = dir;
+                return;
+            }
+
+            distance -= segmentLength;
+        }
+
+        position = queuePathPoints[queuePathPoints.Count - 1].position;
+        faceDirection = (queuePathPoints[queuePathPoints.Count - 2].position - queuePathPoints[queuePathPoints.Count - 1].position).normalized;
+    }
+
+    public List<Customer> GetCurrentQueue()
+    {
+        return customersInQueue;
     }
 }
