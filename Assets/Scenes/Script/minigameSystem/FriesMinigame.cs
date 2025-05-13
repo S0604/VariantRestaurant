@@ -3,19 +3,22 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
-public class BurgerMinigame : BaseMinigame
+public class FriesMinigame : BaseMinigame
 {
+    [Header("Fries 圖示設定")]
+
     public Sprite upIcon, downIcon, leftIcon, rightIcon;
     public Sprite upCorrectIcon, downCorrectIcon, leftCorrectIcon, rightCorrectIcon;
     public Sprite upWrongIcon, downWrongIcon, leftWrongIcon, rightWrongIcon;
+
+    public GameObject[] stagePrefabs;
+    public Transform stageContainer;
     public float wrongIconResetDelay = 0.5f;
-    public Transform stackContainer;
-    public GameObject stackItemPrefab;
-    public float stackItemSpacing = 40f;
 
     private List<KeyCode> sequence = new List<KeyCode>();
     private List<Image> sequenceIcons = new List<Image>();
     private List<KeyCode> playerInput = new List<KeyCode>();
+    private GameObject currentStage;
 
     public override void StartMinigame(System.Action<bool, int> callback)
     {
@@ -24,7 +27,7 @@ public class BurgerMinigame : BaseMinigame
         sequence.Clear();
         playerInput.Clear();
 
-        foreach (Transform child in stackContainer)
+        foreach (Transform child in stageContainer)
             Destroy(child.gameObject);
 
         for (int i = 0; i < 5; i++)
@@ -55,20 +58,18 @@ public class BurgerMinigame : BaseMinigame
 
         if (key == sequence[step])
         {
+
             ChangeIconSprite(step, key, true);
             AnimateIcon(step, "Correct");
+            
+            playerInput.Add(key);
+            UpdateStage(step);
 
-            if (playerInput.Count == step)
+            if (playerInput.Count == sequence.Count)
             {
-                AddStackItem(key, step);
-                playerInput.Add(key);
-
-                if (playerInput.Count == sequence.Count)
-                {
-                    float remainPercent = timer / timeLimit;
-                    int rank = remainPercent > 0.6f ? 3 : (remainPercent > 0.3f ? 2 : 1);
-                    StartCoroutine(PlaySuccessAnimation(rank));
-                }
+                float remainPercent = timer / timeLimit;
+                int rank = remainPercent > 0.6f ? 3 : (remainPercent > 0.3f ? 2 : 1);
+                StartCoroutine(PlaySuccessAnimation(rank));
             }
         }
         else
@@ -89,7 +90,7 @@ public class BurgerMinigame : BaseMinigame
 
         if (!correct)
         {
-            Sprite original = GetBurgerKeySprite(sequence[index]);
+            Sprite original = GetFriesKeySprite(sequence[index]);
             StartCoroutine(ResetIconAfterDelay(img, original, wrongIconResetDelay));
         }
     }
@@ -120,7 +121,7 @@ public class BurgerMinigame : BaseMinigame
         {
             GameObject iconObj = Instantiate(sequenceIconPrefab, sequenceContainer);
             Image img = iconObj.GetComponent<Image>();
-            img.sprite = GetBurgerKeySprite(key);
+            img.sprite = GetFriesKeySprite(key);
             sequenceIcons.Add(img);
 
             Animator anim = iconObj.GetComponent<Animator>();
@@ -128,21 +129,18 @@ public class BurgerMinigame : BaseMinigame
         }
     }
 
-    void AddStackItem(KeyCode key, int stepIndex)
+    void UpdateStage(int stepIndex)
     {
-        string folderPath = $"BurgerAssets/Layer{stepIndex}";
-        Sprite[] sprites = Resources.LoadAll<Sprite>(folderPath);
-        if (sprites == null || sprites.Length == 0) return;
+        if (currentStage != null)
+            Destroy(currentStage);
 
-        Sprite selected = sprites[Random.Range(0, sprites.Length)];
-        GameObject item = Instantiate(stackItemPrefab, stackContainer);
-        item.GetComponent<Image>().sprite = selected;
-
-        RectTransform rt = item.GetComponent<RectTransform>();
-        rt.anchoredPosition = new Vector2(0, stepIndex * stackItemSpacing);
+        if (stepIndex < stagePrefabs.Length)
+            currentStage = Instantiate(stagePrefabs[stepIndex], stageContainer);
     }
 
-    Sprite GetBurgerKeySprite(KeyCode key)
+
+    // 取得對應按鍵的預設圖示（非事件用）
+    Sprite GetFriesKeySprite(KeyCode key)
     {
         switch (key)
         {
@@ -154,6 +152,7 @@ public class BurgerMinigame : BaseMinigame
         return null;
     }
 
+    // 若要擴充正確與錯誤圖示用的函式，可參考以下寫法：
     Sprite GetCorrectSprite(KeyCode key)
     {
         switch (key)

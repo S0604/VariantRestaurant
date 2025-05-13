@@ -26,11 +26,13 @@ public abstract class BaseMinigame : MonoBehaviour
     public Transform sequenceContainer;
     public GameObject sequenceIconPrefab;
 
-    [Header("完成動畫設定")]
+    [Header("完成動畫")]
     public Transform endAnimationContainer;
-    public GameObject[] endAnimations; // 成功動畫，index 對應 rank-1
+    public GameObject[] endAnimations;
+
+    [Header("失敗動畫")]
     public Transform failAnimationContainer;
-    public GameObject failAnimationPrefab; // 失敗動畫
+    public GameObject failAnimation;
 
     [Header("指令鍵")]
     public KeyCode[] wasdKeys = new KeyCode[] { KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D };
@@ -38,79 +40,68 @@ public abstract class BaseMinigame : MonoBehaviour
     protected float timer;
     protected System.Action<bool, int> onCompleteCallback;
     protected bool isPlaying = false;
+    private bool hasEnded = false;
 
     public virtual void StartMinigame(System.Action<bool, int> callback)
     {
         timer = timeLimit;
         onCompleteCallback = callback;
-        isPlaying = true;
 
         cookingUI.SetActive(true);
         backgroundImage.sprite = defaultBackground;
-        player.isCooking = true;
 
-        // 從事件資料中隨機挑一個（可選）
         if (randomEvents != null && randomEvents.Count > 0)
             activeEvent = randomEvents[Random.Range(0, randomEvents.Count)];
         else
             activeEvent = null;
+
+        isPlaying = true;
+        hasEnded = false;
     }
 
-    protected void UpdateTimer(System.Action onTimeOut)
+    protected void UpdateTimer()
     {
+        if (!isPlaying) return;
+
         timer -= Time.deltaTime;
         if (timer < 0)
         {
             timer = 0;
-            if (isPlaying)
-            {
-                isPlaying = false;
-                onTimeOut?.Invoke();
-            }
+            if (!hasEnded) StartCoroutine(PlayFailAnimation());
         }
 
         if (timerBar != null)
             timerBar.fillAmount = timer / timeLimit;
     }
 
-    protected IEnumerator PlayEndAnimation(bool success)
+    protected IEnumerator PlaySuccessAnimation(int rank)
     {
         isPlaying = false;
-        int rank = 0;
+        hasEnded = true;
 
-        if (success)
-        {
-            float remainPercent = timer / timeLimit;
-            if (remainPercent > 0.6f) rank = 3;
-            else if (remainPercent > 0.3f) rank = 2;
-            else rank = 1;
+        GameObject anim = null;
+        if (rank > 0 && rank <= endAnimations.Length)
+            anim = Instantiate(endAnimations[rank - 1], endAnimationContainer);
 
-            Debug.Log("成功完成！Rank: {rank}");
+        yield return new WaitForSeconds(endDelay);
 
-            if (rank > 0 && rank <= endAnimations.Length)
-            {
-                GameObject anim = Instantiate(endAnimations[rank - 1], endAnimationContainer);
-                yield return new WaitForSeconds(endDelay);
-                Destroy(anim);
-            }
-        }
-        else
-        {
-            Debug.Log("失敗結束遊戲。");
+        if (anim != null) Destroy(anim);
+        FinishMinigame(true, rank);
+    }
 
-            if (failAnimationPrefab != null && failAnimationContainer != null)
-            {
-                GameObject failAnim = Instantiate(failAnimationPrefab, failAnimationContainer);
-                yield return new WaitForSeconds(endDelay);
-                Destroy(failAnim);
-            }
-            else
-            {
-                yield return new WaitForSeconds(endDelay);
-            }
-        }
+    protected IEnumerator PlayFailAnimation()
+    {
+        isPlaying = false;
+        hasEnded = true;
 
-        FinishMinigame(success, rank);
+        GameObject anim = null;
+        if (failAnimation != null && failAnimationContainer != null)
+            anim = Instantiate(failAnimation, failAnimationContainer);
+
+        yield return new WaitForSeconds(endDelay);
+
+        if (anim != null) Destroy(anim);
+        FinishMinigame(false, 0);
     }
 
     protected void FinishMinigame(bool success, int rank = 0)
@@ -118,5 +109,20 @@ public abstract class BaseMinigame : MonoBehaviour
         cookingUI.SetActive(false);
         player.isCooking = false;
         onCompleteCallback?.Invoke(success, rank);
+    }
+
+    protected Sprite GetKeySprite(KeyCode key)
+    {
+        if (activeEvent != null)
+        {
+            switch (key)
+            {
+                case KeyCode.W: return activeEvent.upIcon;
+                case KeyCode.S: return activeEvent.downIcon;
+                case KeyCode.A: return activeEvent.leftIcon;
+                case KeyCode.D: return activeEvent.rightIcon;
+            }
+        }
+        return null;
     }
 }
