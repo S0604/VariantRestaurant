@@ -27,8 +27,6 @@ public class CustomerQueueManager : MonoBehaviour
 
         customersInQueue.Add(customer);
         UpdateQueuePositions();
-
-        // ❌ 此處不再提早生成訂單
     }
 
     public void LeaveQueue(Customer customer)
@@ -38,6 +36,16 @@ public class CustomerQueueManager : MonoBehaviour
             customersInQueue.Remove(customer);
             UpdateQueuePositions();
         }
+    }
+
+    public bool IsInQueue(Customer customer)
+    {
+        return customersInQueue.Contains(customer);
+    }
+
+    public List<Customer> GetCurrentQueue()
+    {
+        return new List<Customer>(customersInQueue);
     }
 
     private void UpdateQueuePositions()
@@ -72,10 +80,5 @@ public class CustomerQueueManager : MonoBehaviour
 
         position = queuePathPoints[queuePathPoints.Count - 1].position;
         faceDirection = (queuePathPoints[queuePathPoints.Count - 2].position - queuePathPoints[queuePathPoints.Count - 1].position).normalized;
-    }
-
-    public List<Customer> GetCurrentQueue()
-    {
-        return customersInQueue;
     }
 }

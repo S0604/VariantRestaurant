@@ -23,6 +23,7 @@ public class Player : MonoBehaviour
 
         Vector3 direction = new Vector3(inputX, 0, inputY);
 
+
         if (direction.magnitude > 0)
         {
             animator.SetBool("Ismoving", true);
@@ -33,7 +34,6 @@ public class Player : MonoBehaviour
         {
             animator.SetBool("Ismoving", false);
         }
-
         animator.SetFloat("InputX", lastDirection.x);
         animator.SetFloat("InputY", lastDirection.z);
     }

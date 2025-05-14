@@ -2,12 +2,13 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class TextColor : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class TextColor : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
-    public TMP_Text buttonText;                // 按钮内的文本
-    public Color hoverColor = Color.black;     // 滑鼠懸停時的顏色，可在 Inspector 自訂
+    public TMP_Text buttonText;
+    public Color hoverColor = Color.black;
 
-    private Color originalColor;               // 原始顏色
+    private Color originalColor;
+    private bool isHovering = false;
 
     private void Start()
     {
@@ -20,17 +21,36 @@ public class TextColor : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (buttonText != null)
-        {
-            buttonText.color = hoverColor;
-        }
+        isHovering = true;
+        UpdateTextColor();
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        isHovering = false;
+        UpdateTextColor();
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        EventSystem.current.SetSelectedGameObject(null); // 避免卡在 selected
+        UpdateTextColor(); // 再次根據 hover 狀態更新文字顏色
+    }
+
+    private void OnDisable()
+    {
         if (buttonText != null)
         {
             buttonText.color = originalColor;
+        }
+        isHovering = false;
+    }
+
+    private void UpdateTextColor()
+    {
+        if (buttonText != null)
+        {
+            buttonText.color = isHovering ? hoverColor : originalColor;
         }
     }
 }

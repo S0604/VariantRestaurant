@@ -4,15 +4,34 @@ public class CustomerSpawner : MonoBehaviour
 {
     [Header("生成設定")]
     public GameObject[] customerPrefabs;
-    public Transform[] spawnPoints;         // 多個生成點
+    public Transform[] spawnPoints;
 
     [Header("節奏設定")]
     public float maxInterval = 8f;
     public float minInterval = 2f;
-    public float totalGameDuration = 180f;
+
+    [Header("營業時間來源")]
+    public ModeToggleManager modeManager; // ← 拖入 ModeToggleManager 以取得 businessDuration
 
     private float timer;
     private float gameTime;
+    private float totalGameDuration;
+
+    void OnEnable()
+    {
+        timer = 0f;
+        gameTime = 0f;
+
+        if (modeManager != null)
+        {
+            totalGameDuration = modeManager.businessDuration;
+        }
+        else
+        {
+            Debug.LogWarning("未指定 ModeToggleManager，無法取得 businessDuration。");
+            totalGameDuration = 180f; // 預設時間
+        }
+    }
 
     void Update()
     {
@@ -31,7 +50,7 @@ public class CustomerSpawner : MonoBehaviour
     float GetCurrentSpawnInterval()
     {
         float t = Mathf.Clamp01(gameTime / totalGameDuration);
-        float peakCurve = -4 * Mathf.Pow(t - 0.5f, 2) + 1; // 倒U型曲線
+        float peakCurve = -4 * Mathf.Pow(t - 0.5f, 2) + 1;
         return Mathf.Lerp(maxInterval, minInterval, peakCurve);
     }
 
@@ -52,7 +71,7 @@ public class CustomerSpawner : MonoBehaviour
         Customer customerScript = customer.GetComponent<Customer>();
         if (customerScript != null)
         {
-            customerScript.spawnPoint = chosenSpawnPoint;   
+            customerScript.spawnPoint = chosenSpawnPoint;
         }
     }
 }

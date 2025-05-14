@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using UnityEditor.TextCore.Text;
 
 public class ObstacleTransparency : MonoBehaviour
 {
@@ -13,7 +14,6 @@ public class ObstacleTransparency : MonoBehaviour
     void Update()
     {
         HashSet<Renderer> currentObstacles = new HashSet<Renderer>();
-
         // 發射 Raycast 找出遮擋物
         Vector3 dir = target.position - transform.position;
         float distance = dir.magnitude;
@@ -41,7 +41,6 @@ public class ObstacleTransparency : MonoBehaviour
             float targetAlpha = currentObstacles.Contains(rend) ? transparentAlpha : 1f;
             float currentAlpha = obstacleStates[rend];
             float newAlpha = Mathf.Lerp(currentAlpha, targetAlpha, Time.deltaTime * fadeSpeed);
-
             SetAlpha(rend, newAlpha);
             obstacleStates[rend] = newAlpha;
 

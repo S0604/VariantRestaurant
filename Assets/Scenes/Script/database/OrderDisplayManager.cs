@@ -99,7 +99,7 @@ public class OrderDisplayManager : MonoBehaviour
 
             var slot = slots[i];
             var group = groupedByTag[i];
-
+            
             if (slot != null)
             {
                 var img = slot.GetComponent<Image>();
