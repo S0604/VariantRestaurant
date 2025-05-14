@@ -1,19 +1,24 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 using System.Collections;
 using System.Collections.Generic;
 
 public class FriesMinigame : BaseMinigame
 {
     [Header("Fries 圖示設定")]
-
     public Sprite upIcon, downIcon, leftIcon, rightIcon;
     public Sprite upCorrectIcon, downCorrectIcon, leftCorrectIcon, rightCorrectIcon;
     public Sprite upWrongIcon, downWrongIcon, leftWrongIcon, rightWrongIcon;
 
-    public GameObject[] stagePrefabs;
+    [Header("Fries 動畫設定")]
     public Transform stageContainer;
     public float wrongIconResetDelay = 0.5f;
+
+    [Header("Fries Stage 播放設定")]
+    public GameObject stagePrefab; // 指向 FriesStagePrefab
+    public string stageVideoBasePath = "FriesAssets"; // 基本影片資料夾
+
 
     private List<KeyCode> sequence = new List<KeyCode>();
     private List<Image> sequenceIcons = new List<Image>();
@@ -27,8 +32,16 @@ public class FriesMinigame : BaseMinigame
         sequence.Clear();
         playerInput.Clear();
 
+        // 先清空 stageContainer 下所有物件
         foreach (Transform child in stageContainer)
+        {
+            // 嘗試清除內部的 VideoPlayer.clip
+            VideoPlayer vp = child.GetComponentInChildren<VideoPlayer>();
+            if (vp != null)
+                vp.clip = null;
+
             Destroy(child.gameObject);
+        }
 
         for (int i = 0; i < 5; i++)
             sequence.Add(wasdKeys[Random.Range(0, wasdKeys.Length)]);
@@ -58,10 +71,9 @@ public class FriesMinigame : BaseMinigame
 
         if (key == sequence[step])
         {
-
             ChangeIconSprite(step, key, true);
             AnimateIcon(step, "Correct");
-            
+
             playerInput.Add(key);
             UpdateStage(step);
 
@@ -134,12 +146,47 @@ public class FriesMinigame : BaseMinigame
         if (currentStage != null)
             Destroy(currentStage);
 
-        if (stepIndex < stagePrefabs.Length)
-            currentStage = Instantiate(stagePrefabs[stepIndex], stageContainer);
+        Destroy(currentStage);
+
+        currentStage = Instantiate(stagePrefab, stageContainer);
+
+        // 這一行很關鍵，重設 localPosition 為零，確保定位正確
+        currentStage.transform.localPosition = Vector3.zero;
+        currentStage.transform.localRotation = Quaternion.identity;
+        currentStage.transform.localScale = Vector3.one;
+
+        string folderPath = $"{stageVideoBasePath}/Layer{stepIndex}";
+        VideoClip selectedClip = LoadRandomVideoClip(folderPath);
+
+        if (selectedClip != null)
+        {
+            VideoPlayer vp = currentStage.GetComponentInChildren<VideoPlayer>();
+            if (vp != null)
+            {
+                vp.clip = selectedClip;
+                vp.Play();
+            }
+            else
+            {
+                Debug.LogWarning("VideoPlayer not found in stagePrefab!");
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"No video found in {folderPath}");
+        }
     }
 
 
-    // 取得對應按鍵的預設圖示（非事件用）
+    VideoClip LoadRandomVideoClip(string folderPath)
+    {
+        VideoClip[] clips = Resources.LoadAll<VideoClip>(folderPath);
+        if (clips != null && clips.Length > 0)
+            return clips[Random.Range(0, clips.Length)];
+        return null;
+    }
+
+
     Sprite GetFriesKeySprite(KeyCode key)
     {
         switch (key)
@@ -152,7 +199,6 @@ public class FriesMinigame : BaseMinigame
         return null;
     }
 
-    // 若要擴充正確與錯誤圖示用的函式，可參考以下寫法：
     Sprite GetCorrectSprite(KeyCode key)
     {
         switch (key)
