@@ -16,20 +16,21 @@ public class CustomerSpawner : MonoBehaviour
     private float timer;
     private float gameTime;
     private float totalGameDuration;
+    public TimeSystem timeSystem;
 
     void OnEnable()
     {
         timer = 0f;
         gameTime = 0f;
 
-        if (modeManager != null)
+        if (modeManager != null && modeManager.timeSystem != null)
         {
-            totalGameDuration = modeManager.businessDuration;
+            totalGameDuration = modeManager.timeSystem.cooldownDuration;
         }
         else
         {
-            Debug.LogWarning("未指定 ModeToggleManager，無法取得 businessDuration。");
-            totalGameDuration = 180f; // 預設時間
+            Debug.LogWarning("無法取得時間設定，使用預設180秒");
+            totalGameDuration = 180f;
         }
     }
 

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEngine.EventSystems;
+using System.Collections.Generic;
 
 public class ModeToggleManager : MonoBehaviour
 {
@@ -14,107 +14,93 @@ public class ModeToggleManager : MonoBehaviour
     [Header("非營業模式腳本")]
     public MonoBehaviour[] nonBusinessScripts;
 
-    [Header("營業模式設定")]
-    public float businessDuration = 60f; // 營業時間（秒）
+    [Header("連結時間系統")]
+    public TimeSystem timeSystem;
 
     private bool isBusinessMode = false;
-    private float businessTimer = 0f;
-    private bool isTimerRunning = false;
     private bool isClosing = false;
-
-    private void Start()
-    {
-        UpdateMode(); // 初始化狀態
-    }
-
-    private void Update()
-    {
-        if (isTimerRunning && !isClosing)
-        {
-            businessTimer -= Time.deltaTime;
-
-            if (businessTimer <= 0f)
-            {
-                StartCoroutine(HandleBusinessClosing());
-            }
-        }
-    }
 
     public void ToggleMode()
     {
         isBusinessMode = !isBusinessMode;
-        UpdateMode();
+        if (isBusinessMode)
+            UpdateMode(); // 只在啟動營業時立即切換
+        else
+            StartCoroutine(HandleBusinessClosing());
     }
 
     public void SetBusinessMode(bool active)
     {
-        EventSystem.current.SetSelectedGameObject(null); // 清除選中
         isBusinessMode = active;
-        UpdateMode();
+        if (active)
+            UpdateMode(); // ✅ 啟動營業時立即切換
+        // ❌ 關閉營業流程將由 HandleBusinessClosing 控制
     }
 
     private void UpdateMode()
     {
-        // UI 切換
         if (businessUI != null) businessUI.SetActive(isBusinessMode);
         if (nonBusinessUI != null) nonBusinessUI.SetActive(!isBusinessMode);
 
-        // 啟用腳本
         foreach (var script in businessScripts)
             if (script != null) script.enabled = isBusinessMode;
 
         foreach (var script in nonBusinessScripts)
             if (script != null) script.enabled = !isBusinessMode;
 
-        // 計時器控制
         if (isBusinessMode)
         {
-            businessTimer = businessDuration;
-            isTimerRunning = true;
             isClosing = false;
+            timeSystem?.StartCooldown();
         }
         else
         {
-            isTimerRunning = false;
-            isClosing = false;
+            timeSystem?.StopCooldown();
         }
+    }
+
+    public void StartClosingProcessFromTimeSystem()
+    {
+        if (!isBusinessMode || isClosing) return;
+        StartCoroutine(HandleBusinessClosing());
     }
 
     private IEnumerator HandleBusinessClosing()
     {
-        Debug.Log("🔔 營業時間結束，開始關店流程...");
         isClosing = true;
-        isTimerRunning = false;
+        Debug.Log("【ModeToggleManager】開始關店流程");
 
-        // 1. 停止產生新顧客
-        var spawner = FindObjectOfType<CustomerSpawner>();
-        if (spawner != null) spawner.enabled = false;
-
-        // 2. 通知所有非隊伍顧客直接離開（假設他們不是在 CustomerQueueManager 中）
-        var allCustomers = FindObjectsOfType<Customer>();
-        foreach (var c in allCustomers)
+        // 關閉顧客生成腳本
+        foreach (var script in businessScripts)
         {
-            if (!CustomerQueueManager.Instance.GetCurrentQueue().Contains(c))
+            if (script != null && (script.GetType().Name.Contains("CustomerSpawner") || script.GetType().Name.Contains("CustomerGenerator")))
             {
-                c.LeaveAndDespawn();
+                script.enabled = false;
+                Debug.Log($"【ModeToggleManager】已關閉 {script.GetType().Name}");
             }
         }
 
-        // 3. 通知排隊顧客依序離開
-        var queue = CustomerQueueManager.Instance.GetCurrentQueue();
-        foreach (var c in queue)
+        // 顧客離場
+        var queueManager = CustomerQueueManager.Instance;
+        if (queueManager != null)
         {
-            c.LeaveAndDespawn();
-            yield return new WaitForSeconds(0.5f); // 間隔讓離開更自然
+            var customers = new List<Customer>(queueManager.GetCurrentQueue());
+            foreach (var c in customers)
+                c.LeaveAndDespawn();
+
+            while (queueManager.GetCurrentQueue().Count > 0)
+                yield return null;
         }
 
-        // 等待所有顧客銷毀
-        while (CustomerManager.Instance != null && CustomerManager.Instance.CurrentCustomerCount > 0)
-        {
-            yield return null;
-        }
+        Debug.Log("【ModeToggleManager】所有顧客已離開，切換為非營業模式");
 
-        Debug.Log("✅ 所有顧客已離場，切換為非營業模式");
-        SetBusinessMode(false);
+        isBusinessMode = false;
+        UpdateMode(); // ✅ 延遲模式切換，直到顧客全走
+        isClosing = false;
+    }
+
+    private void Start()
+    {
+        UpdateMode(); // 初始化
     }
 }
