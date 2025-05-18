@@ -16,10 +16,10 @@ GameObject:
   - component: {fileID: 1972943304902563031}
   - component: {fileID: -5233809428650140993}
   - component: {fileID: 2058813173380755808}
-  - component: {fileID: 7325009104746697601}
+  - component: {fileID: 8281430436026058074}
   m_Layer: 7
   m_Name: "\u9ED1\u5F4C"
-  m_TagString: NPC
+  m_TagString: Customer
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -195,7 +195,7 @@ MonoBehaviour:
   animator: {fileID: 1972943304902563049}
   menuDatabase: {fileID: 11400000, guid: 963e4d495a2df49449c6a1b5ee99799c, type: 2}
   targetCamera: {fileID: 0}
---- !u!114 &7325009104746697601
+--- !u!114 &8281430436026058074
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

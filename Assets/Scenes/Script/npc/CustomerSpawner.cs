@@ -11,40 +11,44 @@ public class CustomerSpawner : MonoBehaviour
     public float minInterval = 2f;
 
     [Header("營業時間來源")]
-    public ModeToggleManager modeManager; // ← 拖入 ModeToggleManager 以取得 businessDuration
+    public ModeToggleManager modeManager;
 
     private float timer;
-    private float gameTime;
     private float totalGameDuration;
-    public TimeSystem timeSystem;
+    private float gameTime;
 
     void OnEnable()
     {
         timer = 0f;
         gameTime = 0f;
 
-        if (modeManager != null && modeManager.timeSystem != null)
+        if (modeManager != null)
         {
-            totalGameDuration = modeManager.timeSystem.cooldownDuration;
+            totalGameDuration = modeManager.businessDuration;
         }
         else
         {
-            Debug.LogWarning("無法取得時間設定，使用預設180秒");
             totalGameDuration = 180f;
+            Debug.LogWarning("未指定 ModeToggleManager，使用預設時間");
         }
     }
 
     void Update()
     {
-        timer += Time.deltaTime;
-        gameTime += Time.deltaTime;
+        if (modeManager == null) return;
 
-        float currentInterval = GetCurrentSpawnInterval();
-
-        if (timer >= currentInterval)
+        // 🛑 關店準備階段不再生成顧客
+        if (modeManager.RemainingBusinessTime > 10f)
         {
-            SpawnCustomer();
-            timer = 0f;
+            timer += Time.deltaTime;
+            gameTime += Time.deltaTime;
+
+            float currentInterval = GetCurrentSpawnInterval();
+            if (timer >= currentInterval)
+            {
+                SpawnCustomer();
+                timer = 0f;
+            }
         }
     }
 

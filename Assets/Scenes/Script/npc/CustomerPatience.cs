@@ -16,6 +16,7 @@ public class CustomerPatience : MonoBehaviour
 
     private bool isRunning = false;
     private bool isInitialized = false;
+    private bool isForced = false;
 
     public void StartPatience()
     {
@@ -34,6 +35,7 @@ public class CustomerPatience : MonoBehaviour
 
         currentHeartIndex = 0;
         isRunning = true;
+        isForced = false;
         timePerHeart = totalPatienceTime / redHearts.Length;
 
         foreach (var heart in redHearts)
@@ -42,6 +44,50 @@ public class CustomerPatience : MonoBehaviour
         }
 
         StartNextHeart();
+    }
+    public void ForcePatience(float forcedSeconds)
+    {
+        if (isRunning) return;
+
+        InitUIIfNeeded();
+
+        if (redHearts == null || redHearts.Length == 0)
+        {
+            Debug.LogWarning("未找到紅心物件，耐心系統無法啟動！");
+            return;
+        }
+
+        currentHeartIndex = 0;
+        isRunning = true;
+        isForced = true;
+        timePerHeart = forcedSeconds / redHearts.Length;
+
+        foreach (var heart in redHearts)
+            heart.localScale = Vector3.one;
+
+        StartNextHeart();
+    }
+    private void InitUIIfNeeded()
+    {
+        if (isInitialized) return;
+
+        if (patienceUIPrefab != null && uiAnchor != null)
+        {
+            uiInstance = Instantiate(patienceUIPrefab, uiAnchor);
+            uiInstance.transform.localScale = Vector3.zero;
+            uiInstance.transform.DOScale(Vector3.one * 0.06f, 0.3f).SetEase(Ease.OutBack);
+
+            redHearts = uiInstance.GetComponentsInChildren<Transform>()
+                .Where(t => t.name.Contains("紅心"))
+                .OrderBy(t => t.GetSiblingIndex())
+                .ToArray();
+
+            isInitialized = true;
+        }
+        else
+        {
+            Debug.LogWarning("CustomerPatience 初始化失敗：未設定 prefab 或 anchor");
+        }
     }
 
     private void InitializeUI()

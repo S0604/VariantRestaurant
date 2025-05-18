@@ -1,106 +1,133 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class ModeToggleManager : MonoBehaviour
 {
-    [Header("UI 切換")]
-    public GameObject businessUI;
-    public GameObject nonBusinessUI;
+    public static ModeToggleManager Instance;
 
-    [Header("營業模式腳本")]
-    public MonoBehaviour[] businessScripts;
+    [Header("營業設定")]
+    public float businessDuration = 180f;
+    public float closingBufferTime = 10f;
 
-    [Header("非營業模式腳本")]
-    public MonoBehaviour[] nonBusinessScripts;
-
-    [Header("連結時間系統")]
+    [Header("時間與 UI")]
     public TimeSystem timeSystem;
 
+    [Header("需要在營業模式啟用的元件")]
+    public GameObject[] businessModeUIs;
+    public MonoBehaviour[] businessModeScripts;
+
+    [Header("需要在歇業模式啟用的元件")]
+    public GameObject[] closedModeUIs;
+    public MonoBehaviour[] closedModeScripts;
+
+    private float remainingTime;
     private bool isBusinessMode = false;
-    private bool isClosing = false;
+    private bool isClosingPhase = false;
+    private HashSet<Customer> aliveCustomers = new HashSet<Customer>();
 
-    public void ToggleMode()
+    public float RemainingBusinessTime => remainingTime;
+    public bool IsClosingPhase => isClosingPhase;
+
+    private void Awake()
     {
-        isBusinessMode = !isBusinessMode;
-        if (isBusinessMode)
-            UpdateMode(); // 只在啟動營業時立即切換
-        else
-            StartCoroutine(HandleBusinessClosing());
-    }
-
-    public void SetBusinessMode(bool active)
-    {
-        isBusinessMode = active;
-        if (active)
-            UpdateMode(); // ✅ 啟動營業時立即切換
-        // ❌ 關閉營業流程將由 HandleBusinessClosing 控制
-    }
-
-    private void UpdateMode()
-    {
-        if (businessUI != null) businessUI.SetActive(isBusinessMode);
-        if (nonBusinessUI != null) nonBusinessUI.SetActive(!isBusinessMode);
-
-        foreach (var script in businessScripts)
-            if (script != null) script.enabled = isBusinessMode;
-
-        foreach (var script in nonBusinessScripts)
-            if (script != null) script.enabled = !isBusinessMode;
-
-        if (isBusinessMode)
-        {
-            isClosing = false;
-            timeSystem?.StartCooldown();
-        }
-        else
-        {
-            timeSystem?.StopCooldown();
-        }
-    }
-
-    public void StartClosingProcessFromTimeSystem()
-    {
-        if (!isBusinessMode || isClosing) return;
-        StartCoroutine(HandleBusinessClosing());
-    }
-
-    private IEnumerator HandleBusinessClosing()
-    {
-        isClosing = true;
-        Debug.Log("【ModeToggleManager】開始關店流程");
-
-        // 關閉顧客生成腳本
-        foreach (var script in businessScripts)
-        {
-            if (script != null && (script.GetType().Name.Contains("CustomerSpawner") || script.GetType().Name.Contains("CustomerGenerator")))
-            {
-                script.enabled = false;
-                Debug.Log($"【ModeToggleManager】已關閉 {script.GetType().Name}");
-            }
-        }
-
-        // 顧客離場
-        var queueManager = CustomerQueueManager.Instance;
-        if (queueManager != null)
-        {
-            var customers = new List<Customer>(queueManager.GetCurrentQueue());
-            foreach (var c in customers)
-                c.LeaveAndDespawn();
-
-            while (queueManager.GetCurrentQueue().Count > 0)
-                yield return null;
-        }
-
-        Debug.Log("【ModeToggleManager】所有顧客已離開，切換為非營業模式");
-
-        isBusinessMode = false;
-        UpdateMode(); // ✅ 延遲模式切換，直到顧客全走
-        isClosing = false;
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
     }
 
     private void Start()
     {
-        UpdateMode(); // 初始化
+        EnterClosedMode(); // 初始為歇業
+    }
+
+    private void Update()
+    {
+        if (!isBusinessMode) return;
+
+        remainingTime -= Time.deltaTime;
+        timeSystem.UpdateTimeVisual(Mathf.Clamp01(remainingTime / businessDuration));
+
+        if (!isClosingPhase && remainingTime <= closingBufferTime)
+        {
+            StartCoroutine(HandleClosingPhase());
+        }
+
+        if (remainingTime <= 0f)
+        {
+            remainingTime = 0f;
+        }
+    }
+
+    public void ToggleMode()
+    {
+        if (isBusinessMode)
+            return; // 避免強制中途切換
+
+        EnterBusinessMode();
+    }
+
+    private void EnterBusinessMode()
+    {
+        isBusinessMode = true;
+        isClosingPhase = false;
+        remainingTime = businessDuration;
+
+        timeSystem.ResetTimeVisual();
+
+        SetActiveGroup(businessModeUIs, businessModeScripts, true);
+        SetActiveGroup(closedModeUIs, closedModeScripts, false);
+
+        Debug.Log("✅ 進入營業模式");
+    }
+
+    private void EnterClosedMode()
+    {
+        isBusinessMode = false;
+        isClosingPhase = false;
+
+        timeSystem.ResetTimeVisual();
+
+        SetActiveGroup(businessModeUIs, businessModeScripts, false);
+        SetActiveGroup(closedModeUIs, closedModeScripts, true);
+
+        Debug.Log("🛑 進入歇業模式");
+    }
+
+    private IEnumerator HandleClosingPhase()
+    {
+        isClosingPhase = true;
+        Debug.Log("🔔 營業即將結束，開始關店準備");
+
+        while (aliveCustomers.Count > 0)
+        {
+            Debug.Log($"⏳ 等待顧客離場中，剩餘：{aliveCustomers.Count}");
+            yield return new WaitForSeconds(1f);
+        }
+
+        Debug.Log("✅ 所有顧客已離場，切換至歇業模式");
+        EnterClosedMode();
+    }
+
+    public void RegisterCustomer(Customer customer)
+    {
+        aliveCustomers.Add(customer);
+    }
+
+    public void UnregisterCustomer(Customer customer)
+    {
+        aliveCustomers.Remove(customer);
+    }
+
+    private void SetActiveGroup(GameObject[] uiGroup, MonoBehaviour[] scriptGroup, bool isActive)
+    {
+        foreach (GameObject go in uiGroup)
+        {
+            if (go != null) go.SetActive(isActive);
+        }
+
+        foreach (MonoBehaviour script in scriptGroup)
+        {
+            if (script != null) script.enabled = isActive;
+        }
     }
 }

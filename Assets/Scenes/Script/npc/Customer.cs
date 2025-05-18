@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Customer : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class Customer : MonoBehaviour
     private Vector3 faceDirection = Vector3.forward;
     private bool isIdle = false;
     private bool isLeaving = false;
+
     private CustomerOrder customerOrder;
     private bool hasGeneratedOrder = false;
     private float idleTimer = 0f;
@@ -20,10 +22,16 @@ public class Customer : MonoBehaviour
     private void Start()
     {
         customerOrder = GetComponent<CustomerOrder>();
-        if (targetCamera == null) targetCamera = Camera.main;
 
-        CustomerManager.Instance?.Register(this);
-        CustomerQueueManager.Instance?.JoinQueue(this);
+        if (targetCamera == null)
+            targetCamera = Camera.main;
+
+        if (CustomerQueueManager.Instance != null)
+            CustomerQueueManager.Instance.JoinQueue(this);
+
+        // ✅ 通知 ModeToggleManager 有新顧客
+        if (ModeToggleManager.Instance != null)
+            ModeToggleManager.Instance.RegisterCustomer(this);
     }
 
     private void Update()
@@ -37,7 +45,7 @@ public class Customer : MonoBehaviour
         {
             if (isLeaving && Vector3.Distance(transform.position, spawnPoint.position) < 0.5f)
             {
-                CustomerManager.Instance?.Unregister(this);
+                ModeToggleManager.Instance?.UnregisterCustomer(this);
                 Destroy(gameObject);
                 return;
             }
@@ -52,6 +60,7 @@ public class Customer : MonoBehaviour
             else if (!hasGeneratedOrder && !isLeaving)
             {
                 idleTimer += Time.deltaTime;
+
                 if (idleTimer >= 0.5f && customerOrder != null && menuDatabase != null)
                 {
                     customerOrder.GenerateOrder(menuDatabase);
@@ -73,6 +82,7 @@ public class Customer : MonoBehaviour
     {
         if (agent != null)
             agent.SetDestination(position);
+
         faceDirection = faceDir;
         isIdle = false;
         idleTimer = 0f;
@@ -86,21 +96,11 @@ public class Customer : MonoBehaviour
         CustomerQueueManager.Instance?.LeaveQueue(this);
 
         if (agent != null && spawnPoint != null)
+        {
             agent.SetDestination(spawnPoint.position);
+        }
 
         StartCoroutine(WaitUntilOutOfViewOrReachedSpawnPointAndDestroy());
-    }
-
-    public void LeaveAfterDelay(float delay)
-    {
-        if (isLeaving) return;
-        StartCoroutine(DelayedLeave(delay));
-    }
-
-    private IEnumerator DelayedLeave(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        LeaveAndDespawn();
     }
 
     private IEnumerator WaitUntilOutOfViewOrReachedSpawnPointAndDestroy()
@@ -108,7 +108,7 @@ public class Customer : MonoBehaviour
         Renderer rend = GetComponentInChildren<Renderer>();
         if (rend == null)
         {
-            CustomerManager.Instance?.Unregister(this);
+            ModeToggleManager.Instance?.UnregisterCustomer(this);
             Destroy(gameObject);
             yield break;
         }
@@ -117,18 +117,21 @@ public class Customer : MonoBehaviour
         {
             if (agent != null && !agent.pathPending && agent.remainingDistance <= agent.stoppingDistance && !agent.hasPath)
             {
-                CustomerManager.Instance?.Unregister(this);
+                ModeToggleManager.Instance?.UnregisterCustomer(this);
                 Destroy(gameObject);
                 yield break;
             }
 
             Plane[] planes = GeometryUtility.CalculateFrustumPlanes(targetCamera);
-            if (!GeometryUtility.TestPlanesAABB(planes, rend.bounds))
+            Bounds bounds = rend.bounds;
+
+            if (!GeometryUtility.TestPlanesAABB(planes, bounds))
             {
-                CustomerManager.Instance?.Unregister(this);
+                ModeToggleManager.Instance?.UnregisterCustomer(this);
                 Destroy(gameObject);
                 yield break;
             }
+
             yield return null;
         }
     }

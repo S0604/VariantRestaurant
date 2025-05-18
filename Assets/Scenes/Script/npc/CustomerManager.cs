@@ -26,15 +26,12 @@ public class CustomerManager : MonoBehaviour
 
     public void NotifyCustomersToLeave()
     {
-        float delay = 0f;
-        float interval = 1f;
 
         foreach (var customer in customers.ToArray())
         {
             if (CustomerQueueManager.Instance != null && CustomerQueueManager.Instance.IsInQueue(customer))
             {
-                customer.LeaveAfterDelay(delay);
-                delay += interval;
+//                delay += interval;
             }
             else
             {

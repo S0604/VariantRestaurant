@@ -19,14 +19,39 @@ public class CustomerQueueManager : MonoBehaviour
 
     public void JoinQueue(Customer customer)
     {
+        // 🛑 關店期間不讓新顧客加入
+        if (ModeToggleManager.Instance != null && ModeToggleManager.Instance.IsClosingPhase)
+        {
+            customer.LeaveAndDespawn();
+            return;
+        }
+
         if (customersInQueue.Count >= maxQueueSize)
         {
             customer.LeaveAndDespawn();
             return;
         }
 
+        // 找第一個空位（null 或已銷毀）
+        for (int i = 0; i < customersInQueue.Count; i++)
+        {
+            if (customersInQueue[i] == null)
+            {
+                customersInQueue[i] = customer;
+                CleanQueue();
+                UpdateQueuePositions();
+                return;
+            }
+        }
+
+        // 如果沒有空位（沒有 null），就加在最後面
         customersInQueue.Add(customer);
         UpdateQueuePositions();
+    }
+
+    private void CleanQueue()
+    {
+        customersInQueue.RemoveAll(c => c == null);
     }
 
     public void LeaveQueue(Customer customer)
@@ -81,4 +106,5 @@ public class CustomerQueueManager : MonoBehaviour
         position = queuePathPoints[queuePathPoints.Count - 1].position;
         faceDirection = (queuePathPoints[queuePathPoints.Count - 2].position - queuePathPoints[queuePathPoints.Count - 1].position).normalized;
     }
+
 }
