@@ -11,8 +11,8 @@ public abstract class BaseMinigame : MonoBehaviour
     public Image backgroundImage;
     public Sprite defaultBackground;
 
-    [Header("玩家控制")]
-    public Player player;
+    // 不再公開顯示
+    protected Player player;
 
     [Header("時間設定")]
     public float timeLimit = 10f;
@@ -46,6 +46,19 @@ public abstract class BaseMinigame : MonoBehaviour
     {
         timer = timeLimit;
         onCompleteCallback = callback;
+
+        // 從 MinigameManager 自動取得 player
+        if (MinigameManager.Instance != null && MinigameManager.Instance.player != null)
+        {
+            player = MinigameManager.Instance.player;
+        }
+        else
+        {
+            Debug.LogWarning("MinigameManager 未指定 Player！");
+        }
+
+        if (player != null)
+            player.isCooking = true;
 
         cookingUI.SetActive(true);
         backgroundImage.sprite = defaultBackground;
@@ -107,7 +120,10 @@ public abstract class BaseMinigame : MonoBehaviour
     protected void FinishMinigame(bool success, int rank = 0)
     {
         cookingUI.SetActive(false);
-        player.isCooking = false;
+
+        if (player != null)
+            player.isCooking = false;
+
         onCompleteCallback?.Invoke(success, rank);
     }
 

@@ -16,14 +16,17 @@ public class FriesMinigame : BaseMinigame
     public float wrongIconResetDelay = 0.5f;
 
     [Header("Fries Stage 播放設定")]
-    public GameObject stagePrefab; // 指向 FriesStagePrefab
-    public string stageVideoBasePath = "FriesAssets"; // 基本影片資料夾
-
+    public GameObject stagePrefab;
+    public string stageVideoBasePath = "FriesAssets";
 
     private List<KeyCode> sequence = new List<KeyCode>();
     private List<Image> sequenceIcons = new List<Image>();
     private List<KeyCode> playerInput = new List<KeyCode>();
+
     private GameObject currentStage;
+    private VideoPlayer videoPlayer;
+    private CanvasGroup stageCanvasGroup;
+    private bool hasStartedStage = false;
 
     public override void StartMinigame(System.Action<bool, int> callback)
     {
@@ -32,22 +35,28 @@ public class FriesMinigame : BaseMinigame
         sequence.Clear();
         playerInput.Clear();
 
-        // 先清空 stageContainer 下所有物件
         foreach (Transform child in stageContainer)
-        {
-            // 嘗試清除內部的 VideoPlayer.clip
-            VideoPlayer vp = child.GetComponentInChildren<VideoPlayer>();
-            if (vp != null)
-                vp.clip = null;
-
             Destroy(child.gameObject);
-        }
+
+        currentStage = Instantiate(stagePrefab, stageContainer);
+        currentStage.transform.localPosition = Vector3.zero;
+        currentStage.transform.localRotation = Quaternion.identity;
+        currentStage.transform.localScale = Vector3.one;
+
+        videoPlayer = currentStage.GetComponentInChildren<VideoPlayer>();
+        stageCanvasGroup = currentStage.GetComponent<CanvasGroup>();
+
+        if (videoPlayer == null)
+            Debug.LogError("VideoPlayer component not found in stagePrefab!");
+        if (stageCanvasGroup != null)
+            stageCanvasGroup.alpha = 0f; // 預設透明
 
         for (int i = 0; i < 5; i++)
             sequence.Add(wasdKeys[Random.Range(0, wasdKeys.Length)]);
 
         ShowSequenceIcons();
         player.isCooking = true;
+        hasStartedStage = false;
     }
 
     void Update()
@@ -75,7 +84,7 @@ public class FriesMinigame : BaseMinigame
             AnimateIcon(step, "Correct");
 
             playerInput.Add(key);
-            UpdateStage(step);
+            StartCoroutine(UpdateStageAsync(step));
 
             if (playerInput.Count == sequence.Count)
             {
@@ -87,7 +96,7 @@ public class FriesMinigame : BaseMinigame
         else
         {
             AnimateIcon(step, "Wrong");
-            ChangeIconSprite(step, key, false);
+            ChangeIconSprite(step, sequence[step], false);
             timer -= 0.5f;
         }
     }
@@ -141,42 +150,37 @@ public class FriesMinigame : BaseMinigame
         }
     }
 
-    void UpdateStage(int stepIndex)
+    IEnumerator UpdateStageAsync(int stepIndex)
     {
-        if (currentStage != null)
-            Destroy(currentStage);
-
-        Destroy(currentStage);
-
-        currentStage = Instantiate(stagePrefab, stageContainer);
-
-        // 這一行很關鍵，重設 localPosition 為零，確保定位正確
-        currentStage.transform.localPosition = Vector3.zero;
-        currentStage.transform.localRotation = Quaternion.identity;
-        currentStage.transform.localScale = Vector3.one;
-
         string folderPath = $"{stageVideoBasePath}/Layer{stepIndex}";
         VideoClip selectedClip = LoadRandomVideoClip(folderPath);
 
-        if (selectedClip != null)
+        if (selectedClip != null && videoPlayer != null)
         {
-            VideoPlayer vp = currentStage.GetComponentInChildren<VideoPlayer>();
-            if (vp != null)
+            videoPlayer.Stop();
+            videoPlayer.clip = null;
+            yield return null;
+
+            videoPlayer.clip = selectedClip;
+            videoPlayer.Prepare();
+
+            while (!videoPlayer.isPrepared)
+                yield return null;
+
+            videoPlayer.Play();
+
+            // 顯示 stage 畫面
+            if (!hasStartedStage && stageCanvasGroup != null)
             {
-                vp.clip = selectedClip;
-                vp.Play();
-            }
-            else
-            {
-                Debug.LogWarning("VideoPlayer not found in stagePrefab!");
+                hasStartedStage = true;
+                stageCanvasGroup.alpha = 1f;
             }
         }
         else
         {
-            Debug.LogWarning($"No video found in {folderPath}");
+            Debug.LogWarning($"No video found or VideoPlayer is null in {folderPath}");
         }
     }
-
 
     VideoClip LoadRandomVideoClip(string folderPath)
     {
@@ -185,7 +189,6 @@ public class FriesMinigame : BaseMinigame
             return clips[Random.Range(0, clips.Length)];
         return null;
     }
-
 
     Sprite GetFriesKeySprite(KeyCode key)
     {

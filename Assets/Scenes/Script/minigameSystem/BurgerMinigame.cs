@@ -74,7 +74,7 @@ public class BurgerMinigame : BaseMinigame
         else
         {
             AnimateIcon(step, "Wrong");
-            ChangeIconSprite(step, key, false);
+            ChangeIconSprite(step, sequence[step], false);
             timer -= 0.5f;
         }
     }

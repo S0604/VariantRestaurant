@@ -8,25 +8,27 @@ public class MinigameManager : MonoBehaviour
     [System.Serializable]
     public class MinigameEntry
     {
-        public string minigameType;
-        public BaseMinigame minigamePrefab;
+        public string minigameType;     // 例如 "Burger"、"Fries"
+        public string resourcePath;     // 例如 "Minigames/BurgerMinigame"
     }
 
     public List<MinigameEntry> minigames = new List<MinigameEntry>();
     public Transform minigameContainer;
 
+    [Header("玩家控制")]
+    public Player player; // <--- 新增這一行
+
     private BaseMinigame currentMinigame;
 
     void Awake()
     {
-        // Singleton 實作
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
             return;
         }
         Instance = this;
-        DontDestroyOnLoad(gameObject); // 可選，如果希望它在場景切換時保留
+        DontDestroyOnLoad(gameObject); // 視情況保留
     }
 
     public void StartMinigame(string type, System.Action<bool, int> onComplete)
@@ -44,12 +46,27 @@ public class MinigameManager : MonoBehaviour
             return;
         }
 
-        BaseMinigame instance = Instantiate(entry.minigamePrefab, minigameContainer);
-        currentMinigame = instance;
-        instance.StartMinigame((success, rank) =>
+        GameObject prefab = Resources.Load<GameObject>(entry.resourcePath);
+        if (prefab == null)
+        {
+            Debug.LogError($"無法從 Resources 載入 prefab: {entry.resourcePath}");
+            return;
+        }
+
+        GameObject instanceObj = Instantiate(prefab, minigameContainer);
+        currentMinigame = instanceObj.GetComponent<BaseMinigame>();
+
+        if (currentMinigame == null)
+        {
+            Debug.LogError("載入的小遊戲 prefab 缺少 BaseMinigame 組件！");
+            Destroy(instanceObj);
+            return;
+        }
+
+        currentMinigame.StartMinigame((success, rank) =>
         {
             onComplete?.Invoke(success, rank);
-            Destroy(instance.gameObject);
+            Destroy(instanceObj);
             currentMinigame = null;
         });
     }
