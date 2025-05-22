@@ -17,6 +17,11 @@ public class BurgerMinigame : BaseMinigame
     private List<Image> sequenceIcons = new List<Image>();
     private List<KeyCode> playerInput = new List<KeyCode>();
 
+    protected override string GetMinigameName()
+    {
+        return "Burger";
+    }
+
     public override void StartMinigame(System.Action<bool, int> callback)
     {
         base.StartMinigame(callback);

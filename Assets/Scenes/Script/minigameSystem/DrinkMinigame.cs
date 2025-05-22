@@ -4,25 +4,26 @@ using UnityEngine.Video;
 using System.Collections;
 using System.Collections.Generic;
 
-public class FriesMinigame : BaseMinigame
+public class DrinkMinigame : BaseMinigame
 {
-    [Header("Fries 圖示設定")]
+    [Header("Drink 圖示設定")]
     public Sprite upIcon, downIcon, leftIcon, rightIcon;
     public Sprite upCorrectIcon, downCorrectIcon, leftCorrectIcon, rightCorrectIcon;
     public Sprite upWrongIcon, downWrongIcon, leftWrongIcon, rightWrongIcon;
 
-    [Header("Fries 動畫設定")]
+    [Header("Drink 動畫設定")]
     public Transform stageContainer;
     public float wrongIconResetDelay = 0.5f;
 
-    [Header("Fries Stage 播放設定")]
+    [Header("Drink Stage 播放設定")]
     public GameObject stagePrefab;
-    public string stageVideoBasePath = "FriesAssets";
+    public string stageVideoBasePath = "DrinkAssets";
 
     private List<KeyCode> sequence = new List<KeyCode>();
     private List<Image> sequenceIcons = new List<Image>();
     private List<KeyCode> playerInput = new List<KeyCode>();
 
+    private string selectedSetFolder;
     private GameObject currentStage;
     private VideoPlayer videoPlayer;
     private CanvasGroup stageCanvasGroup;
@@ -30,7 +31,7 @@ public class FriesMinigame : BaseMinigame
 
     protected override string GetMinigameName()
     {
-        return "Fries";
+        return "Drink";
     }
 
     public override void StartMinigame(System.Action<bool, int> callback)
@@ -54,7 +55,7 @@ public class FriesMinigame : BaseMinigame
         if (videoPlayer == null)
             Debug.LogError("VideoPlayer component not found in stagePrefab!");
         if (stageCanvasGroup != null)
-            stageCanvasGroup.alpha = 0f; // 預設透明
+            stageCanvasGroup.alpha = 0f;
 
         for (int i = 0; i < 5; i++)
             sequence.Add(wasdKeys[Random.Range(0, wasdKeys.Length)]);
@@ -116,7 +117,7 @@ public class FriesMinigame : BaseMinigame
 
         if (!correct)
         {
-            Sprite original = GetFriesKeySprite(sequence[index]);
+            Sprite original = GetDrinkKeySprite(sequence[index]);
             StartCoroutine(ResetIconAfterDelay(img, original, wrongIconResetDelay));
         }
     }
@@ -147,7 +148,7 @@ public class FriesMinigame : BaseMinigame
         {
             GameObject iconObj = Instantiate(sequenceIconPrefab, sequenceContainer);
             Image img = iconObj.GetComponent<Image>();
-            img.sprite = GetFriesKeySprite(key);
+            img.sprite = GetDrinkKeySprite(key);
             sequenceIcons.Add(img);
 
             Animator anim = iconObj.GetComponent<Animator>();
@@ -174,7 +175,6 @@ public class FriesMinigame : BaseMinigame
 
             videoPlayer.Play();
 
-            // 顯示 stage 畫面
             if (!hasStartedStage && stageCanvasGroup != null)
             {
                 hasStartedStage = true;
@@ -195,7 +195,7 @@ public class FriesMinigame : BaseMinigame
         return null;
     }
 
-    Sprite GetFriesKeySprite(KeyCode key)
+    Sprite GetDrinkKeySprite(KeyCode key)
     {
         switch (key)
         {
