@@ -16,7 +16,6 @@ public class CustomerPatience : MonoBehaviour
 
     private bool isRunning = false;
     private bool isInitialized = false;
-    private bool isForced = false;
 
     public void StartPatience()
     {
@@ -35,7 +34,6 @@ public class CustomerPatience : MonoBehaviour
 
         currentHeartIndex = 0;
         isRunning = true;
-        isForced = false;
         timePerHeart = totalPatienceTime / redHearts.Length;
 
         foreach (var heart in redHearts)
@@ -59,7 +57,6 @@ public class CustomerPatience : MonoBehaviour
 
         currentHeartIndex = 0;
         isRunning = true;
-        isForced = true;
         timePerHeart = forcedSeconds / redHearts.Length;
 
         foreach (var heart in redHearts)

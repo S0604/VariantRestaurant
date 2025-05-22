@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
-using System.Collections.Generic;
 
 public class Customer : MonoBehaviour
 {
@@ -19,24 +18,27 @@ public class Customer : MonoBehaviour
     private bool hasGeneratedOrder = false;
     private float idleTimer = 0f;
 
+    private bool waitingToJoinQueue = true;
+
     private void Start()
     {
         customerOrder = GetComponent<CustomerOrder>();
-
         if (targetCamera == null)
             targetCamera = Camera.main;
 
-        if (CustomerQueueManager.Instance != null)
-            CustomerQueueManager.Instance.JoinQueue(this);
-
         // ✅ 通知 ModeToggleManager 有新顧客
-        if (ModeToggleManager.Instance != null)
-            ModeToggleManager.Instance.RegisterCustomer(this);
+        ModeToggleManager.Instance?.RegisterCustomer(this);
     }
 
     private void Update()
     {
         if (agent == null || animator == null) return;
+
+        if (waitingToJoinQueue)
+        {
+            TryJoinQueue();
+            return;
+        }
 
         float speed = agent.velocity.magnitude;
         animator.SetFloat("Speed", speed);
@@ -75,6 +77,22 @@ public class Customer : MonoBehaviour
             animator.SetFloat("BlendY", dir.z);
             isIdle = false;
             idleTimer = 0f;
+        }
+    }
+
+    private void TryJoinQueue()
+    {
+        if (ModeToggleManager.Instance != null && ModeToggleManager.Instance.IsClosingPhase)
+        {
+            LeaveAndDespawn();
+            return;
+        }
+
+        int slot = CustomerQueueManager.Instance.FindFirstAvailableSlot();
+        if (slot != -1)
+        {
+            if (CustomerQueueManager.Instance.AssignCustomerToSlot(this, slot))
+                waitingToJoinQueue = false;
         }
     }
 
@@ -135,4 +153,16 @@ public class Customer : MonoBehaviour
             yield return null;
         }
     }
+    public void ReceiveOrder()
+    {
+        Debug.Log($"{gameObject.name} 收到餐點，立即離開");
+        LeaveAndDespawn();
+    }
+
+    private IEnumerator LeaveAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        LeaveAndDespawn();
+    }
+
 }

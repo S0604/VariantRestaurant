@@ -14,3 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   allMenuItems:
   - {fileID: 11400000, guid: 956de55f422cee943ae716a622d4a314, type: 2}
+  - {fileID: 11400000, guid: cfc1e880bbb88124fa685f26e9e9cd72, type: 2}
+  - {fileID: 11400000, guid: c5c702970a98ee54c8131b552af558a4, type: 2}

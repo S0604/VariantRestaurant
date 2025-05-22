@@ -90,7 +90,19 @@ public class ModeToggleManager : MonoBehaviour
         SetActiveGroup(businessModeUIs, businessModeScripts, false);
         SetActiveGroup(closedModeUIs, closedModeScripts, true);
 
+        // 新增：清空所有 Inventory
+        ClearAllInventories();
+
         Debug.Log("🛑 進入歇業模式");
+    }
+
+    private void ClearAllInventories()
+    {
+        Inventory[] inventories = FindObjectsOfType<Inventory>();
+        foreach (var inventory in inventories)
+        {
+            inventory.ClearItems();
+        }
     }
 
     private IEnumerator HandleClosingPhase()
@@ -130,4 +142,6 @@ public class ModeToggleManager : MonoBehaviour
             if (script != null) script.enabled = isActive;
         }
     }
+
+
 }
