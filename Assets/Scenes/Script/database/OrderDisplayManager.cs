@@ -175,7 +175,21 @@ public class OrderDisplayManager : MonoBehaviour
                 var checkmark = slot.Find("Checkmark")?.gameObject;
                 if (checkmark != null)
                 {
-                    checkmark.SetActive(group.completedCount >= group.totalCount);
+                    bool shouldShow = group.completedCount >= group.totalCount;
+                    if (shouldShow)
+                    {
+                        // 顯示並播放縮放動畫
+                        checkmark.SetActive(true);
+                        checkmark.transform.localScale = Vector3.zero;
+                        checkmark.transform.DOScale(Vector3.one, 0.3f)
+                            .SetEase(Ease.OutBack)
+                            .SetLink(checkmark, LinkBehaviour.KillOnDestroy);
+                    }
+                    else
+                    {
+                        // 直接隱藏
+                        checkmark.SetActive(false);
+                    }
                 }
             }
         }

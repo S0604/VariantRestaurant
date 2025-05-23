@@ -2,11 +2,10 @@
 
 public class GetItemOnInteract : MonoBehaviour
 {
-    public MenuItem menuItem; // 要給玩家的物品
-    public Inventory playerInventory; // 玩家物品欄
-    public float interactRange = 3f; // 互動距離
-
+    public MenuItem menuItem;
+    public Inventory playerInventory;
     private Transform player;
+    private bool isPlayerInTrigger = false;
 
     void Start()
     {
@@ -17,21 +16,35 @@ public class GetItemOnInteract : MonoBehaviour
 
     void Update()
     {
-        if (player == null) return;
+        if (player == null || !isPlayerInTrigger) return;
 
-        float distance = Vector3.Distance(transform.position, player.position);
-        if (distance <= interactRange && Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E))
         {
             if (playerInventory.items.Count < playerInventory.maxSlots)
             {
                 playerInventory.AddItem(menuItem);
                 Debug.Log($"獲得物品：{menuItem.itemName}");
-                // 不再銷毀物件，Cube會一直存在，可以多次互動
             }
             else
             {
                 Debug.Log("物品欄已滿，無法獲得物品");
             }
+        }
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            isPlayerInTrigger = true;
+        }
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            isPlayerInTrigger = false;
         }
     }
 }

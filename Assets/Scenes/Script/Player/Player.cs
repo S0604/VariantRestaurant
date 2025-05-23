@@ -7,7 +7,7 @@ public class Player : MonoBehaviour
 
     private Animator animator;
     private Vector3 lastDirection;
-    private float moveSpeed = 4f;
+    private float moveSpeed = 6f;
 
     void Start()
     {
