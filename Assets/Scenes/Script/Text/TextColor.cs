@@ -2,10 +2,11 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class TextColor : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
+public class TextColor : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
 {
     public TMP_Text buttonText;
     public Color hoverColor = Color.black;
+    public Color pressedColor = Color.gray;
 
     private Color originalColor;
     private bool isHovering = false;
@@ -33,8 +34,17 @@ public class TextColor : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        EventSystem.current.SetSelectedGameObject(null); // 避免卡在 selected
-        UpdateTextColor(); // 再次根據 hover 狀態更新文字顏色
+        EventSystem.current.SetSelectedGameObject(null);
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        buttonText.color = pressedColor; // 按住時變色
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        UpdateTextColor(); // 放開時恢復
     }
 
     private void OnDisable()
