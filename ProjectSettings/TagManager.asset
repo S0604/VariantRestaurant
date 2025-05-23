@@ -5,7 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Chair
-  - NPC
+  - Customer
   layers:
   - Default
   - TransparentFX
@@ -14,8 +14,8 @@ TagManager:
   - Water
   - UI
   - UICamera
-  - 
-  - 
+  - Customer
+  - Obstacle
   - 
   - 
   - 
