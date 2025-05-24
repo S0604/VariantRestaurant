@@ -1,0 +1,9 @@
+技能名稱-8PT NOTO SANS TC 粗字體
+
+色號-FFD800
+
+
+技能說明文字-6PT NOTO SANS TC 細字體
+
+
+色號-FFFFFF
