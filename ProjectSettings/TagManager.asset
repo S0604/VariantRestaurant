@@ -4,7 +4,6 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Chair
   - Customer
   layers:
   - Default
@@ -13,9 +12,9 @@ TagManager:
   - 
   - Water
   - UI
-  - UICamera
   - Customer
-  - Obstacle
+  - WallLayer
+  - 
   - 
   - 
   - 
