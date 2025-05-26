@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.Video;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class DrinkMinigame : BaseMinigame
 {
@@ -23,11 +24,13 @@ public class DrinkMinigame : BaseMinigame
     private List<Image> sequenceIcons = new List<Image>();
     private List<KeyCode> playerInput = new List<KeyCode>();
 
-    private string selectedSetFolder;
     private GameObject currentStage;
     private VideoPlayer videoPlayer;
     private CanvasGroup stageCanvasGroup;
     private bool hasStartedStage = false;
+
+    private Dictionary<string, List<VideoClip>> videoSets = new Dictionary<string, List<VideoClip>>();
+    private List<VideoClip> currentSetClips = new List<VideoClip>();
 
     protected override string GetMinigameName()
     {
@@ -56,6 +59,9 @@ public class DrinkMinigame : BaseMinigame
             Debug.LogError("VideoPlayer component not found in stagePrefab!");
         if (stageCanvasGroup != null)
             stageCanvasGroup.alpha = 0f;
+
+        LoadAllVideoSets();
+        SelectRandomVideoSet();
 
         for (int i = 0; i < 5; i++)
             sequence.Add(wasdKeys[Random.Range(0, wasdKeys.Length)]);
@@ -158,16 +164,20 @@ public class DrinkMinigame : BaseMinigame
 
     IEnumerator UpdateStageAsync(int stepIndex)
     {
-        string folderPath = $"{stageVideoBasePath}/Layer{stepIndex}";
-        VideoClip selectedClip = LoadRandomVideoClip(folderPath);
+        if (stepIndex >= currentSetClips.Count)
+        {
+            Debug.LogWarning("Step index exceeds available video clips.");
+            yield break;
+        }
 
-        if (selectedClip != null && videoPlayer != null)
+        VideoClip clip = currentSetClips[stepIndex];
+        if (clip != null && videoPlayer != null)
         {
             videoPlayer.Stop();
             videoPlayer.clip = null;
             yield return null;
 
-            videoPlayer.clip = selectedClip;
+            videoPlayer.clip = clip;
             videoPlayer.Prepare();
 
             while (!videoPlayer.isPrepared)
@@ -183,16 +193,49 @@ public class DrinkMinigame : BaseMinigame
         }
         else
         {
-            Debug.LogWarning($"No video found or VideoPlayer is null in {folderPath}");
+            Debug.LogWarning($"Clip not found for step {stepIndex}");
         }
     }
 
-    VideoClip LoadRandomVideoClip(string folderPath)
+    void LoadAllVideoSets()
     {
-        VideoClip[] clips = Resources.LoadAll<VideoClip>(folderPath);
-        if (clips != null && clips.Length > 0)
-            return clips[Random.Range(0, clips.Length)];
-        return null;
+        videoSets.Clear();
+        VideoClip[] allClips = Resources.LoadAll<VideoClip>(stageVideoBasePath);
+
+        foreach (var clip in allClips)
+        {
+            string name = clip.name;
+
+            int splitIndex = name.IndexOf("_Step");
+            if (splitIndex > 0)
+            {
+                string setName = name.Substring(0, splitIndex);
+                if (!videoSets.ContainsKey(setName))
+                    videoSets[setName] = new List<VideoClip>();
+
+                videoSets[setName].Add(clip);
+            }
+        }
+
+        // ±Æ§Ç clips ¨Ì·Ó Step0~4 ¶¶§Ç
+        foreach (var set in videoSets.Values)
+        {
+            set.Sort((a, b) => a.name.CompareTo(b.name));
+        }
+    }
+
+    void SelectRandomVideoSet()
+    {
+        if (videoSets.Count == 0)
+        {
+            Debug.LogWarning("No video sets found!");
+            currentSetClips = new List<VideoClip>();
+            return;
+        }
+
+        var setKeys = videoSets.Keys.ToList();
+        string selectedKey = setKeys[Random.Range(0, setKeys.Count)];
+        currentSetClips = videoSets[selectedKey];
     }
 
     Sprite GetDrinkKeySprite(KeyCode key)
