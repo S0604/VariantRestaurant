@@ -3,11 +3,12 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public bool canMove = true; // ✅ 加在這裡！
+    public bool canMove = true; // 加在這裡！
 
     private Animator animator;
     private Vector3 lastDirection;
-    private float moveSpeed = 6f;
+    private float moveSpeed = 8f;
+    public bool isCooking = false;
 
     void Start()
     {
@@ -16,13 +17,15 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        if (!canMove) return; // ✅ 加入移動控制
 
-        float inputX = Input.GetAxis("Horizontal");
-        float inputY = Input.GetAxis("Vertical");
+        canMove = !isCooking;
+
+        if (!canMove) return; // 加入移動控制
+
+        float inputX = Input.GetAxisRaw("Horizontal");
+        float inputY = Input.GetAxisRaw("Vertical");
 
         Vector3 direction = new Vector3(inputX, 0, inputY);
-
 
         if (direction.magnitude > 0)
         {
@@ -34,6 +37,7 @@ public class Player : MonoBehaviour
         {
             animator.SetBool("Ismoving", false);
         }
+
         animator.SetFloat("InputX", lastDirection.x);
         animator.SetFloat("InputY", lastDirection.z);
     }
@@ -42,4 +46,6 @@ public class Player : MonoBehaviour
     {
         transform.position += direction.normalized * moveSpeed * Time.deltaTime;
     }
+
+
 }

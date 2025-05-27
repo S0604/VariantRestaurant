@@ -77,7 +77,7 @@ public class ModeToggleManager : MonoBehaviour
         SetActiveGroup(businessModeUIs, businessModeScripts, true);
         SetActiveGroup(closedModeUIs, closedModeScripts, false);
 
-        Debug.Log("✅ 進入營業模式");
+        Debug.Log("進入營業模式");
     }
 
     private void EnterClosedMode()
@@ -93,30 +93,30 @@ public class ModeToggleManager : MonoBehaviour
         // 新增：清空所有 Inventory
         ClearAllInventories();
 
-        Debug.Log("🛑 進入歇業模式");
+        Debug.Log("進入歇業模式");
     }
 
     private void ClearAllInventories()
     {
-        Inventory[] inventories = FindObjectsOfType<Inventory>();
-        foreach (var inventory in inventories)
+        if (InventoryManager.Instance != null)
         {
-            inventory.ClearItems();
+            InventoryManager.Instance.ClearInventory(); // 使用新版方法
         }
     }
+
 
     private IEnumerator HandleClosingPhase()
     {
         isClosingPhase = true;
-        Debug.Log("🔔 營業即將結束，開始關店準備");
+        Debug.Log("營業即將結束，開始關店準備");
 
         while (aliveCustomers.Count > 0)
         {
-            Debug.Log($"⏳ 等待顧客離場中，剩餘：{aliveCustomers.Count}");
+            Debug.Log($"等待顧客離場中，剩餘：{aliveCustomers.Count}");
             yield return new WaitForSeconds(1f);
         }
 
-        Debug.Log("✅ 所有顧客已離場，切換至歇業模式");
+        Debug.Log("所有顧客已離場，切換至歇業模式");
         EnterClosedMode();
     }
 

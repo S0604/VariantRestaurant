@@ -36,32 +36,30 @@ public abstract class BaseMinigame : MonoBehaviour
     [Header("指令鍵")]
     public KeyCode[] wasdKeys = new KeyCode[] { KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D };
 
-    [Header("完成紀錄圖片")]
-    [HideInInspector] public Transform dishDisplayContainer;
-    [HideInInspector] public GameObject dishDisplayPrefab;
-    [HideInInspector] public Sprite[] rankSprites;
-    [HideInInspector] public string minigameType;
     public static BaseMinigame CurrentInstance { get; private set; }
+
+    public MenuItem baseMenuItem;   // 此小遊戲對應的料理種類（漢堡、薯條、飲料）
+    public MenuItem garbageItem;    // 共用垃圾 MenuItem
+
+    protected DishGrade evaluatedGrade;
 
     protected float timer;
     protected System.Action<bool, int> onCompleteCallback;
     protected bool isPlaying = false;
     private bool hasEnded = false;
 
-    protected static List<DishRecord> completedDishes = new List<DishRecord>();
+    [Header("料理顯示")]
+    public Transform dishDisplayContainer;
+    public GameObject dishDisplayPrefab;
 
-    public static List<DishRecord> GetCompletedDishes()
+    public enum DishGrade
     {
-        return new List<DishRecord>(completedDishes); // 傳回複製版以防外部更改
+        Perfect = 3,
+        Good = 2,
+        OK = 1,
+        Bad = -1,
+        Fail = 0
     }
-
-    public struct DishRecord
-    {
-        public string dishName;
-        public int rank;
-        public Sprite sprite; // 新增：實際要顯示的圖片
-    }
-
 
     public virtual void StartMinigame(System.Action<bool, int> callback)
     {
@@ -115,7 +113,8 @@ public abstract class BaseMinigame : MonoBehaviour
 
         if (anim != null) Destroy(anim);
 
-        RecordDishResult(GetMinigameName(), rank);
+        evaluatedGrade = (DishGrade)rank;
+
         FinishMinigame(true, rank);
     }
 
@@ -132,7 +131,7 @@ public abstract class BaseMinigame : MonoBehaviour
 
         if (anim != null) Destroy(anim);
 
-
+        evaluatedGrade = DishGrade.Fail;
 
         FinishMinigame(false, 0);
     }
@@ -144,102 +143,56 @@ public abstract class BaseMinigame : MonoBehaviour
         if (player != null)
             player.isCooking = false;
 
-        RecordDishResult(GetMinigameName(), 0);
-
         onCompleteCallback?.Invoke(success, rank);
-
+        GenerateMenuItemByGrade(evaluatedGrade);
     }
 
-    protected void RecordDishResult(string dishName, int rank)
+    protected void GenerateMenuItemByGrade(DishGrade grade)
     {
-        if (rank < 0 || rank >= rankSprites.Length) return;
+        Debug.Log($"[Minigame] grade: {grade}, baseMenuItem: {baseMenuItem}, garbageItem: {garbageItem}, InventoryManager: {InventoryManager.Instance}");
 
-        if (completedDishes.Count >= 2)
-            completedDishes.RemoveAt(0);
+        MenuItem itemToAdd = null;
 
-        completedDishes.Add(new DishRecord
+        if (grade == DishGrade.Fail || grade == DishGrade.Bad)
         {
-            dishName = dishName,
-            rank = rank,
-            sprite = rankSprites[rank] // ← 存下來，未來不需要靠 minigameType 判斷
-        });
+            itemToAdd = garbageItem;
+        }
+        else
+        {
+            itemToAdd = Instantiate(baseMenuItem);
+            itemToAdd.grade = grade;
+        }
 
-        UpdateDishDisplay();
+        if (itemToAdd != null)
+        {
+            InventoryManager.Instance.AddItem(itemToAdd);
+            UpdateDishDisplay();
+        }
     }
-
 
     protected void UpdateDishDisplay()
     {
         if (dishDisplayContainer == null || dishDisplayPrefab == null) return;
 
         foreach (Transform child in dishDisplayContainer)
-        {
             Destroy(child.gameObject);
-        }
 
-        foreach (DishRecord record in completedDishes)
+        List<MenuItem> allItems = InventoryManager.Instance.GetAllItems();
+        int count = Mathf.Min(2, allItems.Count);
+
+        for (int i = allItems.Count - count; i < allItems.Count; i++)
         {
+            MenuItem item = allItems[i];
             GameObject dishObj = Instantiate(dishDisplayPrefab, dishDisplayContainer);
             Image img = dishObj.GetComponent<Image>();
-
-            img.sprite = record.sprite; // ← 使用記錄下來的圖片
+            img.sprite = item.GetSpriteByGrade((ItemGrade)item.grade);
         }
-    }
-
-
-
-    public void InitializeDisplay(string type, Transform container, GameObject prefab, Sprite[] sprites)
-    {
-        minigameType = type;
-        dishDisplayContainer = container;
-        dishDisplayPrefab = prefab;
-        rankSprites = sprites;
-        CurrentInstance = this;
-    }
-
-
-    protected void ShowDisplayDish(int rank)
-    {
-        if (dishDisplayContainer == null || dishDisplayPrefab == null || rankSprites == null) return;
-
-        while (dishDisplayContainer.childCount >= 2)
-            Destroy(dishDisplayContainer.GetChild(0).gameObject);
-
-        GameObject dishObj = Instantiate(dishDisplayPrefab, dishDisplayContainer);
-        Image img = dishObj.GetComponent<Image>();
-
-        int spriteIndex = Mathf.Clamp(rank, 0, rankSprites.Length - 1);
-        img.sprite = rankSprites[spriteIndex];
     }
 
     public static bool HasMaxDishRecords()
     {
-        return completedDishes.Count >= 2;
+        return InventoryManager.Instance.GetItemCount() >= 2;
     }
-
-    public static void ClearAllDishRecords()
-    {
-        completedDishes.Clear();
-
-        Debug.Log($"清除紀錄，CurrentInstance: {(CurrentInstance == null ? "NULL" : CurrentInstance.name)}");
-
-    }
-
-
-
-    public static void ClearCompletedDishes(Transform dishDisplayContainer)
-    {
-        completedDishes.Clear();
-
-        if (dishDisplayContainer != null)
-        {
-            foreach (Transform child in dishDisplayContainer)
-            {
-                GameObject.Destroy(child.gameObject);
-            }
-        }
-    }
-
 
     protected abstract string GetMinigameName();
 
@@ -257,7 +210,4 @@ public abstract class BaseMinigame : MonoBehaviour
         }
         return null;
     }
-
-
-
 }

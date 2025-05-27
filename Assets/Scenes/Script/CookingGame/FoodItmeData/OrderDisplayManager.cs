@@ -151,6 +151,8 @@ public class OrderDisplayManager : MonoBehaviour
             displayObj.transform.Find("Panel/圖樣"),
             displayObj.transform.Find("Panel/圖樣(1)")
         };
+        
+        if (order == null || order.selectedItems == null || order.selectedItems.Count == 0) return;
 
         for (int i = 0; i < slots.Length; i++)
         {
@@ -169,7 +171,10 @@ public class OrderDisplayManager : MonoBehaviour
                 if (lightImage != null)
                 {
                     int count = Mathf.Clamp(group.totalCount - group.completedCount, 0, MaxLights);
-                    lightImage.sprite = quantityLightSprites[count];
+                    if (quantityLightSprites != null && count < quantityLightSprites.Length)
+                    {
+                        lightImage.sprite = quantityLightSprites[count];
+                    }
                 }
 
                 var checkmark = slot.Find("Checkmark")?.gameObject;

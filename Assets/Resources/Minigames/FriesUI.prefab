@@ -1222,6 +1222,8 @@ MonoBehaviour:
   failAnimationContainer: {fileID: 524881280416591369}
   failAnimation: {fileID: 524881279927827434}
   wasdKeys: 77000000610000007300000064000000
+  baseMenuItem: {fileID: 11400000, guid: cfc1e880bbb88124fa685f26e9e9cd72, type: 2}
+  garbageItem: {fileID: 11400000, guid: f4a0791f29141d74aa2252155ba1893a, type: 2}
   upIcon: {fileID: 21300000, guid: ab2d3e4a08d3f6c409bbd2b018dde3eb, type: 3}
   downIcon: {fileID: 21300000, guid: 6a35063786a1b0a408a9ef69e19897e8, type: 3}
   leftIcon: {fileID: 21300000, guid: afcc76688877f1442bb40e133c54fae8, type: 3}

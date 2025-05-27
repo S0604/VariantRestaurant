@@ -6,13 +6,12 @@ using UnityEngine;
 public class SubmitPoint : MonoBehaviour
 {
     public float interactRange = 3f;
-    public Inventory playerInventory;
     public CustomerQueueManager queueManager;
     public Transform playerTransform;
 
     void Update()
     {
-        if (playerTransform == null || playerInventory == null || queueManager == null)
+        if (playerTransform == null || queueManager == null || InventoryManager.Instance == null)
             return;
 
         float distance = Vector3.Distance(transform.position, playerTransform.position);
@@ -45,14 +44,16 @@ public class SubmitPoint : MonoBehaviour
             return;
         }
 
-        // 找出玩家物品欄中所有符合訂單需求的物品
+        // 從 InventoryManager 取得物品
+        var inventoryItems = InventoryManager.Instance.GetItems();
         var possibleItems = new List<MenuItem>();
-        foreach (var playerItem in playerInventory.items)
+
+        foreach (var item in inventoryItems)
         {
-            if (order.selectedItems.Any(item =>
-                item.menuItem.itemTag == playerItem.itemTag && !item.isCompleted))
+            if (order.selectedItems.Any(orderItem =>
+                orderItem.menuItem.itemTag == item.itemTag && !orderItem.isCompleted))
             {
-                possibleItems.Add(playerItem);
+                possibleItems.Add(item);
             }
         }
 
@@ -62,31 +63,23 @@ public class SubmitPoint : MonoBehaviour
             return;
         }
 
-        // 一次提交所有符合條件的餐點
         int submittedCount = 0;
-        foreach (var playerItem in possibleItems)
+        foreach (var item in possibleItems)
         {
-            // 找到訂單中所有未完成的對應餐點，標記為完成
             foreach (var orderItem in order.selectedItems)
             {
-                if (orderItem.menuItem.itemTag == playerItem.itemTag && !orderItem.isCompleted)
+                if (orderItem.menuItem.itemTag == item.itemTag && !orderItem.isCompleted)
                 {
                     orderItem.isCompleted = true;
                     submittedCount++;
-                    break; // 只標記一個
+                    InventoryManager.Instance.RemoveItem(item);
+                    break;
                 }
             }
         }
 
-        // 從玩家物品欄移除所有已提交的餐點
-        for (int i = 0; i < submittedCount; i++)
-        {
-            playerInventory.RemoveItem(possibleItems[i]);
-        }
-
         Debug.Log($"提交了 {submittedCount} 份餐點給顧客");
 
-        // UI 刷新
         OrderDisplayManager.Instance.UpdateOrderDisplayImagesForCustomer(firstCustomer);
 
         if (order.IsOrderComplete())
@@ -98,7 +91,7 @@ public class SubmitPoint : MonoBehaviour
 
     IEnumerator DelayCustomerLeave(Customer customer)
     {
-        yield return new WaitForSeconds(0.5f); // 延遲0.5秒
+        yield return new WaitForSeconds(0.5f);
         customer.ReceiveOrder();
         queueManager.LeaveQueue(customer);
     }

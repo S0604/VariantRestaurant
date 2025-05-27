@@ -5,20 +5,6 @@ public class MinigameManager : MonoBehaviour
 {
     public static MinigameManager Instance { get; private set; }
 
-    [Header("結果圖示管理")]
-    public Transform dishDisplayContainer;
-    public GameObject dishDisplayPrefab;
-    public List<RankSpriteSet> rankSpriteSets = new List<RankSpriteSet>();
-
-
-
-    [System.Serializable]
-    public class RankSpriteSet
-    {
-        public string minigameType;
-        public Sprite[] rankSprites; // index 0 = 失敗圖，1~3 = 成功圖
-    }
-
 
     public List<MinigameEntry> minigames = new List<MinigameEntry>();
     public Transform minigameContainer;
@@ -44,12 +30,6 @@ public class MinigameManager : MonoBehaviour
     {
         public string minigameType;      // 例如 "Burger" 或 "Fries"
         public string resourcePath;      // 例如 "Minigames/BurgerMinigame"
-    }
-
-    private Sprite[] GetSpritesForType(string type)
-    {
-        RankSpriteSet set = rankSpriteSets.Find(s => s.minigameType == type);
-        return set != null ? set.rankSprites : null;
     }
 
     public void StartMinigame(string type, System.Action<bool, int> onComplete)
@@ -83,8 +63,6 @@ public class MinigameManager : MonoBehaviour
 
         GameObject instanceObj = Instantiate(prefab, minigameContainer);
         currentMinigame = instanceObj.GetComponent<BaseMinigame>();
-        Sprite[] sprites = GetSpritesForType(type);
-        currentMinigame.InitializeDisplay(type, dishDisplayContainer, dishDisplayPrefab, sprites);
 
         if (currentMinigame == null)
         {
@@ -100,21 +78,6 @@ public class MinigameManager : MonoBehaviour
             currentMinigame = null;
         });
     }
-
-    public void RefreshDishDisplay()
-    {
-        if (dishDisplayContainer == null || dishDisplayPrefab == null) return;
-
-        foreach (Transform child in dishDisplayContainer)
-        {
-            Destroy(child.gameObject);
-        }
-
-        // 因為已經清空 completedDishes，所以不需要重建任何圖示
-        Debug.Log("Manager 收到清除通知，已刷新畫面！");
-    }
-
-
 
 }
 

@@ -13,6 +13,12 @@ public class CustomerOrder : MonoBehaviour
 {
     public List<OrderItem> selectedItems = new List<OrderItem>();
     public bool IsOrderReady { get; private set; } = false;
+    private BaseMinigame baseMinigame;
+
+    void Start()
+    {
+        baseMinigame = FindObjectOfType<BaseMinigame>(); // 或透過其他方式取得參考
+    }
 
     public void GenerateOrder(MenuDatabase database, int minItems = 1, int maxItems = 2)
     {
@@ -41,12 +47,19 @@ public class CustomerOrder : MonoBehaviour
     }
 
     // 提交物品時呼叫，標記符合 itemTag 的項目為完成
-    public bool SubmitItem(string itemTag)
+    public bool SubmitItem(MenuItem submittedItem)
     {
+        if (submittedItem.grade == BaseMinigame.DishGrade.Fail ||
+            submittedItem == BaseMinigame.CurrentInstance.garbageItem)
+        {
+            Debug.Log("Garbage cannot be submitted.");
+            return false;
+        }
+
         bool found = false;
         foreach (var orderItem in selectedItems)
         {
-            if (orderItem.menuItem.itemTag == itemTag && !orderItem.isCompleted)
+            if (orderItem.menuItem.itemTag == submittedItem.itemTag && !orderItem.isCompleted)
             {
                 orderItem.isCompleted = true;
                 found = true;
