@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ModeToggleManager : MonoBehaviour
 {
@@ -21,6 +22,10 @@ public class ModeToggleManager : MonoBehaviour
     public GameObject[] closedModeUIs;
     public MonoBehaviour[] closedModeScripts;
 
+    [Header("音樂管理")]
+    public AudioSource businessMusicSource;
+    public AudioSource closedMusicSource;
+
     private float remainingTime;
     private bool isBusinessMode = false;
     private bool isClosingPhase = false;
@@ -37,7 +42,7 @@ public class ModeToggleManager : MonoBehaviour
 
     private void Start()
     {
-        EnterClosedMode(); // 初始為歇業
+        EnterClosedMode();
     }
 
     private void Update()
@@ -76,6 +81,8 @@ public class ModeToggleManager : MonoBehaviour
 
         SetActiveGroup(businessModeUIs, businessModeScripts, true);
         SetActiveGroup(closedModeUIs, closedModeScripts, false);
+        if (businessMusicSource != null) businessMusicSource.Play();
+        if (closedMusicSource != null) closedMusicSource.Stop();
 
         Debug.Log("✅ 進入營業模式");
     }
@@ -92,6 +99,9 @@ public class ModeToggleManager : MonoBehaviour
 
         // 新增：清空所有 Inventory
         ClearAllInventories();
+
+        if (closedMusicSource != null) closedMusicSource.Play();
+        if (businessMusicSource != null) businessMusicSource.Stop();
 
         Debug.Log("🛑 進入歇業模式");
     }
@@ -142,6 +152,4 @@ public class ModeToggleManager : MonoBehaviour
             if (script != null) script.enabled = isActive;
         }
     }
-
-
 }
