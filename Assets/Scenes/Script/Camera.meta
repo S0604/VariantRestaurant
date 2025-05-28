@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Resources/DrinkAssets.meta
+guid: 8c13189e206948b4990a9250d1f92682
+========
 guid: 95e1e434faf722a4885db7dfc64b7ce8
+>>>>>>>> main:Assets/Scenes/Script/Camera.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
