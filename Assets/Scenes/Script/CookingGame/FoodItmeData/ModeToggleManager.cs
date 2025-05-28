@@ -144,13 +144,11 @@ public class ModeToggleManager : MonoBehaviour
 
     private void ClearAllInventories()
     {
-        Inventory[] inventories = FindObjectsOfType<Inventory>();
-        foreach (var inventory in inventories)
+        if (InventoryManager.Instance != null)
         {
-            inventory.ClearItems();
+            InventoryManager.Instance.ClearInventory(); // 使用新版方法
         }
     }
-
     private IEnumerator HandleClosingPhase()
     {
         isClosingPhase = true;

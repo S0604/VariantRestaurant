@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:Assets/Scenes/UI/鼠標.png.meta
-guid: db2590b415ea5eb4e98d2ed166598595
-========
-guid: b67a58e3d44df3441a9ec9af598ace63
->>>>>>>> UI20250422_1:Assets/Resources/CookingUI/BurgerMinigame/漢堡製作面板UI 1.png.meta
+guid: 9df4a8ef2ae834b4b8693a4019243ce9
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -24,7 +20,7 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
-  isReadable: 1
+  isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
@@ -57,11 +53,7 @@ TextureImporter:
   alphaUsage: 1
   alphaIsTransparency: 1
   spriteTessellationDetail: -1
-<<<<<<<< HEAD:Assets/Scenes/UI/鼠標.png.meta
-  textureType: 7
-========
   textureType: 8
->>>>>>>> UI20250422_1:Assets/Resources/CookingUI/BurgerMinigame/漢堡製作面板UI 1.png.meta
   textureShape: 1
   singleChannelComponent: 0
   flipbookRows: 1
@@ -70,15 +62,15 @@ TextureImporter:
   compressionQualitySet: 0
   textureFormatSet: 0
   ignorePngGamma: 0
-  applyGammaDecoding: 0
-  cookieLightType: 0
+  applyGammaDecoding: 1
+  cookieLightType: 2
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 32
+    maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -90,7 +82,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -102,7 +94,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
