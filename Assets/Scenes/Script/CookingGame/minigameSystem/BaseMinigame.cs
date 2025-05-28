@@ -56,8 +56,7 @@ public abstract class BaseMinigame : MonoBehaviour
     {
         Perfect = 3,
         Good = 2,
-        OK = 1,
-        Bad = -1,
+        Bad = 1,
         Fail = 0
     }
 

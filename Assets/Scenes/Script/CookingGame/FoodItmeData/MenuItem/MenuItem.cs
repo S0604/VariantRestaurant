@@ -4,8 +4,6 @@ public enum ItemGrade
 {
     Perfect,
     Good,
-    Okay,
-    Bad,
     Garbage
 }
 
@@ -25,5 +23,6 @@ public class MenuItem : ScriptableObject
         if (index >= 0 && index < gradeSprites.Length)
             return gradeSprites[index];
         return null;
+
     }
 }

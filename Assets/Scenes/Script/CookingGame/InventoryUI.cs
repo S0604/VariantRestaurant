@@ -11,6 +11,7 @@ public class InventoryUI : MonoBehaviour
 
     private void OnEnable()
     {
+        Debug.Log("InventoryUI OnEnable");
         InventoryManager.OnInventoryChanged += UpdateUI;
     }
 
@@ -21,6 +22,12 @@ public class InventoryUI : MonoBehaviour
 
     public void UpdateUI(List<MenuItem> items)
     {
+        if (itemImagePrefab == null || itemContainer == null)
+        {
+            Debug.LogError("Prefab 或 Container 沒有設定！");
+            return;
+        }
+
         // 清除現有的圖片
         foreach (var img in spawnedImages)
         {
@@ -37,18 +44,22 @@ public class InventoryUI : MonoBehaviour
 
             if (imageComponent != null && item != null)
             {
-                imageComponent.sprite = item.itemImage;
+                // 轉換 DishGrade -> ItemGrade 並取得對應圖片
+                ItemGrade convertedGrade = (ItemGrade)(int)item.grade;
+                imageComponent.sprite = item.GetSpriteByGrade(convertedGrade);
                 imageComponent.color = Color.white;
             }
 
-            // 自動排列（如果沒用 layout group，可手動位移）
             RectTransform rt = newImageObj.GetComponent<RectTransform>();
             if (rt != null)
             {
-                rt.anchoredPosition = new Vector2(i * 100f, 0); // 每張間距 100，可調整
+                rt.anchoredPosition = new Vector2(i * 100f, 0);
             }
 
             spawnedImages.Add(newImageObj);
         }
+
+        Debug.Log($"更新 UI：收到 {items.Count} 個物品");
     }
+
 }

@@ -36,10 +36,10 @@ public class InventoryManager : MonoBehaviour
             Debug.Log("背包已滿，無法加入新物品");
             return false;
         }
-
-        NotifyInventoryChanged();
+        
         items.Add(newItem);
-        inventoryUI?.UpdateUI(items);
+        NotifyInventoryChanged();
+        Debug.Log($"加入新物品：{newItem.name}");
         return true;
     }
 
@@ -57,7 +57,6 @@ public class InventoryManager : MonoBehaviour
     public void ClearItems()
     {
         items.Clear();
-        inventoryUI?.UpdateUI(items);
         Debug.Log("玩家背包已清空");
         NotifyInventoryChanged();
     }
@@ -69,7 +68,7 @@ public class InventoryManager : MonoBehaviour
 
     private void NotifyInventoryChanged()
     {
-        OnInventoryChanged?.Invoke(new List<MenuItem>(inventoryItems));
+        OnInventoryChanged?.Invoke(new List<MenuItem>(items));
     }
 
     // === 為了相容舊程式碼新增的 API ===

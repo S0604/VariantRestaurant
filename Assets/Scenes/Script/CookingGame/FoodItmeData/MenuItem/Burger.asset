@@ -17,5 +17,7 @@ MonoBehaviour:
   gradeSprites:
   - {fileID: 21300000, guid: 049bee0276250814089fa5169fa83178, type: 3}
   - {fileID: 21300000, guid: 07e57d28181d1574bbb657b92855cdb5, type: 3}
+  - {fileID: 21300000, guid: 95be4c4127f55554c98b3d5d668728cc, type: 3}
+  - {fileID: 21300000, guid: 95be4c4127f55554c98b3d5d668728cc, type: 3}
   itemTag: 001
   itemImage: {fileID: 21300000, guid: 95be4c4127f55554c98b3d5d668728cc, type: 3}
