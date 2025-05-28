@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -45,12 +46,46 @@ public class ModeToggleManager : MonoBehaviour
         EnterClosedMode();
     }
 
+    // 新增強制離場判斷條件
+    private void ForceLeaveCustomers()
+    {
+        foreach (Customer customer in aliveCustomers.ToArray())
+        {
+            // 透過 CustomerQueueManager 判斷隊伍狀態
+            bool isInQueue = CustomerQueueManager.Instance.IsInQueue(customer);
+            int queuePosition = CustomerQueueManager.Instance.GetCurrentQueue().IndexOf(customer);
+
+            if (!isInQueue || queuePosition >= 4)
+            {
+                customer.LeaveImmediately(); // 需在 Customer 類別實作此方法
+                aliveCustomers.Remove(customer);
+            }
+        }
+    }
+
+    // 新增全員強制離場
+    private void ForceLeaveAllCustomers()
+    {
+        foreach (Customer customer in aliveCustomers.ToArray())
+        {
+            customer.LeaveImmediately();
+            aliveCustomers.Remove(customer);
+        }
+    }
+
+    // 修改 Update 方法
     private void Update()
     {
         if (!isBusinessMode) return;
 
         remainingTime -= Time.deltaTime;
         timeSystem.UpdateTimeVisual(Mathf.Clamp01(remainingTime / businessDuration));
+
+        // 新增 15 秒判斷
+        if (Mathf.Approximately(remainingTime, 15f) || remainingTime <= 15f)
+        {
+            ForceLeaveCustomers();
+        }
 
         if (!isClosingPhase && remainingTime <= closingBufferTime)
         {
@@ -60,6 +95,7 @@ public class ModeToggleManager : MonoBehaviour
         if (remainingTime <= 0f)
         {
             remainingTime = 0f;
+            ForceLeaveAllCustomers(); // 時間到時全員離場
         }
     }
 

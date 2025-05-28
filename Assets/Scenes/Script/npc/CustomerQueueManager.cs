@@ -124,4 +124,9 @@ public class CustomerQueueManager : MonoBehaviour
         }
         return false;
     }
+    public int GetCustomerPosition(Customer customer)
+    {
+        return GetCurrentQueue().IndexOf(customer);
+    }
+
 }

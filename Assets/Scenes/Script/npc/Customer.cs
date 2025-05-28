@@ -164,5 +164,12 @@ public class Customer : MonoBehaviour
         yield return new WaitForSeconds(delay);
         LeaveAndDespawn();
     }
+    public void LeaveImmediately()
+    {
+        CustomerQueueManager.Instance.LeaveQueue(this);
+        ModeToggleManager.Instance.UnregisterCustomer(this);
+        Destroy(gameObject);
+    }
+
 
 }
