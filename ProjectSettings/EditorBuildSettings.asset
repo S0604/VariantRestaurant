@@ -9,12 +9,12 @@ EditorBuildSettings:
     path: Assets/MainMenu.unity
     guid: d4c53a75b577fa3408b569c2378c5008
   - enabled: 1
+    path: Assets/GameScene.unity
+    guid: 8d1fcb988208cc9499ab09b6f71b16a0
+  - enabled: 1
     path: Assets/Loading.unity
     guid: b5de0846e050cd146b8d3681f1046f00
   - enabled: 1
-    path: Assets/GameScene.unity
-    guid: 8d1fcb988208cc9499ab09b6f71b16a0
-  - enabled: 0
     path: Assets/CookingUIRnD.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects: {}
