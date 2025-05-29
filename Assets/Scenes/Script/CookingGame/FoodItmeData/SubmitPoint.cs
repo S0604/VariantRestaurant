@@ -2,12 +2,48 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SubmitPoint : MonoBehaviour
 {
     public float interactRange = 3f;
     public CustomerQueueManager queueManager;
     public Transform playerTransform;
+
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        RefreshReferences();
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        RefreshReferences();
+    }
+
+    void RefreshReferences()
+    {
+        if (playerTransform == null)
+        {
+            var playerObj = GameObject.FindWithTag("Player");
+            if (playerObj != null)
+                playerTransform = playerObj.transform;
+            else
+                Debug.LogWarning("SubmitPoint: 找不到玩家物件，請確認玩家有正確Tag設定");
+        }
+
+        if (queueManager == null)
+        {
+            queueManager = FindObjectOfType<CustomerQueueManager>();
+            if (queueManager == null)
+                Debug.LogWarning("SubmitPoint: 找不到 CustomerQueueManager");
+        }
+    }
 
     void Update()
     {
@@ -20,7 +56,6 @@ public class SubmitPoint : MonoBehaviour
             TrySubmitOrder();
         }
     }
-
     void TrySubmitOrder()
     {
         var queue = queueManager.GetCurrentQueue();
@@ -44,7 +79,6 @@ public class SubmitPoint : MonoBehaviour
             return;
         }
 
-        // 從 InventoryManager 取得物品
         var inventoryItems = InventoryManager.Instance.GetItems();
         var possibleItems = new List<MenuItem>();
 
@@ -79,20 +113,47 @@ public class SubmitPoint : MonoBehaviour
         }
 
         Debug.Log($"提交了 {submittedCount} 份餐點給顧客");
-
         OrderDisplayManager.Instance.UpdateOrderDisplayImagesForCustomer(firstCustomer);
 
         if (order.IsOrderComplete())
         {
             Debug.Log("顧客訂單完成，顧客即將離開");
+
+            // ✅ 獎勵計算區
+            int baseReward = 10;
+            int totalExp = 0;
+            int totalPopularity = 0;
+            int totalMoney = 0;
+
+            foreach (var orderItem in order.selectedItems)
+            {
+                int multiplier = 1;
+                switch (orderItem.menuItem.grade)
+                {
+                    case BaseMinigame.DishGrade.Perfect:
+                        multiplier = 2;
+                        break;
+                    case BaseMinigame.DishGrade.Good:
+                        multiplier = 1;
+                        break;
+                }
+
+                totalExp += baseReward * multiplier;
+                totalPopularity += baseReward * multiplier;
+                totalMoney += baseReward * multiplier;
+            }
+
+            SessionRewardTracker.Instance.AddRewards(totalExp, totalPopularity, totalMoney);
+            SessionRewardTracker.Instance.AddCustomer(); // 增加客流量
+
             StartCoroutine(DelayCustomerLeave(firstCustomer));
         }
-    }
 
-    IEnumerator DelayCustomerLeave(Customer customer)
-    {
-        yield return new WaitForSeconds(0.5f);
-        customer.ReceiveOrder();
-        queueManager.LeaveQueue(customer);
+        IEnumerator DelayCustomerLeave(Customer customer)
+        {
+            yield return new WaitForSeconds(0.5f);
+            customer.ReceiveOrder();
+            queueManager.LeaveQueue(customer);
+        }
     }
 }

@@ -11,122 +11,81 @@ public class CustomerQueueManager : MonoBehaviour
 
     private Customer[] queueSlots;
 
-    private void Awake()
+    void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
-
+        if (Instance == null) Instance = this; else Destroy(gameObject);
         queueSlots = new Customer[maxQueueSize];
     }
 
-    public int FindFirstAvailableSlot()
+    #region 進出隊列
+    public int FindFirstAvailableSlot() => System.Array.FindIndex(queueSlots, s => s == null);
+    public bool AssignCustomerToSlot(Customer customer, int idx)
     {
-        for (int i = 0; i < queueSlots.Length; i++)
-        {
-            if (queueSlots[i] == null)
-                return i;
-        }
-        return -1; // 滿了
+        if (idx < 0 || idx >= queueSlots.Length || queueSlots[idx] != null) return false;
+        queueSlots[idx] = customer; UpdateQueuePositions(); return true;
     }
-
-    public bool AssignCustomerToSlot(Customer customer, int slotIndex)
-    {
-        if (slotIndex < 0 || slotIndex >= queueSlots.Length || queueSlots[slotIndex] != null)
-            return false;
-
-        queueSlots[slotIndex] = customer;
-        UpdateQueuePositions();
-        return true;
-    }
-
     public void LeaveQueue(Customer customer)
     {
         for (int i = 0; i < queueSlots.Length; i++)
         {
             if (queueSlots[i] == customer)
-            {
-                queueSlots[i] = null;
-                ShiftQueueForward();
-                UpdateQueuePositions();
-                break;
-            }
+            { queueSlots[i] = null; ShiftQueueForward(); UpdateQueuePositions(); break; }
         }
     }
+    #endregion
 
-    private void ShiftQueueForward()
+    #region 內部運算
+    void ShiftQueueForward()
     {
         for (int i = 0; i < queueSlots.Length - 1; i++)
-        {
-            if (queueSlots[i] == null)
-            {
-                queueSlots[i] = queueSlots[i + 1];
-                queueSlots[i + 1] = null;
-            }
-        }
+            if (queueSlots[i] == null) { queueSlots[i] = queueSlots[i + 1]; queueSlots[i + 1] = null; }
     }
-
-    private void UpdateQueuePositions()
+    void UpdateQueuePositions()
     {
         for (int i = 0; i < queueSlots.Length; i++)
-        {
             if (queueSlots[i] != null)
             {
-                GetQueuePositionAndDirection(i, out Vector3 pos, out Vector3 faceDir);
-                queueSlots[i].SetQueuePosition(pos, faceDir);
+                GetPosDir(i, out Vector3 pos, out Vector3 dir);
+                queueSlots[i].SetQueuePosition(pos, dir);
             }
-        }
     }
-
-    private void GetQueuePositionAndDirection(int index, out Vector3 position, out Vector3 faceDirection)
+    void GetPosDir(int index, out Vector3 pos, out Vector3 dir)
     {
-        float distance = index * queueSpacing;
-
+        float dist = index * queueSpacing;
         for (int i = 0; i < queuePathPoints.Count - 1; i++)
         {
-            Vector3 start = queuePathPoints[i].position;
-            Vector3 end = queuePathPoints[i + 1].position;
-            float segmentLength = Vector3.Distance(start, end);
-
-            if (distance <= segmentLength)
-            {
-                Vector3 dir = (start - end).normalized;
-                position = start + (end - start).normalized * distance;
-                faceDirection = dir;
-                return;
-            }
-
-            distance -= segmentLength;
+            var a = queuePathPoints[i].position; var b = queuePathPoints[i + 1].position;
+            float seg = Vector3.Distance(a, b);
+            if (dist <= seg)
+            { dir = (a - b).normalized; pos = a + (b - a).normalized * dist; return; }
+            dist -= seg;
         }
-
-        position = queuePathPoints[queuePathPoints.Count - 1].position;
-        faceDirection = (queuePathPoints[queuePathPoints.Count - 2].position - queuePathPoints[queuePathPoints.Count - 1].position).normalized;
+        pos = queuePathPoints[^1].position;
+        dir = (queuePathPoints[^2].position - pos).normalized;
     }
+    #endregion
 
-    // ✅ 加入的擴充功能：取得目前的排隊列表
+    #region 公開查詢/強制操作
     public List<Customer> GetCurrentQueue()
     {
-        List<Customer> currentQueue = new List<Customer>();
-        foreach (Customer c in queueSlots)
-        {
-            if (c != null)
-                currentQueue.Add(c);
-        }
-        return currentQueue;
+        var list = new List<Customer>();
+        foreach (var c in queueSlots) if (c != null) list.Add(c);
+        return list;
     }
+    public bool IsInQueue(Customer c) => System.Array.Exists(queueSlots, s => s == c);
+    public int GetCustomerPosition(Customer c) => GetCurrentQueue().IndexOf(c);
 
-    // ✅ 加入的擴充功能：判斷某個顧客是否在隊列中
-    public bool IsInQueue(Customer customer)
+    public void ForceRemoveCustomersAt15F()
     {
-        foreach (Customer c in queueSlots)
-        {
-            if (c == customer)
-                return true;
-        }
-        return false;
-    }
-    public int GetCustomerPosition(Customer customer)
-    {
-        return GetCurrentQueue().IndexOf(customer);
-    }
+        var q = GetCurrentQueue();
+        for (int i = 4; i < q.Count; i++) q[i].LeaveAndDespawn();
 
+        foreach (var c in ModeToggleManager.Instance.GetAliveCustomers())
+            if (!IsInQueue(c)) c.LeaveAndDespawn();
+    }
+    public void ForceRemoveAllCustomers()
+    {
+        foreach (var c in ModeToggleManager.Instance.GetAliveCustomers()) c.LeaveAndDespawn();
+    }
+    #endregion
 }
