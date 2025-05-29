@@ -39,12 +39,12 @@ public class TextColor : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        buttonText.color = pressedColor; // 按住時變色
+        buttonText.color = pressedColor;
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        UpdateTextColor(); // 放開時恢復
+        UpdateTextColor();
     }
 
     private void OnDisable()
