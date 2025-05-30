@@ -62,6 +62,7 @@ public class BurgerMinigame : BaseMinigame
         {
             ChangeIconSprite(step, key, true);
             AnimateIcon(step, "Correct");
+            PlayCorrectSFX();
 
             if (playerInput.Count == step)
             {
@@ -79,6 +80,7 @@ public class BurgerMinigame : BaseMinigame
         else
         {
             AnimateIcon(step, "Wrong");
+            PlayWrongSFX();
             ChangeIconSprite(step, sequence[step], false);
             timer -= 0.5f;
         }

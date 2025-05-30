@@ -1239,7 +1239,6 @@ GameObject:
   - component: {fileID: 65690306}
   - component: {fileID: 65690305}
   - component: {fileID: 65690304}
-  - component: {fileID: 65690307}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -1297,21 +1296,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 18
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &65690307
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 65690303}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eff8e782d68a3c54eac04b408ab15525, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hoverClip: {fileID: 0}
-  clickClip: {fileID: 0}
-  volume: 1
 --- !u!1 &66615166
 GameObject:
   m_ObjectHideFlags: 0
@@ -14755,39 +14739,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c729eef3c31ae5f48be95f9e7438d601, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelIcon: {fileID: 2068051955}
-  experienceSlider: {fileID: 608673076}
   levels:
-  - level: 1
-    requiredExp: 900
-    levelSprite: {fileID: 21300000, guid: cde4d1ee4b613884fab30d6476ea8401, type: 3}
-  - level: 2
-    requiredExp: 1620
-    levelSprite: {fileID: 21300000, guid: 014a8be2271cb6d4786bb3bf125b170b, type: 3}
-  - level: 3
-    requiredExp: 2916
-    levelSprite: {fileID: 21300000, guid: e505f7440271dd641b4f6f6e1d53b210, type: 3}
-  - level: 4
-    requiredExp: 5249
-    levelSprite: {fileID: 21300000, guid: 53413ededbe184045bd7a1aa5ac53102, type: 3}
-  - level: 5
-    requiredExp: 9448
-    levelSprite: {fileID: 21300000, guid: 009f0624058c5364b9a95ea7398bf876, type: 3}
-  - level: 6
-    requiredExp: 17006
-    levelSprite: {fileID: 21300000, guid: 73e619dc1d4729d4f9a198f6822ea87e, type: 3}
-  - level: 7
-    requiredExp: 30611
-    levelSprite: {fileID: 21300000, guid: 473f0c49ed6852b45869306247cc0248, type: 3}
-  - level: 8
-    requiredExp: 55100
-    levelSprite: {fileID: 21300000, guid: afcaa10dd0b0e2142b35665c2d817455, type: 3}
-  - level: 9
-    requiredExp: 99180
-    levelSprite: {fileID: 21300000, guid: f166ca31a90374546ac466189962ed8d, type: 3}
-  - level: 10
-    requiredExp: 178524
-    levelSprite: {fileID: 21300000, guid: 9df1eeec61d707646bfbc05cb71146d7, type: 3}
+  - requiredExp: 900
+    levelIcon: {fileID: 0}
+  - requiredExp: 1620
+    levelIcon: {fileID: 0}
+  - requiredExp: 2916
+    levelIcon: {fileID: 0}
+  - requiredExp: 5249
+    levelIcon: {fileID: 0}
+  - requiredExp: 9448
+    levelIcon: {fileID: 0}
+  - requiredExp: 17006
+    levelIcon: {fileID: 0}
+  - requiredExp: 30611
+    levelIcon: {fileID: 0}
+  - requiredExp: 55100
+    levelIcon: {fileID: 0}
+  - requiredExp: 99180
+    levelIcon: {fileID: 0}
+  - requiredExp: 178524
+    levelIcon: {fileID: 0}
 --- !u!1 &1007752582
 GameObject:
   m_ObjectHideFlags: 0
@@ -27561,7 +27533,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -148, y: 193}
+  m_AnchoredPosition: {x: -148, y: 226}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1926203671

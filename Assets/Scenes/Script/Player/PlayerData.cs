@@ -16,7 +16,6 @@ public class PlayerData : MonoBehaviour
     public static PlayerData Instance { get; private set; }
 
     public PlayerStats stats = new PlayerStats();
-
     public event Action OnStatsChanged;
 
     private LevelUIManager levelUIManager;
@@ -28,17 +27,16 @@ public class PlayerData : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
 
-    void Start()
+    // ✅ 改由 LevelUIManager 注入，避免初始化順序問題
+    public void InjectLevelUIManager(LevelUIManager uiManager)
     {
-        levelUIManager = FindObjectOfType<LevelUIManager>();
-        if (levelUIManager == null)
-        {
-            Debug.LogError("找不到 LevelUIManager！");
-        }
+        levelUIManager = uiManager;
+        Debug.Log("PlayerData 收到 LevelUIManager 注入");
     }
 
     public void AddExperience(int amount)
@@ -50,10 +48,14 @@ public class PlayerData : MonoBehaviour
 
     private void CheckLevelUp()
     {
+        if (levelUIManager == null)
+        {
+            Debug.LogWarning("尚未注入 LevelUIManager，無法執行升級計算");
+            return;
+        }
+
         while (true)
         {
-            if (levelUIManager == null) break;
-
             int requiredExp = levelUIManager.GetRequiredExpForLevel(stats.level);
             int maxLevel = levelUIManager.levels.Count - 1;
 

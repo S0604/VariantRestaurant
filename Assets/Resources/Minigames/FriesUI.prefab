@@ -1096,6 +1096,7 @@ GameObject:
   - component: {fileID: 2296875489142280077}
   - component: {fileID: 9009423781262106879}
   - component: {fileID: 3316561056891411370}
+  - component: {fileID: 3368282133945837882}
   m_Layer: 5
   m_Name: FriesUI
   m_TagString: Untagged
@@ -1222,8 +1223,13 @@ MonoBehaviour:
   failAnimationContainer: {fileID: 524881280416591369}
   failAnimation: {fileID: 524881279927827434}
   wasdKeys: 77000000610000007300000064000000
+  audioSource: {fileID: 3368282133945837882}
+  correctSFX: {fileID: 8300000, guid: 4ec984c05a9b756428065daa0b8bb8a3, type: 3}
+  wrongSFX: {fileID: 8300000, guid: e272ba27220cff146a72b67aa20954d2, type: 3}
   baseMenuItem: {fileID: 11400000, guid: cfc1e880bbb88124fa685f26e9e9cd72, type: 2}
   garbageItem: {fileID: 11400000, guid: f4a0791f29141d74aa2252155ba1893a, type: 2}
+  dishDisplayContainer: {fileID: 0}
+  dishDisplayPrefab: {fileID: 0}
   upIcon: {fileID: 21300000, guid: ab2d3e4a08d3f6c409bbd2b018dde3eb, type: 3}
   downIcon: {fileID: 21300000, guid: 6a35063786a1b0a408a9ef69e19897e8, type: 3}
   leftIcon: {fileID: 21300000, guid: afcc76688877f1442bb40e133c54fae8, type: 3}
@@ -1240,6 +1246,102 @@ MonoBehaviour:
   wrongIconResetDelay: 0.5
   stagePrefab: {fileID: 524881280977114084}
   stageVideoBasePath: FriesAssets
+--- !u!82 &3368282133945837882
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8748786187908010752}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: -8405152538596188948, guid: be9778667798ece4aa43fa592649d760, type: 2}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1001 &5047083548098232033
 PrefabInstance:
   m_ObjectHideFlags: 0
