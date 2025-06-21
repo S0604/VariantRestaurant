@@ -36,6 +36,12 @@ public abstract class BaseMinigame : MonoBehaviour
     [Header("指令鍵")]
     public KeyCode[] wasdKeys = new KeyCode[] { KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D };
 
+    [Header("音效設定")]
+    public AudioSource audioSource;
+    public AudioClip correctSFX;
+    public AudioClip wrongSFX;
+
+
     public static BaseMinigame CurrentInstance { get; private set; }
 
     public MenuItem baseMenuItem;   // 此小遊戲對應的料理種類（漢堡、薯條、飲料）
@@ -98,6 +104,23 @@ public abstract class BaseMinigame : MonoBehaviour
         if (timerBar != null)
             timerBar.fillAmount = timer / timeLimit;
     }
+
+    protected void PlayCorrectSFX()
+    {
+        if (audioSource != null && correctSFX != null)
+        {
+            audioSource.PlayOneShot(correctSFX);
+        }
+    }
+
+    protected void PlayWrongSFX()
+    {
+        if (audioSource != null && wrongSFX != null)
+        {
+            audioSource.PlayOneShot(wrongSFX);
+        }
+    }
+
 
     protected IEnumerator PlaySuccessAnimation(int rank)
     {

@@ -50,12 +50,16 @@ public class PlayerData : MonoBehaviour
 
     private void CheckLevelUp()
     {
+        if (levelUIManager == null)
+            levelUIManager = FindObjectOfType<LevelUIManager>();
+
+        if (levelUIManager == null) return;
+
+        int maxLevel = levelUIManager.levels.Count - 1;
+
         while (true)
         {
-            if (levelUIManager == null) break;
-
             int requiredExp = levelUIManager.GetRequiredExpForLevel(stats.level);
-            int maxLevel = levelUIManager.levels.Count - 1;
 
             if (stats.experience < requiredExp || stats.level >= maxLevel)
                 break;

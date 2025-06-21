@@ -48,7 +48,7 @@ public class DetectWall : MonoBehaviour
 
         Material mat = new Material(renderer.material); // 產生新材質，避免共用材質影響其他物件
         Color color = mat.color;
-        color.a = isTransparent ? 0.25f : 1f;
+        color.a = isTransparent ? 0.3f : 1f;
         mat.color = color;
 
         // 設定材質為透明模式

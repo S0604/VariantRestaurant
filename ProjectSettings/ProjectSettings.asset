@@ -275,7 +275,7 @@ PlayerSettings:
   - m_BuildTarget: 
     m_Icons:
     - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: 232f3794b4e3afc4db136e9a52bbc5a5, type: 3}
+      m_Icon: {fileID: 2800000, guid: 16de739dbde986645b50a9aff873c61f, type: 3}
       m_Width: 128
       m_Height: 128
       m_Kind: 0
@@ -631,22 +631,22 @@ PlayerSettings:
   webGLDecompressionFallback: 0
   webGLPowerPreference: 2
   scriptingDefineSymbols:
-    Android: DOTWEEN;UNITY_POST_PROCESSING_STACK_V2
-    EmbeddedLinux: DOTWEEN;UNITY_POST_PROCESSING_STACK_V2
+    Android: DOTWEEN
+    EmbeddedLinux: DOTWEEN
     GameCoreScarlett: DOTWEEN
-    GameCoreXboxOne: DOTWEEN;UNITY_POST_PROCESSING_STACK_V2
+    GameCoreXboxOne: DOTWEEN
     LinuxHeadlessSimulation: DOTWEEN
-    Lumin: DOTWEEN;UNITY_POST_PROCESSING_STACK_V2
-    Nintendo Switch: DOTWEEN;UNITY_POST_PROCESSING_STACK_V2
-    PS4: DOTWEEN;UNITY_POST_PROCESSING_STACK_V2
-    PS5: DOTWEEN;UNITY_POST_PROCESSING_STACK_V2
-    Stadia: DOTWEEN;UNITY_POST_PROCESSING_STACK_V2
-    Standalone: DOTWEEN;UNITY_POST_PROCESSING_STACK_V2
-    WebGL: DOTWEEN;UNITY_POST_PROCESSING_STACK_V2
-    Windows Store Apps: DOTWEEN;UNITY_POST_PROCESSING_STACK_V2
-    XboxOne: DOTWEEN;UNITY_POST_PROCESSING_STACK_V2
+    Lumin: DOTWEEN
+    Nintendo Switch: DOTWEEN
+    PS4: DOTWEEN
+    PS5: DOTWEEN
+    Stadia: DOTWEEN
+    Standalone: DOTWEEN
+    WebGL: DOTWEEN
+    Windows Store Apps: DOTWEEN
+    XboxOne: DOTWEEN
     iPhone: DOTWEEN
-    tvOS: DOTWEEN;UNITY_POST_PROCESSING_STACK_V2
+    tvOS: DOTWEEN
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend: {}
