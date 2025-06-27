@@ -4,11 +4,14 @@ public class CustomerSpawner : MonoBehaviour
 {
     [Header("生成設定")]
     public GameObject[] customerPrefabs;
+    public GameObject[] specialCustomerPrefabs; // ✅ 多樣式特殊顧客
     public Transform[] spawnPoints;
 
     [Header("節奏設定")]
     public float maxInterval = 8f;
     public float minInterval = 2f;
+    [Range(0f, 1f)]
+    public float specialCustomerChance = 0.1f; // ✅ 特殊顧客出現機率
 
     [Header("營業時間來源")]
     public ModeToggleManager modeManager;
@@ -61,17 +64,38 @@ public class CustomerSpawner : MonoBehaviour
 
     void SpawnCustomer()
     {
-        if (customerPrefabs.Length == 0 || spawnPoints.Length == 0)
+        if (spawnPoints.Length == 0)
         {
-            Debug.LogWarning("缺少顧客Prefab或生成點！");
+            Debug.LogWarning("缺少生成點！");
             return;
         }
 
-        int customerIndex = Random.Range(0, customerPrefabs.Length);
-        int spawnIndex = Random.Range(0, spawnPoints.Length);
+        Transform chosenSpawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
 
-        Transform chosenSpawnPoint = spawnPoints[spawnIndex];
-        GameObject customer = Instantiate(customerPrefabs[customerIndex], chosenSpawnPoint.position, Quaternion.identity);
+        // ✅ 檢查場上是否已有特殊顧客
+        bool specialCustomerExists = GameObject.FindWithTag("SpecialCustomer") != null;
+
+        GameObject prefabToSpawn;
+
+        if (!specialCustomerExists && specialCustomerPrefabs.Length > 0 && Random.value < specialCustomerChance)
+        {
+            // ✅ 從特殊顧客列表中挑一個
+            int specialIndex = Random.Range(0, specialCustomerPrefabs.Length);
+            prefabToSpawn = specialCustomerPrefabs[specialIndex];
+        }
+        else
+        {
+            if (customerPrefabs.Length == 0)
+            {
+                Debug.LogWarning("缺少一般顧客Prefab！");
+                return;
+            }
+
+            int normalIndex = Random.Range(0, customerPrefabs.Length);
+            prefabToSpawn = customerPrefabs[normalIndex];
+        }
+
+        GameObject customer = Instantiate(prefabToSpawn, chosenSpawnPoint.position, Quaternion.identity);
 
         Customer customerScript = customer.GetComponent<Customer>();
         if (customerScript != null)

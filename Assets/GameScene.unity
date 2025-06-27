@@ -22203,13 +22203,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   customerPrefabs:
   - {fileID: 1972943304902563048, guid: 4520583102d1c2c41827da8b8b653a40, type: 3}
-  - {fileID: 1972943304902563048, guid: 6aaf05ea405ff444a904f1447b213695, type: 3}
+  - {fileID: 1972943304902563048, guid: 1445d65a397d22b44a55972db6af2547, type: 3}
   - {fileID: 1972943304902563048, guid: 2805ece970b95d346bc774be1d6bbdb7, type: 3}
+  - {fileID: 1972943304902563048, guid: 605b9ed90bb4eb3459c129ca5313084e, type: 3}
+  specialCustomerPrefabs:
+  - {fileID: 1972943304902563048, guid: 8ee17900e6d9c894f82acdecb14fff69, type: 3}
   spawnPoints:
   - {fileID: 2086619654}
   - {fileID: 266347823}
   maxInterval: 3
   minInterval: 3
+  specialCustomerChance: 0.5
   modeManager: {fileID: 1922551990}
 --- !u!4 &1467490831
 Transform:
