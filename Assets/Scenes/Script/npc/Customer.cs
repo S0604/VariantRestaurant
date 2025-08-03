@@ -19,6 +19,7 @@ public class Customer : MonoBehaviour
     private float idleTimer = 0f;
 
     private bool waitingToJoinQueue = true;
+    public bool IsSpecialCustomer => CompareTag("SpecialCustomer");
 
     private void Start()
     {
@@ -65,7 +66,7 @@ public class Customer : MonoBehaviour
 
                 if (idleTimer >= 0.5f && customerOrder != null && menuDatabase != null)
                 {
-                    customerOrder.GenerateOrder(menuDatabase);
+                    customerOrder.GenerateOrder(menuDatabase, IsSpecialCustomer);
                     hasGeneratedOrder = true;
                 }
             }

@@ -59,7 +59,9 @@ public class CustomerSpawner : MonoBehaviour
     {
         float t = Mathf.Clamp01(gameTime / totalGameDuration);
         float peakCurve = -4 * Mathf.Pow(t - 0.5f, 2) + 1;
+        float baseInterval = Mathf.Lerp(maxInterval, minInterval, peakCurve);
         return Mathf.Lerp(maxInterval, minInterval, peakCurve);
+
     }
 
     void SpawnCustomer()
@@ -72,14 +74,12 @@ public class CustomerSpawner : MonoBehaviour
 
         Transform chosenSpawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
 
-        // ✅ 檢查場上是否已有特殊顧客
         bool specialCustomerExists = GameObject.FindWithTag("SpecialCustomer") != null;
 
         GameObject prefabToSpawn;
 
         if (!specialCustomerExists && specialCustomerPrefabs.Length > 0 && Random.value < specialCustomerChance)
         {
-            // ✅ 從特殊顧客列表中挑一個
             int specialIndex = Random.Range(0, specialCustomerPrefabs.Length);
             prefabToSpawn = specialCustomerPrefabs[specialIndex];
         }
@@ -102,5 +102,7 @@ public class CustomerSpawner : MonoBehaviour
         {
             customerScript.spawnPoint = chosenSpawnPoint;
         }
+
+        // ❌ 不再觸發特殊顧客效果，交由觸發區域判斷
     }
 }

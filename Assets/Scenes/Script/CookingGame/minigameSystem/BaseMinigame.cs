@@ -1,11 +1,11 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
 public abstract class BaseMinigame : MonoBehaviour
 {
-    [Header("°ò¥» UI ³]©w")]
+    [Header("Â°Ã²Â¥Â» UI Â³]Â©w")]
     public GameObject cookingUI;
     public Image timerBar;
     public Image backgroundImage;
@@ -13,30 +13,30 @@ public abstract class BaseMinigame : MonoBehaviour
 
     protected Player player;
 
-    [Header("®É¶¡³]©w")]
+    [Header("Â®Ã‰Â¶Â¡Â³]Â©w")]
     public float timeLimit = 10f;
     public float endDelay = 1.5f;
 
-    [Header("«ü¥O¨Æ¥ó")]
+    [Header("Â«Ã¼Â¥OÂ¨Ã†Â¥Ã³")]
     public List<RandomEvent> randomEvents;
     protected RandomEvent activeEvent;
 
-    [Header("«ü¥O¹Ï¥Ü¥Í¦¨")]
+    [Header("Â«Ã¼Â¥OÂ¹ÃÂ¥ÃœÂ¥ÃÂ¦Â¨")]
     public Transform sequenceContainer;
     public GameObject sequenceIconPrefab;
 
-    [Header("§¹¦¨°Êµe")]
+    [Header("Â§Â¹Â¦Â¨Â°ÃŠÂµe")]
     public Transform endAnimationContainer;
     public GameObject[] endAnimations;
 
-    [Header("¥¢±Ñ°Êµe")]
+    [Header("Â¥Â¢Â±Ã‘Â°ÃŠÂµe")]
     public Transform failAnimationContainer;
     public GameObject failAnimation;
 
-    [Header("«ü¥OÁä")]
+    [Header("Â«Ã¼Â¥OÃÃ¤")]
     public KeyCode[] wasdKeys = new KeyCode[] { KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D };
 
-    [Header("­µ®Ä³]©w")]
+    [Header("Â­ÂµÂ®Ã„Â³]Â©w")]
     public AudioSource audioSource;
     public AudioClip correctSFX;
     public AudioClip wrongSFX;
@@ -44,8 +44,8 @@ public abstract class BaseMinigame : MonoBehaviour
 
     public static BaseMinigame CurrentInstance { get; private set; }
 
-    public MenuItem baseMenuItem;   // ¦¹¤p¹CÀ¸¹ïÀ³ªº®Æ²zºØÃş¡]º~³ù¡BÁ¦±ø¡B¶¼®Æ¡^
-    public MenuItem garbageItem;    // ¦@¥Î©U§£ MenuItem
+    public MenuItem baseMenuItem;   // Â¦Â¹Â¤pÂ¹CÃ€Â¸Â¹Ã¯Ã€Â³ÂªÂºÂ®Ã†Â²zÂºÃ˜ÃƒÃ¾Â¡]Âº~Â³Ã¹Â¡BÃÂ¦Â±Ã¸Â¡BÂ¶Â¼Â®Ã†Â¡^
+    public MenuItem garbageItem;    // Â¦@Â¥ÃÂ©UÂ§Â£ MenuItem
 
     protected DishGrade evaluatedGrade;
 
@@ -54,7 +54,7 @@ public abstract class BaseMinigame : MonoBehaviour
     protected bool isPlaying = false;
     private bool hasEnded = false;
 
-    [Header("®Æ²zÅã¥Ü")]
+    [Header("Â®Ã†Â²zÃ…Ã£Â¥Ãœ")]
     public Transform dishDisplayContainer;
     public GameObject dishDisplayPrefab;
 
@@ -68,6 +68,16 @@ public abstract class BaseMinigame : MonoBehaviour
 
     public virtual void StartMinigame(System.Action<bool, int> callback)
     {
+        float modifier = 1f + SpecialCustomerEffectManager.Instance.cookTimeModifier;
+        modifier = Mathf.Max(modifier, 0.1f); // é¿å…æ™‚é–“è®Šæˆ 0 æˆ–è² æ•¸
+
+        timeLimit *= modifier; // âœ… æ‡‰ç”¨åŠ æˆï¼ˆä¾‹å¦‚ -0.1f å°±æ˜¯è®Š 90% æ™‚é–“ï¼‰
+
+        timer = timeLimit;
+        
+        onCompleteCallback = callback;
+        CurrentInstance = this;
+
         timer = timeLimit;
         onCompleteCallback = callback;
         CurrentInstance = this;

@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 1972943304902563049}
   - component: {fileID: 1972943304902563031}
   - component: {fileID: 196354227489465898}
+  - component: {fileID: 4205864735031655417}
   - component: {fileID: 2058813173380755808}
   - component: {fileID: 8281430436026058074}
   m_Layer: 6
@@ -178,6 +179,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   selectedItems: []
+--- !u!114 &4205864735031655417
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1972943304902563048}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5298cf71cb8b7184cbef72f6d126cb81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effects:
+  - {fileID: 11400000, guid: 1457ba95bfb2d6c41b742231f1728c57, type: 2}
 --- !u!114 &2058813173380755808
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -210,6 +225,8 @@ MonoBehaviour:
   totalPatienceTime: 15
   patienceUIPrefab: {fileID: 8460288403528722513, guid: 0589a37977e98b24bb08346bcb0a986f, type: 3}
   uiAnchor: {fileID: 7873407814884844372}
+  minPatienceDurationPerHeart: 0.3
+  maxPatienceDurationPerHeart: 10
 --- !u!1 &8588640244262489049
 GameObject:
   m_ObjectHideFlags: 0

@@ -15,11 +15,11 @@ GameObject:
   - component: {fileID: 1972943304902563049}
   - component: {fileID: 1972943304902563031}
   - component: {fileID: 196354227489465898}
-  - component: {fileID: -1928682938487737627}
+  - component: {fileID: -2964040559723377697}
   - component: {fileID: 2058813173380755808}
   - component: {fileID: 8281430436026058074}
   m_Layer: 6
-  m_Name: "\u9234\u6728\u4F50\u751F"
+  m_Name: "\u84EE"
   m_TagString: SpecialCustomer
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -82,7 +82,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: f3359430d2f20d9409591d1aa8e97a4e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 19a046b654615004a9fe16ba5190fa7f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -133,7 +133,7 @@ Animator:
   m_GameObject: {fileID: 1972943304902563048}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 788a4fb04326c3b42b2cf9f9a0af3269, type: 2}
+  m_Controller: {fileID: 9100000, guid: e57837f335ea7ba4497e9e80f70fdd78, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
@@ -179,7 +179,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   selectedItems: []
---- !u!114 &-1928682938487737627
+--- !u!114 &-2964040559723377697
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -192,7 +192,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   effects:
-  - {fileID: 11400000, guid: 42ebce14a21c66448861bda92f5440f9, type: 2}
+  - {fileID: 11400000, guid: bf1b95081aaa90e4baf2d7487e8da0fa, type: 2}
 --- !u!114 &2058813173380755808
 MonoBehaviour:
   m_ObjectHideFlags: 0
