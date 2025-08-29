@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37fa44cd6b7edbc46af97e123a6a1007, type: 3}
+  m_Name: ReversalIconSet
+  m_EditorClassIdentifier: 
+  up: {fileID: 21300000, guid: e0fe72ad5c9fe7b4586515e395d030f0, type: 3}
+  down: {fileID: 21300000, guid: 56d2de54736ad76478fbc51d707d72e8, type: 3}
+  left: {fileID: 21300000, guid: 9d6e85c5d7c6e254a9d4e1d56da0a60f, type: 3}
+  right: {fileID: 21300000, guid: f2442e5f468c85340891846f9d0df9de, type: 3}
+  upCorrect: {fileID: 21300000, guid: 040ec8ecc8b917641bba400136e4172f, type: 3}
+  downCorrect: {fileID: 21300000, guid: 6b93926dd58edf44499396be1dfe9e69, type: 3}
+  leftCorrect: {fileID: 21300000, guid: 62a2cf64fcbb1ab4d8e64ef0eb3ea8a9, type: 3}
+  rightCorrect: {fileID: 21300000, guid: 0fbe7d923b185944089de00f407715c9, type: 3}
+  upWrong: {fileID: 21300000, guid: 0e0a6c69dd46451408073416aa7281d8, type: 3}
+  downWrong: {fileID: 21300000, guid: 6bce59a03fb0ca747b00d5674ed092b6, type: 3}
+  leftWrong: {fileID: 21300000, guid: 152dd476ab928254f9ba370852939ff2, type: 3}
+  rightWrong: {fileID: 21300000, guid: bdcac91ec0db8504c8c4a1a9c2d29ee3, type: 3}

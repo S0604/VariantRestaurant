@@ -12,6 +12,17 @@ public class DrinkMinigame : BaseMinigame
     public Sprite upCorrectIcon, downCorrectIcon, leftCorrectIcon, rightCorrectIcon;
     public Sprite upWrongIcon, downWrongIcon, leftWrongIcon, rightWrongIcon;
 
+    [Header("Drink 背景圖組")]
+    public Sprite normalBackground;
+    public Sprite mutationBackground;
+    public Sprite reversalBackground;
+    public Sprite extensionBackground;
+
+    [Header("影片素材庫路徑")]
+    public string normalVideoBasePath = "DrinkAssets";
+    public string eventVideoBasePath = "DrinkAssets_Event";
+
+
     [Header("Drink 動畫設定")]
     public Transform stageContainer;
     public float wrongIconResetDelay = 0.5f;
@@ -32,14 +43,14 @@ public class DrinkMinigame : BaseMinigame
     private Dictionary<string, List<VideoClip>> videoSets = new Dictionary<string, List<VideoClip>>();
     private List<VideoClip> currentSetClips = new List<VideoClip>();
 
-    protected override string GetMinigameName()
-    {
-        return "Drink";
-    }
+    protected override string GetMinigameName() => "Drink";
 
     public override void StartMinigame(System.Action<bool, int> callback)
     {
         base.StartMinigame(callback);
+
+        ApplyBackgroundByEventSnapshot();
+        ApplyWASDIconsByEventSnapshot();
 
         sequence.Clear();
         playerInput.Clear();
@@ -54,21 +65,54 @@ public class DrinkMinigame : BaseMinigame
 
         videoPlayer = currentStage.GetComponentInChildren<VideoPlayer>();
         stageCanvasGroup = currentStage.GetComponent<CanvasGroup>();
-
-        if (videoPlayer == null)
-            Debug.LogError("VideoPlayer component not found in stagePrefab!");
-        if (stageCanvasGroup != null)
-            stageCanvasGroup.alpha = 0f;
+        if (videoPlayer == null) Debug.LogError("VideoPlayer component not found in stagePrefab!");
+        if (stageCanvasGroup != null) stageCanvasGroup.alpha = 0f;
 
         LoadAllVideoSets();
         SelectRandomVideoSet();
 
-        for (int i = 0; i < 5; i++)
+        int commandLength = (IsEventActiveThisRun() && EventEffectThisRun() == EventEffectType.Extension) ? 7 : 5;
+        for (int i = 0; i < commandLength; i++)
             sequence.Add(wasdKeys[Random.Range(0, wasdKeys.Length)]);
 
         ShowSequenceIcons();
         player.isCooking = true;
         hasStartedStage = false;
+    }
+
+    void ApplyBackgroundByEventSnapshot()
+    {
+        if (IsEventActiveThisRun())
+        {
+            switch (EventEffectThisRun())
+            {
+                case EventEffectType.Mutation: backgroundImage.sprite = mutationBackground; return;
+                case EventEffectType.Reversal: backgroundImage.sprite = reversalBackground; return;
+                case EventEffectType.Extension: backgroundImage.sprite = extensionBackground; return;
+            }
+        }
+        backgroundImage.sprite = normalBackground;
+    }
+
+    void ApplyWASDIconsByEventSnapshot()
+    {
+        var iconSet = IconSetThisRun();
+        if (iconSet == null) return;
+
+        upIcon = iconSet.up;
+        downIcon = iconSet.down;
+        leftIcon = iconSet.left;
+        rightIcon = iconSet.right;
+
+        upCorrectIcon = iconSet.upCorrect;
+        downCorrectIcon = iconSet.downCorrect;
+        leftCorrectIcon = iconSet.leftCorrect;
+        rightCorrectIcon = iconSet.rightCorrect;
+
+        upWrongIcon = iconSet.upWrong;
+        downWrongIcon = iconSet.downWrong;
+        leftWrongIcon = iconSet.leftWrong;
+        rightWrongIcon = iconSet.rightWrong;
     }
 
     void Update()
@@ -98,6 +142,13 @@ public class DrinkMinigame : BaseMinigame
 
             playerInput.Add(key);
             StartCoroutine(UpdateStageAsync(step));
+
+            // Mutation：正確輸入後重抽剩餘步驟並刷新圖示（用快照）
+            if (IsEventActiveThisRun() && EventEffectThisRun() == EventEffectType.Mutation)
+            {
+                MutateRemainingSequence(step + 1);
+                RefreshRemainingIcons(step + 1);
+            }
 
             if (playerInput.Count == sequence.Count)
             {
@@ -149,12 +200,31 @@ public class DrinkMinigame : BaseMinigame
     {
         foreach (Transform child in sequenceContainer)
             Destroy(child.gameObject);
-
         sequenceIcons.Clear();
+
+        bool isExtended = (sequence.Count > 5);
+        float spacing = isExtended ? 2f : 7f;
+        float baseSize = 80f;
+        float iconSize = isExtended ? baseSize * 0.8f : baseSize;
+
+        HorizontalLayoutGroup layout = sequenceContainer.GetComponent<HorizontalLayoutGroup>();
+        if (layout != null)
+        {
+            layout.spacing = spacing;
+            layout.childAlignment = TextAnchor.MiddleCenter;
+            layout.childControlWidth = false;
+            layout.childControlHeight = false;
+            layout.childForceExpandWidth = false;
+            layout.childForceExpandHeight = false;
+        }
 
         foreach (KeyCode key in sequence)
         {
             GameObject iconObj = Instantiate(sequenceIconPrefab, sequenceContainer);
+
+            RectTransform rt = iconObj.GetComponent<RectTransform>();
+            rt.sizeDelta = new Vector2(iconSize, iconSize);
+
             Image img = iconObj.GetComponent<Image>();
             img.sprite = GetDrinkKeySprite(key);
             sequenceIcons.Add(img);
@@ -202,28 +272,30 @@ public class DrinkMinigame : BaseMinigame
     void LoadAllVideoSets()
     {
         videoSets.Clear();
-        VideoClip[] allClips = Resources.LoadAll<VideoClip>(stageVideoBasePath);
+
+        // 根據快照選擇資料夾
+        string basePath = IsEventActiveThisRun() ? eventVideoBasePath : normalVideoBasePath;
+        VideoClip[] allClips = Resources.LoadAll<VideoClip>(basePath);
+
+        // 如果事件資料夾空，回退一般資料夾
+        if ((allClips == null || allClips.Length == 0) && basePath != normalVideoBasePath)
+            allClips = Resources.LoadAll<VideoClip>(normalVideoBasePath);
 
         foreach (var clip in allClips)
         {
             string name = clip.name;
-
             int splitIndex = name.IndexOf("_Step");
             if (splitIndex > 0)
             {
                 string setName = name.Substring(0, splitIndex);
                 if (!videoSets.ContainsKey(setName))
                     videoSets[setName] = new List<VideoClip>();
-
                 videoSets[setName].Add(clip);
             }
         }
 
-        // 排序 clips 依照 Step0~4 順序
         foreach (var set in videoSets.Values)
-        {
             set.Sort((a, b) => a.name.CompareTo(b.name));
-        }
     }
 
     void SelectRandomVideoSet()
@@ -275,4 +347,28 @@ public class DrinkMinigame : BaseMinigame
         }
         return null;
     }
+
+    // ===== Mutation：重抽剩餘指令 + 刷新圖示（使用本局快照） =====
+    void MutateRemainingSequence(int fromIndex)
+    {
+        if (fromIndex < 0) fromIndex = 0;
+        for (int i = fromIndex; i < sequence.Count; i++)
+        {
+            sequence[i] = wasdKeys[Random.Range(0, wasdKeys.Length)];
+        }
+    }
+
+    void RefreshRemainingIcons(int fromIndex)
+    {
+        if (fromIndex < 0) fromIndex = 0;
+        for (int i = fromIndex; i < sequenceIcons.Count; i++)
+        {
+            var img = sequenceIcons[i];
+            img.sprite = GetDrinkKeySprite(sequence[i]);
+
+            var anim = img.GetComponent<Animator>();
+            if (anim != null) anim.SetTrigger("Idle");
+        }
+    }
+    // ===== end Mutation =====
 }

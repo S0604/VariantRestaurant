@@ -5,26 +5,44 @@ using System.Collections.Generic;
 
 public class BurgerMinigame : BaseMinigame
 {
+    [Header("WASD 圖示")]
     public Sprite upIcon, downIcon, leftIcon, rightIcon;
     public Sprite upCorrectIcon, downCorrectIcon, leftCorrectIcon, rightCorrectIcon;
     public Sprite upWrongIcon, downWrongIcon, leftWrongIcon, rightWrongIcon;
+
+    [Header("堆疊與動畫")]
     public float wrongIconResetDelay = 0.5f;
     public Transform stackContainer;
     public GameObject stackItemPrefab;
     public float stackItemSpacing = 40f;
 
-    private List<KeyCode> sequence = new List<KeyCode>();
-    private List<Image> sequenceIcons = new List<Image>();
-    private List<KeyCode> playerInput = new List<KeyCode>();
+    [Header("背景圖組")]
+    public Sprite normalBackground;
+    public Sprite mutationBackground;
+    public Sprite reversalBackground;
+    public Sprite extensionBackground;
 
-    protected override string GetMinigameName()
-    {
-        return "Burger";
-    }
+    [Header("素材庫路徑（Resources）")]
+    [Tooltip("一般狀態下的根資料夾，例如：BurgerAssets")]
+    public string normalAssetFolder = "BurgerAssets";
+    [Tooltip("事件期間共用的根資料夾，例如：BurgerAssets_Event")]
+    public string eventAssetFolder = "BurgerAssets_Event";
+    [Tooltip("每層子資料夾命名；Layer{0} 會得到 Layer0/Layer1…")]
+    public string layerFolderFormat = "Layer{0}";
+
+    private readonly List<KeyCode> sequence = new();
+    private readonly List<Image> sequenceIcons = new();
+    private readonly List<KeyCode> playerInput = new();
+
+    protected override string GetMinigameName() => "Burger";
 
     public override void StartMinigame(System.Action<bool, int> callback)
     {
         base.StartMinigame(callback);
+
+        // 背景與圖示使用「本局快照」決定（不受中途變動影響）
+        ApplyBackgroundByEventSnapshot();
+        ApplyWASDIconsByEventSnapshot();
 
         sequence.Clear();
         playerInput.Clear();
@@ -32,24 +50,55 @@ public class BurgerMinigame : BaseMinigame
         foreach (Transform child in stackContainer)
             Destroy(child.gameObject);
 
-        for (int i = 0; i < 5; i++)
+        // 指令長度：Extension 才 7，其他 5（依快照）
+        int commandLength = (IsEventActiveThisRun() && EventEffectThisRun() == EventEffectType.Extension) ? 7 : 5;
+        for (int i = 0; i < commandLength; i++)
             sequence.Add(wasdKeys[Random.Range(0, wasdKeys.Length)]);
 
         ShowSequenceIcons();
-        player.isCooking = true;
+
+        if (MinigameManager.Instance?.player != null)
+            MinigameManager.Instance.player.isCooking = true;
     }
+
+    // ---------- 依快照套背景 / 圖示 ----------
+    void ApplyBackgroundByEventSnapshot()
+    {
+        if (IsEventActiveThisRun())
+        {
+            switch (EventEffectThisRun())
+            {
+                case EventEffectType.Mutation: backgroundImage.sprite = mutationBackground; return;
+                case EventEffectType.Reversal: backgroundImage.sprite = reversalBackground; return;
+                case EventEffectType.Extension: backgroundImage.sprite = extensionBackground; return;
+            }
+        }
+        backgroundImage.sprite = normalBackground;
+    }
+
+    void ApplyWASDIconsByEventSnapshot()
+    {
+        var iconSetSO = IconSetThisRun();
+        if (iconSetSO == null) return;
+
+        upIcon = iconSetSO.up; downIcon = iconSetSO.down;
+        leftIcon = iconSetSO.left; rightIcon = iconSetSO.right;
+
+        upCorrectIcon = iconSetSO.upCorrect; downCorrectIcon = iconSetSO.downCorrect;
+        leftCorrectIcon = iconSetSO.leftCorrect; rightCorrectIcon = iconSetSO.rightCorrect;
+
+        upWrongIcon = iconSetSO.upWrong; downWrongIcon = iconSetSO.downWrong;
+        leftWrongIcon = iconSetSO.leftWrong; rightWrongIcon = iconSetSO.rightWrong;
+    }
+    // --------------------------------------
 
     void Update()
     {
         if (!isPlaying) return;
-
         UpdateTimer();
 
         foreach (KeyCode key in wasdKeys)
-        {
-            if (Input.GetKeyDown(key))
-                HandleInput(key);
-        }
+            if (Input.GetKeyDown(key)) HandleInput(key);
     }
 
     void HandleInput(KeyCode key)
@@ -68,6 +117,13 @@ public class BurgerMinigame : BaseMinigame
             {
                 AddStackItem(key, step);
                 playerInput.Add(key);
+
+                // Mutation：每次正確後重抽剩餘步驟並刷新圖示（依快照）
+                if (IsEventActiveThisRun() && EventEffectThisRun() == EventEffectType.Mutation)
+                {
+                    MutateRemainingSequence(step + 1);
+                    RefreshRemainingIcons(step + 1);
+                }
 
                 if (playerInput.Count == sequence.Count)
                 {
@@ -89,10 +145,8 @@ public class BurgerMinigame : BaseMinigame
     void ChangeIconSprite(int index, KeyCode key, bool correct)
     {
         if (index < 0 || index >= sequenceIcons.Count) return;
-        Image img = sequenceIcons[index];
-
-        Sprite newSprite = correct ? GetCorrectSprite(key) : GetWrongSprite(key);
-        img.sprite = newSprite;
+        var img = sequenceIcons[index];
+        img.sprite = correct ? GetCorrectSprite(key) : GetWrongSprite(key);
 
         if (!correct)
         {
@@ -105,14 +159,14 @@ public class BurgerMinigame : BaseMinigame
     {
         Sprite wrongSprite = img.sprite;
         yield return new WaitForSeconds(delay);
-        if (img.sprite == wrongSprite)
+        if (img != null && img.sprite == wrongSprite)
             img.sprite = originalSprite;
     }
 
     void AnimateIcon(int index, string trigger)
     {
         if (index < 0 || index >= sequenceIcons.Count) return;
-        Animator anim = sequenceIcons[index].GetComponent<Animator>();
+        var anim = sequenceIcons[index].GetComponent<Animator>();
         if (anim != null) anim.SetTrigger(trigger);
     }
 
@@ -120,33 +174,64 @@ public class BurgerMinigame : BaseMinigame
     {
         foreach (Transform child in sequenceContainer)
             Destroy(child.gameObject);
-
         sequenceIcons.Clear();
 
-        foreach (KeyCode key in sequence)
+        bool isExtended = (sequence.Count > 5);
+        float spacing = isExtended ? 2f : 7f;
+        float baseSize = 80f;
+        float iconSize = isExtended ? baseSize * 0.8f : baseSize;
+
+        var layout = sequenceContainer.GetComponent<HorizontalLayoutGroup>();
+        if (layout != null)
         {
+            layout.spacing = spacing;
+            layout.childAlignment = TextAnchor.MiddleCenter;
+            layout.childControlWidth = false;
+            layout.childControlHeight = false;
+            layout.childForceExpandWidth = false;
+            layout.childForceExpandHeight = false;
+        }
+
+        for (int i = 0; i < sequence.Count; i++)
+        {
+            KeyCode key = sequence[i];
             GameObject iconObj = Instantiate(sequenceIconPrefab, sequenceContainer);
-            Image img = iconObj.GetComponent<Image>();
-            img.sprite = GetBurgerKeySprite(key);
+
+            var rt = iconObj.GetComponent<RectTransform>();
+            if (rt != null) rt.sizeDelta = new Vector2(iconSize, iconSize);
+
+            var img = iconObj.GetComponent<Image>();
+            if (img != null) img.sprite = GetBurgerKeySprite(key);
             sequenceIcons.Add(img);
 
-            Animator anim = iconObj.GetComponent<Animator>();
+            var anim = iconObj.GetComponent<Animator>();
             if (anim != null) anim.SetTrigger("Idle");
         }
     }
 
+    // ★ 這裡只分「一般素材庫 / 事件素材庫」兩種
     void AddStackItem(KeyCode key, int stepIndex)
     {
-        string folderPath = $"BurgerAssets/Layer{stepIndex}";
+        string baseFolder = IsEventActiveThisRun() ? eventAssetFolder : normalAssetFolder;
+        string layerPath = string.IsNullOrEmpty(layerFolderFormat) ? $"Layer{stepIndex}"
+                                                                    : string.Format(layerFolderFormat, stepIndex);
+        string folderPath = $"{baseFolder}/{layerPath}";
+
         Sprite[] sprites = Resources.LoadAll<Sprite>(folderPath);
+
+        // 事件庫缺圖時回退一般庫，避免空集合
+        if ((sprites == null || sprites.Length == 0) && baseFolder != normalAssetFolder)
+            sprites = Resources.LoadAll<Sprite>($"{normalAssetFolder}/{layerPath}");
+
         if (sprites == null || sprites.Length == 0) return;
 
         Sprite selected = sprites[Random.Range(0, sprites.Length)];
         GameObject item = Instantiate(stackItemPrefab, stackContainer);
-        item.GetComponent<Image>().sprite = selected;
+        var img = item.GetComponent<Image>();
+        if (img != null) img.sprite = selected;
 
-        RectTransform rt = item.GetComponent<RectTransform>();
-        rt.anchoredPosition = new Vector2(0, stepIndex * stackItemSpacing);
+        var rt = item.GetComponent<RectTransform>();
+        if (rt != null) rt.anchoredPosition = new Vector2(0, stepIndex * stackItemSpacing);
     }
 
     Sprite GetBurgerKeySprite(KeyCode key)
@@ -184,4 +269,26 @@ public class BurgerMinigame : BaseMinigame
         }
         return null;
     }
+
+    // ----- Mutation（依快照）-----
+    void MutateRemainingSequence(int fromIndex)
+    {
+        if (fromIndex < 0) fromIndex = 0;
+        for (int i = fromIndex; i < sequence.Count; i++)
+            sequence[i] = wasdKeys[Random.Range(0, wasdKeys.Length)];
+    }
+
+    void RefreshRemainingIcons(int fromIndex)
+    {
+        if (fromIndex < 0) fromIndex = 0;
+        for (int i = fromIndex; i < sequenceIcons.Count; i++)
+        {
+            var img = sequenceIcons[i];
+            if (img != null) img.sprite = GetBurgerKeySprite(sequence[i]);
+
+            var anim = img != null ? img.GetComponent<Animator>() : null;
+            if (anim != null) anim.SetTrigger("Idle");
+        }
+    }
+    // ----------------------------
 }
