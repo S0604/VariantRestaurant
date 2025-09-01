@@ -1,17 +1,17 @@
+
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class InventoryUI : MonoBehaviour
 {
-    public GameObject itemImagePrefab; // UI Image 的 prefab（需掛 Image）
-    public Transform itemContainer;    // 放置圖片的 Panel/空物件
+    public GameObject itemImagePrefab;
+    public Transform itemContainer;
 
     private List<GameObject> spawnedImages = new List<GameObject>();
 
     private void OnEnable()
     {
-        Debug.Log("InventoryUI OnEnable");
         InventoryManager.OnInventoryChanged += UpdateUI;
     }
 
@@ -28,26 +28,31 @@ public class InventoryUI : MonoBehaviour
             return;
         }
 
-        // 清除現有的圖片
         foreach (var img in spawnedImages)
         {
             Destroy(img);
         }
         spawnedImages.Clear();
 
-        // 顯示最多兩張圖片，由左而右排列
-        for (int i = 0; i < Mathf.Min(2, items.Count); i++)
+        List<MenuItem> visibleItems = items.FindAll(item => item.itemTag != "SupplyBox");
+
+        for (int i = 0; i < Mathf.Min(2, visibleItems.Count); i++)
         {
-            MenuItem item = items[i];
+            MenuItem item = visibleItems[i];
             GameObject newImageObj = Instantiate(itemImagePrefab, itemContainer);
             Image imageComponent = newImageObj.GetComponent<Image>();
 
             if (imageComponent != null && item != null)
             {
-                // 轉換 DishGrade -> ItemGrade 並取得對應圖片
-                ItemGrade convertedGrade = (ItemGrade)(int)item.grade;
-                imageComponent.sprite = item.GetSpriteByGrade(convertedGrade);
-                imageComponent.color = Color.white;
+                if (item.itemImage == null)
+                {
+                    Debug.LogWarning($"物品 {item.itemName} 沒有圖片 (itemImage 為 null)");
+                }
+                else
+                {
+                    imageComponent.sprite = item.itemImage;
+                    imageComponent.color = Color.white;
+                }
             }
 
             RectTransform rt = newImageObj.GetComponent<RectTransform>();
@@ -59,7 +64,6 @@ public class InventoryUI : MonoBehaviour
             spawnedImages.Add(newImageObj);
         }
 
-        Debug.Log($"更新 UI：收到 {items.Count} 個物品");
+        Debug.Log($"更新 UI：顯示 {visibleItems.Count} 個可視物品");
     }
-
 }

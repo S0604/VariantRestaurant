@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37fa44cd6b7edbc46af97e123a6a1007, type: 3}
+  m_Name: DefaultIconSet
+  m_EditorClassIdentifier: 
+  up: {fileID: 21300000, guid: ab2d3e4a08d3f6c409bbd2b018dde3eb, type: 3}
+  down: {fileID: 21300000, guid: 6a35063786a1b0a408a9ef69e19897e8, type: 3}
+  left: {fileID: 21300000, guid: afcc76688877f1442bb40e133c54fae8, type: 3}
+  right: {fileID: 21300000, guid: a7375750cbbc90c438dddbb41659a735, type: 3}
+  upCorrect: {fileID: 21300000, guid: 5b0984b771870e04c98ccdd77cef553f, type: 3}
+  downCorrect: {fileID: 21300000, guid: 343023e6d1faa7d4288bc770c0aad785, type: 3}
+  leftCorrect: {fileID: 21300000, guid: 2ffba4321f251344c96a67416bccd81b, type: 3}
+  rightCorrect: {fileID: 21300000, guid: 4b2aac421aa9be54995bab1031ab66b0, type: 3}
+  upWrong: {fileID: 21300000, guid: bd89631a42ffea042879840853d18371, type: 3}
+  downWrong: {fileID: 21300000, guid: 43645ad715845744bae1e6147247c887, type: 3}
+  leftWrong: {fileID: 21300000, guid: f67fee2a156d1da45a53ee7c2010c9c0, type: 3}
+  rightWrong: {fileID: 21300000, guid: b651e0061415c224ea3366ea4a33b2e2, type: 3}

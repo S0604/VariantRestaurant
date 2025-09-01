@@ -1,5 +1,6 @@
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.Generic;
+using System.IO;
 
 public class InventoryManager : MonoBehaviour
 {
@@ -13,7 +14,6 @@ public class InventoryManager : MonoBehaviour
 
     public static event System.Action<List<MenuItem>> OnInventoryChanged;
     private List<MenuItem> inventoryItems = new List<MenuItem>();
-
 
     public MenuItem GarbageItem; // 設定垃圾 MenuItem
 
@@ -36,11 +36,56 @@ public class InventoryManager : MonoBehaviour
             Debug.Log("背包已滿，無法加入新物品");
             return false;
         }
-        
+
         items.Add(newItem);
         NotifyInventoryChanged();
         Debug.Log($"加入新物品：{newItem.name}");
         return true;
+    }
+
+    public void AddItemFromTexture(Texture2D texture, string itemName)
+    {
+        if (items.Count >= maxSlots)
+        {
+            Debug.Log("背包已滿，無法加入新圖片物品");
+            return;
+        }
+
+        MenuItem newItem = ScriptableObject.CreateInstance<MenuItem>();
+        newItem.itemName = itemName;
+        newItem.itemTag = "001";
+        newItem.grade = BaseMinigame.DishGrade.Perfect;
+
+        Rect rect = new Rect(0, 0, texture.width, texture.height);
+        Vector2 pivot = new Vector2(0.5f, 0.5f);
+        Sprite sprite = Sprite.Create(texture, rect, pivot);
+
+        newItem.itemImage = sprite;
+
+        items.Add(newItem);
+        NotifyInventoryChanged();
+
+        Debug.Log("加入截圖物品：" + itemName);
+    }
+
+
+
+    public bool HasItemByTag(string tag)
+    {
+        return items.Exists(item => item.itemTag == tag);
+    }
+
+    public bool RemoveItemByTag(string tag)
+    {
+        var item = items.Find(i => i.itemTag == tag);
+        if (item != null)
+        {
+            items.Remove(item);
+            inventoryUI?.UpdateUI(items);
+            NotifyInventoryChanged();
+            return true;
+        }
+        return false;
     }
 
     public bool RemoveItem(MenuItem item)
@@ -66,6 +111,11 @@ public class InventoryManager : MonoBehaviour
         return items.Exists(item => item == GarbageItem || item.grade == BaseMinigame.DishGrade.Fail);
     }
 
+    public bool HasItem(MenuItem item)
+    {
+        return items.Contains(item);
+    }
+
     private void NotifyInventoryChanged()
     {
         OnInventoryChanged?.Invoke(new List<MenuItem>(items));
@@ -73,12 +123,11 @@ public class InventoryManager : MonoBehaviour
 
     // === 為了相容舊程式碼新增的 API ===
 
-    public void ClearInventory() => ClearItems();  // 舊方法對應
+    public void ClearInventory() => ClearItems();
 
-    public List<MenuItem> GetItems() => new List<MenuItem>(items);  // 回傳可修改副本
+    public List<MenuItem> GetItems() => new List<MenuItem>(items);
 
-    public List<MenuItem> GetAllItems() => GetItems(); // 同上，另名而已
+    public List<MenuItem> GetAllItems() => GetItems();
 
     public int GetItemCount() => items.Count;
-
 }

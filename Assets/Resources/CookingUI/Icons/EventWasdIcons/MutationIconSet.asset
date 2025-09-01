@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37fa44cd6b7edbc46af97e123a6a1007, type: 3}
+  m_Name: MutationIconSet
+  m_EditorClassIdentifier: 
+  up: {fileID: 21300000, guid: cdf37c38fe324864dbb1e9ee0988ac70, type: 3}
+  down: {fileID: 21300000, guid: 49f2ca43394582d4b9e94b5e8c284fcb, type: 3}
+  left: {fileID: 21300000, guid: 2e09c355842306a478096b1ce09d3bf1, type: 3}
+  right: {fileID: 21300000, guid: 458edf0c70eb9a541857670d49d685dc, type: 3}
+  upCorrect: {fileID: 21300000, guid: 9b4bc45d7f5964847a87e9c7ef60101b, type: 3}
+  downCorrect: {fileID: 21300000, guid: 85fa0de36ef9837449074af7f8e2de6e, type: 3}
+  leftCorrect: {fileID: 21300000, guid: 158d1748bf68190469d7f3dfb38cc5f1, type: 3}
+  rightCorrect: {fileID: 21300000, guid: 4b7f56190f393ed42bca64733378426a, type: 3}
+  upWrong: {fileID: 21300000, guid: ce0cfe7f261dcd544bd73fd485b50bb7, type: 3}
+  downWrong: {fileID: 21300000, guid: c28a9804fb59e8544b67b153598ff721, type: 3}
+  leftWrong: {fileID: 21300000, guid: 9044dc77afea0ff458b6ddc80df207df, type: 3}
+  rightWrong: {fileID: 21300000, guid: 2f2d3469e7748d9409cae3d60ac70958, type: 3}

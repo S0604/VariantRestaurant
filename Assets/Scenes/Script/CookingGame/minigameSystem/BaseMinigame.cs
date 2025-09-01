@@ -1,11 +1,11 @@
-ï»¿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
 public abstract class BaseMinigame : MonoBehaviour
 {
-    [Header("Â°Ã²Â¥Â» UI Â³]Â©w")]
+    [Header("°ò¥» UI ³]©w")]
     public GameObject cookingUI;
     public Image timerBar;
     public Image backgroundImage;
@@ -13,91 +13,84 @@ public abstract class BaseMinigame : MonoBehaviour
 
     protected Player player;
 
-    [Header("Â®Ã‰Â¶Â¡Â³]Â©w")]
+    [Header("®É¶¡³]©w")]
     public float timeLimit = 10f;
     public float endDelay = 1.5f;
 
-    [Header("Â«Ã¼Â¥OÂ¨Ã†Â¥Ã³")]
-    public List<RandomEvent> randomEvents;
-    protected RandomEvent activeEvent;
-
-    [Header("Â«Ã¼Â¥OÂ¹ÃÂ¥ÃœÂ¥ÃÂ¦Â¨")]
+    [Header("«ü¥O¹Ï¥Ü")]
     public Transform sequenceContainer;
     public GameObject sequenceIconPrefab;
 
-    [Header("Â§Â¹Â¦Â¨Â°ÃŠÂµe")]
+    [Header("µ²§ô°Êµe")]
     public Transform endAnimationContainer;
-    public GameObject[] endAnimations;
-
-    [Header("Â¥Â¢Â±Ã‘Â°ÃŠÂµe")]
+    public GameObject[] endAnimations; // ¨Ì rank Åã¥Ü¹ïÀ³°Êµe
     public Transform failAnimationContainer;
     public GameObject failAnimation;
 
-    [Header("Â«Ã¼Â¥OÃÃ¤")]
+    [Header("«ü¥OÁä")]
     public KeyCode[] wasdKeys = new KeyCode[] { KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D };
 
-    [Header("Â­ÂµÂ®Ã„Â³]Â©w")]
+    [Header("­µ®Ä")]
     public AudioSource audioSource;
     public AudioClip correctSFX;
     public AudioClip wrongSFX;
 
-
-    public static BaseMinigame CurrentInstance { get; private set; }
-
-    public MenuItem baseMenuItem;   // Â¦Â¹Â¤pÂ¹CÃ€Â¸Â¹Ã¯Ã€Â³ÂªÂºÂ®Ã†Â²zÂºÃ˜ÃƒÃ¾Â¡]Âº~Â³Ã¹Â¡BÃÂ¦Â±Ã¸Â¡BÂ¶Â¼Â®Ã†Â¡^
-    public MenuItem garbageItem;    // Â¦@Â¥ÃÂ©UÂ§Â£ MenuItem
-
+    public MenuItem baseMenuItem;
+    public MenuItem garbageItem;
     protected DishGrade evaluatedGrade;
-
     protected float timer;
     protected System.Action<bool, int> onCompleteCallback;
     protected bool isPlaying = false;
     private bool hasEnded = false;
 
-    [Header("Â®Ã†Â²zÃ…Ã£Â¥Ãœ")]
-    public Transform dishDisplayContainer;
-    public GameObject dishDisplayPrefab;
+    public enum DishGrade { Perfect = 3, Good = 2, Bad = 1, Fail = 0 }
 
-    public enum DishGrade
+    public static BaseMinigame CurrentInstance { get; private set; }
+
+    // ===== ¨Æ¥ó§Ö·Ó¡]¥»§½©T©w¨Ï¥Î¡^ =====
+    protected bool eventActiveThisRun = false;
+    protected EventEffectType eventEffectThisRun = default;
+    protected WASDIconSetSO iconSetThisRun = null;
+
+    /// <summary>¦b¥»§½¶}©l®É©ç¤U¨Æ¥óª¬ºA»P¹Ï¥Ü²Õ</summary>
+    protected void CaptureEventContext()
     {
-        Perfect = 3,
-        Good = 2,
-        Bad = 1,
-        Fail = 0
+        var mgr = RandomEventManager.Instance;
+        if (mgr != null && mgr.IsEventActive)
+        {
+            eventActiveThisRun = true;
+            eventEffectThisRun = mgr.CurrentEffect;
+            iconSetThisRun = mgr.GetCurrentIcons(); // ¥i¯à¬° null
+        }
+        else
+        {
+            eventActiveThisRun = false;
+            eventEffectThisRun = default;
+            iconSetThisRun = (mgr != null) ? mgr.defaultIcons : null; // ¥iµ¹¹w³]
+        }
     }
+
+    // ´£¨Ñµ¹¤lÃş¤è«K¨ú¥Î
+    protected bool IsEventActiveThisRun() => eventActiveThisRun;
+    protected EventEffectType EventEffectThisRun() => eventEffectThisRun;
+    protected WASDIconSetSO IconSetThisRun() => iconSetThisRun;
 
     public virtual void StartMinigame(System.Action<bool, int> callback)
     {
-        float modifier = 1f + SpecialCustomerEffectManager.Instance.cookTimeModifier;
-        modifier = Mathf.Max(modifier, 0.1f); // é¿å…æ™‚é–“è®Šæˆ 0 æˆ–è² æ•¸
-
-        timeLimit *= modifier; // âœ… æ‡‰ç”¨åŠ æˆï¼ˆä¾‹å¦‚ -0.1f å°±æ˜¯è®Š 90% æ™‚é–“ï¼‰
-
-        timer = timeLimit;
-        
-        onCompleteCallback = callback;
-        CurrentInstance = this;
+        // ¥ı©ç§Ö·Ó¡A½T«O¥»§½ª¬ºA©T©w
+        CaptureEventContext();
 
         timer = timeLimit;
         onCompleteCallback = callback;
+        isPlaying = true;
+        hasEnded = false;
         CurrentInstance = this;
 
-        if (MinigameManager.Instance != null && MinigameManager.Instance.player != null)
-            player = MinigameManager.Instance.player;
-
-        if (player != null)
-            player.isCooking = true;
+        player = MinigameManager.Instance?.player;
+        if (player != null) player.isCooking = true;
 
         cookingUI.SetActive(true);
         backgroundImage.sprite = defaultBackground;
-
-        if (randomEvents != null && randomEvents.Count > 0)
-            activeEvent = randomEvents[Random.Range(0, randomEvents.Count)];
-        else
-            activeEvent = null;
-
-        isPlaying = true;
-        hasEnded = false;
     }
 
     protected void UpdateTimer()
@@ -105,32 +98,16 @@ public abstract class BaseMinigame : MonoBehaviour
         if (!isPlaying) return;
 
         timer -= Time.deltaTime;
-        if (timer < 0)
+
+        if (timer <= 0 && !hasEnded)
         {
             timer = 0;
-            if (!hasEnded) StartCoroutine(PlayFailAnimation());
+            StartCoroutine(PlayFailAnimation());
         }
 
         if (timerBar != null)
             timerBar.fillAmount = timer / timeLimit;
     }
-
-    protected void PlayCorrectSFX()
-    {
-        if (audioSource != null && correctSFX != null)
-        {
-            audioSource.PlayOneShot(correctSFX);
-        }
-    }
-
-    protected void PlayWrongSFX()
-    {
-        if (audioSource != null && wrongSFX != null)
-        {
-            audioSource.PlayOneShot(wrongSFX);
-        }
-    }
-
 
     protected IEnumerator PlaySuccessAnimation(int rank)
     {
@@ -142,12 +119,10 @@ public abstract class BaseMinigame : MonoBehaviour
             anim = Instantiate(endAnimations[rank - 1], endAnimationContainer);
 
         yield return new WaitForSeconds(endDelay);
-
         if (anim != null) Destroy(anim);
 
         evaluatedGrade = (DishGrade)rank;
-
-        FinishMinigame(true, rank);
+        FinishMinigameInternal(true, rank);
     }
 
     protected IEnumerator PlayFailAnimation()
@@ -155,70 +130,27 @@ public abstract class BaseMinigame : MonoBehaviour
         isPlaying = false;
         hasEnded = true;
 
-        GameObject anim = null;
-        if (failAnimation != null && failAnimationContainer != null)
-            anim = Instantiate(failAnimation, failAnimationContainer);
-
+        GameObject anim = Instantiate(failAnimation, failAnimationContainer);
         yield return new WaitForSeconds(endDelay);
-
         if (anim != null) Destroy(anim);
 
         evaluatedGrade = DishGrade.Fail;
-
-        FinishMinigame(false, 0);
+        FinishMinigameInternal(false, 0);
     }
 
-    protected void FinishMinigame(bool success, int rank = 0)
+    protected virtual void FinishMinigameInternal(bool success, int rank = 0)
     {
+        if (player != null) player.isCooking = false;
+        GenerateMenuItemByGrade(success ? (DishGrade)rank : DishGrade.Fail);
         cookingUI.SetActive(false);
-
-        if (player != null)
-            player.isCooking = false;
-
         onCompleteCallback?.Invoke(success, rank);
-        GenerateMenuItemByGrade(evaluatedGrade);
     }
 
     protected void GenerateMenuItemByGrade(DishGrade grade)
     {
-        Debug.Log($"[Minigame] grade: {grade}, baseMenuItem: {baseMenuItem}, garbageItem: {garbageItem}, InventoryManager: {InventoryManager.Instance}");
-
-        MenuItem itemToAdd = null;
-
-        if (grade == DishGrade.Fail || grade == DishGrade.Bad)
-        {
-            itemToAdd = garbageItem;
-        }
-        else
-        {
-            itemToAdd = Instantiate(baseMenuItem);
-            itemToAdd.grade = grade;
-        }
-
-        if (itemToAdd != null)
-        {
-            InventoryManager.Instance.AddItem(itemToAdd);
-            UpdateDishDisplay();
-        }
-    }
-
-    protected void UpdateDishDisplay()
-    {
-        if (dishDisplayContainer == null || dishDisplayPrefab == null) return;
-
-        foreach (Transform child in dishDisplayContainer)
-            Destroy(child.gameObject);
-
-        List<MenuItem> allItems = InventoryManager.Instance.GetAllItems();
-        int count = Mathf.Min(2, allItems.Count);
-
-        for (int i = allItems.Count - count; i < allItems.Count; i++)
-        {
-            MenuItem item = allItems[i];
-            GameObject dishObj = Instantiate(dishDisplayPrefab, dishDisplayContainer);
-            Image img = dishObj.GetComponent<Image>();
-            img.sprite = item.GetSpriteByGrade((ItemGrade)item.grade);
-        }
+        MenuItem item = (grade == DishGrade.Fail || grade == DishGrade.Bad) ? garbageItem : Instantiate(baseMenuItem);
+        item.grade = grade;
+        InventoryManager.Instance.AddItem(item);
     }
 
     public static bool HasMaxDishRecords()
@@ -226,20 +158,17 @@ public abstract class BaseMinigame : MonoBehaviour
         return InventoryManager.Instance.GetItemCount() >= 2;
     }
 
-    protected abstract string GetMinigameName();
-
-    protected Sprite GetKeySprite(KeyCode key)
+    protected void PlayCorrectSFX()
     {
-        if (activeEvent != null)
-        {
-            switch (key)
-            {
-                case KeyCode.W: return activeEvent.upIcon;
-                case KeyCode.S: return activeEvent.downIcon;
-                case KeyCode.A: return activeEvent.leftIcon;
-                case KeyCode.D: return activeEvent.rightIcon;
-            }
-        }
-        return null;
+        if (audioSource != null && correctSFX != null)
+            audioSource.PlayOneShot(correctSFX);
     }
+
+    protected void PlayWrongSFX()
+    {
+        if (audioSource != null && wrongSFX != null)
+            audioSource.PlayOneShot(wrongSFX);
+    }
+
+    protected abstract string GetMinigameName();
 }

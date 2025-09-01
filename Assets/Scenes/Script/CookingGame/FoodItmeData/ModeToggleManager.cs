@@ -115,8 +115,22 @@ public class ModeToggleManager : MonoBehaviour
         if (businessMusicSource != null) businessMusicSource.Play();
         if (closedMusicSource != null) closedMusicSource.Stop();
 
+        StartCoroutine(TriggerRandomEventAfterDelay(2f));//測試用2F 正式為20F
+
         Debug.Log("✅ 進入營業模式");
     }
+
+    private IEnumerator TriggerRandomEventAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        // 目前為測試用途，100% 觸發
+        if (RandomEventManager.Instance != null)
+        {
+            RandomEventManager.Instance.StartEvent();
+        }
+    }
+
 
     private void EnterClosedMode()
     {
