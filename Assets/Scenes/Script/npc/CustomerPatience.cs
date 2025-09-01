@@ -8,6 +8,10 @@ public class CustomerPatience : MonoBehaviour
     public GameObject patienceUIPrefab;
     public Transform uiAnchor;
 
+    [Header("單顆紅心耐心時間限制")]
+    public float minPatienceDurationPerHeart = 0.3f;
+    public float maxPatienceDurationPerHeart = 10f;
+
     private float timePerHeart;
     private int currentHeartIndex = 0;
 
@@ -21,10 +25,7 @@ public class CustomerPatience : MonoBehaviour
     {
         if (isRunning) return;
 
-        if (!isInitialized)
-        {
-            InitializeUI();
-        }
+        if (!isInitialized) InitializeUI();
 
         if (redHearts == null || redHearts.Length == 0)
         {
@@ -37,12 +38,11 @@ public class CustomerPatience : MonoBehaviour
         timePerHeart = totalPatienceTime / redHearts.Length;
 
         foreach (var heart in redHearts)
-        {
             heart.localScale = Vector3.one;
-        }
 
         StartNextHeart();
     }
+
     public void ForcePatience(float forcedSeconds)
     {
         if (isRunning) return;
@@ -64,6 +64,7 @@ public class CustomerPatience : MonoBehaviour
 
         StartNextHeart();
     }
+
     private void InitUIIfNeeded()
     {
         if (isInitialized) return;
@@ -89,23 +90,7 @@ public class CustomerPatience : MonoBehaviour
 
     private void InitializeUI()
     {
-        if (patienceUIPrefab != null && uiAnchor != null)
-        {
-            uiInstance = Instantiate(patienceUIPrefab, uiAnchor);
-            uiInstance.transform.localScale = Vector3.zero;
-            uiInstance.transform.DOScale(Vector3.one * 0.06f, 0.3f).SetEase(Ease.OutBack);
-
-            redHearts = uiInstance.GetComponentsInChildren<Transform>()
-                .Where(t => t.name.Contains("紅心"))
-                .OrderBy(t => t.GetSiblingIndex())
-                .ToArray();
-
-            isInitialized = true;
-        }
-        else
-        {
-            Debug.LogWarning("CustomerPatience 初始化失敗：未設定 prefab 或 anchor");
-        }
+        InitUIIfNeeded(); // 讓兩者統一呼叫邏輯
     }
 
     private void StartNextHeart()
@@ -117,7 +102,13 @@ public class CustomerPatience : MonoBehaviour
         {
             heart.localScale = Vector3.one;
 
-            heart.DOScale(Vector3.zero, timePerHeart)
+            float modifier = 1f + SpecialCustomerEffectManager.Instance.patienceRateModifier;
+            float rawTime = timePerHeart * Mathf.Max(modifier, 0.1f); // 防止除以 0 或負數
+            float adjustedTime = Mathf.Clamp(rawTime, minPatienceDurationPerHeart, maxPatienceDurationPerHeart);
+
+            Debug.Log($"[Patience] heart {currentHeartIndex + 1}/{redHearts.Length}, adjustedTime: {adjustedTime}");
+
+            heart.DOScale(Vector3.zero, adjustedTime)
                 .SetEase(Ease.Linear)
                 .OnComplete(() =>
                 {
