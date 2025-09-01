@@ -3,8 +3,10 @@ using UnityEngine.EventSystems;
 
 public class CardHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    [Header("卡片資料")]
+    [Header("卡片技能資料")]
+    public string activeSkillName;
     public string activeSkillDesc;
+    public string passiveSkillName;
     public string passiveSkillDesc;
 
     [Header("Hover 設定")]
@@ -48,21 +50,16 @@ public class CardHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        targetPosition = new Vector3(originalPosition.x, hoverPosY, originalPosition.z);
-        targetRotation = Quaternion.Euler(0f, 0f, 0f);
-        targetScale = originalScale * scaleUpFactor;
-        CardManager.Instance.OnCardHover(this);
-
-        CardDescriptionUI.Instance.ShowDescription(activeSkillDesc, passiveSkillDesc);
+        // 顯示技能 UI
+        CardDescriptionUI.Instance.ShowDescription(
+            activeSkillName, activeSkillDesc,
+            passiveSkillName, passiveSkillDesc
+        );
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        targetPosition = originalPosition;
-        targetRotation = originalRotation;
-        targetScale = originalScale;
-        CardManager.Instance.OnCardExit(this);
-
+        // 隱藏技能 UI
         CardDescriptionUI.Instance.HideDescription();
     }
 
