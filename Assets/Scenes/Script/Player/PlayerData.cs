@@ -32,12 +32,8 @@ public class PlayerData : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-<<<<<<< Updated upstream
+
     void Start()
-=======
-    // 改由 LevelUIManager 注入，避免初始化順序問題
-    public void InjectLevelUIManager(LevelUIManager uiManager)
->>>>>>> Stashed changes
     {
         levelUIManager = FindObjectOfType<LevelUIManager>();
         if (levelUIManager == null)
@@ -45,6 +41,8 @@ public class PlayerData : MonoBehaviour
             Debug.LogError("找不到 LevelUIManager！");
         }
     }
+
+    // 改由 LevelUIManager 注入，避免初始化順序問題
 
     public void AddExperience(int amount)
     {
