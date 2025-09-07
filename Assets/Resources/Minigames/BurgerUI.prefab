@@ -534,6 +534,8 @@ MonoBehaviour:
   wrongSFX: {fileID: 8300000, guid: e272ba27220cff146a72b67aa20954d2, type: 3}
   baseMenuItem: {fileID: 11400000, guid: 956de55f422cee943ae716a622d4a314, type: 2}
   garbageItem: {fileID: 11400000, guid: f4a0791f29141d74aa2252155ba1893a, type: 2}
+  eventBaseMenuItem: {fileID: 0}
+  eventGarbageItem: {fileID: 0}
   upIcon: {fileID: 21300000, guid: ab2d3e4a08d3f6c409bbd2b018dde3eb, type: 3}
   downIcon: {fileID: 21300000, guid: 6a35063786a1b0a408a9ef69e19897e8, type: 3}
   leftIcon: {fileID: 21300000, guid: afcc76688877f1442bb40e133c54fae8, type: 3}
@@ -554,6 +556,9 @@ MonoBehaviour:
   mutationBackground: {fileID: 21300000, guid: 0797418877d0c4b4f931a44bb92d37eb, type: 3}
   reversalBackground: {fileID: 21300000, guid: 0797418877d0c4b4f931a44bb92d37eb, type: 3}
   extensionBackground: {fileID: 21300000, guid: 0797418877d0c4b4f931a44bb92d37eb, type: 3}
+  normalAssetFolder: BurgerAssets
+  eventAssetFolder: BurgerAssets_Event
+  layerFolderFormat: Layer{0}
 --- !u!82 &450175210615213703
 AudioSource:
   m_ObjectHideFlags: 0
