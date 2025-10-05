@@ -432,6 +432,7 @@ RectTransform:
   - {fileID: 3129797532223597537}
   - {fileID: 3129797531510638459}
   - {fileID: 7557425593196602397}
+  - {fileID: 7339125072065764548}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -534,8 +535,6 @@ MonoBehaviour:
   wrongSFX: {fileID: 8300000, guid: e272ba27220cff146a72b67aa20954d2, type: 3}
   baseMenuItem: {fileID: 11400000, guid: 956de55f422cee943ae716a622d4a314, type: 2}
   garbageItem: {fileID: 11400000, guid: f4a0791f29141d74aa2252155ba1893a, type: 2}
-  eventBaseMenuItem: {fileID: 0}
-  eventGarbageItem: {fileID: 0}
   upIcon: {fileID: 21300000, guid: ab2d3e4a08d3f6c409bbd2b018dde3eb, type: 3}
   downIcon: {fileID: 21300000, guid: 6a35063786a1b0a408a9ef69e19897e8, type: 3}
   leftIcon: {fileID: 21300000, guid: afcc76688877f1442bb40e133c54fae8, type: 3}
@@ -559,6 +558,7 @@ MonoBehaviour:
   normalAssetFolder: BurgerAssets
   eventAssetFolder: BurgerAssets_Event
   layerFolderFormat: Layer{0}
+  captureAdapter: {fileID: 7402949236784793877}
 --- !u!82 &450175210615213703
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1495,3 +1495,55 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!1 &8331819664657888847
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7339125072065764548}
+  - component: {fileID: 7402949236784793877}
+  m_Layer: 0
+  m_Name: BurgerCaptureAdapter(script)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7339125072065764548
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8331819664657888847}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 176.22314, y: 138.39319, z: -439.06854}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3129797530882446437}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7402949236784793877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8331819664657888847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8adc29774740da445ab4daa7e4056471, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  captureRigPrefab: {fileID: 2865073826606079866, guid: a8d0e67df5bbafd4d8d37b89483672f0, type: 3}
+  stackItemSpacing: 27
+  setNativeSize: 1
+  uniformSize: {x: 256, y: 64}
+  itemPivot: {x: 0.5, y: 0}
+  keepRigInstance: 1
+  debugLog: 1
+  debugAddWhiteBox: 0
