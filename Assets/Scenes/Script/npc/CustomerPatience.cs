@@ -35,7 +35,11 @@ public class CustomerPatience : MonoBehaviour
 
         currentHeartIndex = 0;
         isRunning = true;
-        timePerHeart = totalPatienceTime / redHearts.Length;
+
+        // ✅ 基礎耐心 + 被動技能加成
+        float baseTime = totalPatienceTime + PassiveSkillManager.Instance.maxPatienceBonus;
+
+        timePerHeart = baseTime / redHearts.Length;
 
         foreach (var heart in redHearts)
             heart.localScale = Vector3.one;
@@ -102,11 +106,18 @@ public class CustomerPatience : MonoBehaviour
         {
             heart.localScale = Vector3.one;
 
-            float modifier = 1f + SpecialCustomerEffectManager.Instance.patienceRateModifier;
-            float rawTime = timePerHeart * Mathf.Max(modifier, 0.1f); // 防止除以 0 或負數
+            // 🔹 防呆，避免 SpecialCustomerEffectManager 為 null
+            float modifier = 1f;
+            if (SpecialCustomerEffectManager.Instance != null)
+                modifier += SpecialCustomerEffectManager.Instance.patienceRateModifier;
+
+            float rawTime = timePerHeart * Mathf.Max(modifier, 0.1f);
             float adjustedTime = Mathf.Clamp(rawTime, minPatienceDurationPerHeart, maxPatienceDurationPerHeart);
 
             Debug.Log($"[Patience] heart {currentHeartIndex + 1}/{redHearts.Length}, adjustedTime: {adjustedTime}");
+
+   
+            heart.DOKill();
 
             heart.DOScale(Vector3.zero, adjustedTime)
                 .SetEase(Ease.Linear)
@@ -159,4 +170,28 @@ public class CustomerPatience : MonoBehaviour
             GetComponent<Customer>()?.LeaveAndDespawn();
         }
     }
+    public void AddExtraPatience(float seconds)
+    {
+        if (!isInitialized || redHearts == null || redHearts.Length == 0) return;
+
+        // 增加總耐心時間
+        totalPatienceTime += seconds;
+
+        // 重新計算每顆心的時間
+        timePerHeart = totalPatienceTime / redHearts.Length;
+
+        Debug.Log($"{gameObject.name} 耐心增加 {seconds} 秒，新總耐心 = {totalPatienceTime}");
+
+        // 讓正在縮小的心重新計算時間
+        if (currentHeartIndex < redHearts.Length)
+        {
+            // 先殺掉正在執行的 DOTween 動畫
+            redHearts[currentHeartIndex].DOKill();
+
+            // 重新啟動當前這顆心
+            StartNextHeart();
+        }
+    }
+
+
 }

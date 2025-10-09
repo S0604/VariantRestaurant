@@ -1,0 +1,5 @@
+遊戲開始介面按鈕文字大小
+
+NOTO SANS TC BLACK -7PT
+
+色號:FFFFFF、000000

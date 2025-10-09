@@ -9,7 +9,7 @@ public class CardManager : MonoBehaviour
     public List<CardHoverEffect> cards = new List<CardHoverEffect>();
 
     [Header("間距設定")]
-    public float baseOffset = 80f; // 基準側移量，越近的卡片越多，越遠越少
+    public float baseOffset = 80f;
 
     private void Awake()
     {
@@ -22,13 +22,16 @@ public class CardManager : MonoBehaviour
 
         for (int i = 0; i < cards.Count; i++)
         {
-            CardHoverEffect card = cards[i];
-            if (card == hoveredCard) continue;
+            var card = cards[i];
+            var clickEffect = card.GetComponent<CardClickEffectUI>();
 
-            int distance = Mathf.Abs(i - hoverIndex); // 與 hover 卡片的距離
-            int direction = (i < hoverIndex) ? -1 : 1; // 左邊往左，右邊往右
+            if (card == hoveredCard || (clickEffect != null && clickEffect.IsLocked))
+                continue; // 🔒 跳過動畫中的卡片
 
-            float offset = baseOffset / distance; // 越近 offset 越大
+            int distance = Mathf.Abs(i - hoverIndex);
+            int direction = (i < hoverIndex) ? -1 : 1;
+            float offset = baseOffset / distance;
+
             card.SetSideOffset(direction * offset);
         }
     }
@@ -37,6 +40,8 @@ public class CardManager : MonoBehaviour
     {
         foreach (var card in cards)
         {
+            var clickEffect = card.GetComponent<CardClickEffectUI>();
+            if (clickEffect != null && clickEffect.IsLocked) continue; // 🔒 動畫中不重設
             card.ResetSideOffset();
         }
     }

@@ -1,0 +1,5 @@
+遊戲開始介面設定文字大小
+
+NOTO SANS TC BLACK -8PT
+
+色號:FFFFFF、000000

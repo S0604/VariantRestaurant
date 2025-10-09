@@ -3,11 +3,11 @@ using UnityEngine.EventSystems;
 
 public class CardHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    [Header("卡片技能資料")]
-    public string activeSkillName;
-    public string activeSkillDesc;
-    public string passiveSkillName;
-    public string passiveSkillDesc;
+
+    [Header("技能")]
+    public ActiveSkill activeSkill;
+    public PassiveSkill passiveSkill;
+
 
     [Header("Hover 設定")]
     public float hoverPosY = 200f;       // 上移 Y
@@ -23,6 +23,7 @@ public class CardHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExit
     private Vector3 targetScale;
 
     private float sideOffset = 0f; // 側移量
+    private CardClickEffectUI clickEffect; // 🔑 點擊動畫控制
 
     void Start()
     {
@@ -34,13 +35,24 @@ public class CardHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExit
         targetRotation = originalRotation;
         targetScale = originalScale;
 
+        clickEffect = GetComponent<CardClickEffectUI>();
+
         // 加到 CardManager
         if (!CardManager.Instance.cards.Contains(this))
             CardManager.Instance.cards.Add(this);
+
+        // ✅ 只要掛載被動技能就立即啟動
+        if (passiveSkill != null)
+        {
+            passiveSkill.Activate(gameObject);
+        }
     }
 
     void Update()
     {
+        // 🔒 如果正在被點擊動畫控制，就不要更新 hover 動畫
+        if (clickEffect != null && clickEffect.IsLocked) return;
+
         Vector3 finalPos = targetPosition + new Vector3(sideOffset, 0f, 0f);
 
         transform.localPosition = Vector3.Lerp(transform.localPosition, finalPos, Time.deltaTime * transitionSpeed);
@@ -48,17 +60,45 @@ public class CardHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExit
         transform.localScale = Vector3.Lerp(transform.localScale, targetScale, Time.deltaTime * transitionSpeed);
     }
 
+    public void EquipCard(GameObject player)
+    {
+        if (passiveSkill != null)
+        {
+            passiveSkill.Activate(player);
+        }
+    }
+
     public void OnPointerEnter(PointerEventData eventData)
     {
-        // 顯示技能 UI
-        CardDescriptionUI.Instance.ShowDescription(
-            activeSkillName, activeSkillDesc,
-            passiveSkillName, passiveSkillDesc
-        );
+        if (clickEffect != null && clickEffect.IsLocked) return;
+
+        Debug.Log("Pointer Enter: " + gameObject.name);
+        targetPosition = new Vector3(originalPosition.x, hoverPosY, originalPosition.z);
+        targetRotation = Quaternion.Euler(0f, 0f, 0f);
+        targetScale = originalScale * scaleUpFactor;
+
+        CardManager.Instance.OnCardHover(this);
+
+        // ✅ 直接從技能物件取資料
+        string activeName = activeSkill != null ? activeSkill.skillName : "";
+        string activeDesc = activeSkill != null ? activeSkill.description : "";
+        string passiveName = passiveSkill != null ? passiveSkill.skillName : "";
+        string passiveDesc = passiveSkill != null ? passiveSkill.description : "";
+
+        CardDescriptionUI.Instance.ShowDescription(activeName, activeDesc, passiveName, passiveDesc);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        if (clickEffect != null && clickEffect.IsLocked) return; // 🔒 忽略點擊狀態
+
+        Debug.Log("Pointer Exit: " + gameObject.name);
+        targetPosition = originalPosition;
+        targetRotation = originalRotation;
+        targetScale = originalScale;
+
+        CardManager.Instance.OnCardExit(this);
+
         // 隱藏技能 UI
         CardDescriptionUI.Instance.HideDescription();
     }
@@ -73,4 +113,16 @@ public class CardHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExit
     {
         sideOffset = 0f;
     }
+    public void ForceExit()
+    {
+        targetPosition = originalPosition;
+        targetRotation = originalRotation;
+        targetScale = originalScale;
+
+        CardManager.Instance.OnCardExit(this);
+        CardDescriptionUI.Instance.HideDescription();
+
+        Debug.Log("Force Exit: " + gameObject.name);
+    }
+
 }
