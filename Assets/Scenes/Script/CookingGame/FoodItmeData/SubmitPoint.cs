@@ -136,6 +136,9 @@ public class SubmitPoint : MonoBehaviour
                     case BaseMinigame.DishGrade.Good:
                         multiplier = 1;
                         break;
+                    case BaseMinigame.DishGrade.Mutated:
+                        multiplier = 3;
+                        break;
                 }
 
                 totalExp += baseReward * multiplier;

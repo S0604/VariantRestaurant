@@ -69,11 +69,11 @@ public class RandomEventManager : MonoBehaviour
         isActive = true;
 
         // 再處理 UI 與 Coroutine
-        if (eventUIPanel != null) eventUIPanel.SetActive(true);
-        if (eventWarningIcon != null) eventWarningIcon.enabled = true;
+        //if (eventUIPanel != null) eventUIPanel.SetActive(true);
+        //if (eventWarningIcon != null) eventWarningIcon.enabled = true;
 
-        if (eventNameText != null)
-            eventNameText.text = $"隨機事件：{GetEventName(currentEffect)}";
+        //if (eventNameText != null)
+            //eventNameText.text = $"隨機事件：{GetEventName(currentEffect)}";
 
         StartCoroutine(EventCountdown());
     }

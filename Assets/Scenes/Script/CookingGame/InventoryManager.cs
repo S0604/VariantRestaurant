@@ -1,5 +1,6 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
 using System.IO;
 
 public class InventoryManager : MonoBehaviour
@@ -43,6 +44,33 @@ public class InventoryManager : MonoBehaviour
         return true;
     }
 
+    // ★ 新增：直接用 Sprite 建立一個臨時 MenuItem 加入（給 Burger 擷取）
+    public void AddItemFromSprite(Sprite sprite, string itemName, string itemTag, BaseMinigame.DishGrade grade)
+    {
+        if (items.Count >= maxSlots)
+        {
+            Debug.Log("背包已滿，無法加入新圖片物品");
+            return;
+        }
+
+        if (sprite == null)
+        {
+            Debug.LogWarning("AddItemFromSprite: sprite 為 null");
+            return;
+        }
+
+        MenuItem newItem = ScriptableObject.CreateInstance<MenuItem>();
+        newItem.itemName = string.IsNullOrEmpty(itemName) ? "Burger" : itemName;
+        newItem.itemTag = string.IsNullOrEmpty(itemTag) ? "Burger" : itemTag;
+        newItem.grade = grade;
+        newItem.itemImage = sprite;                 // 直接用擷取圖示做 UI 顯示
+        // 如需相容舊流程，也可依 grade 設置 gradeSprites，但非必要
+
+        items.Add(newItem);
+        NotifyInventoryChanged();
+        Debug.Log("加入擷取圖示物品：" + newItem.itemName);
+    }
+
     public void AddItemFromTexture(Texture2D texture, string itemName)
     {
         if (items.Count >= maxSlots)
@@ -67,8 +95,6 @@ public class InventoryManager : MonoBehaviour
 
         Debug.Log("加入截圖物品：" + itemName);
     }
-
-
 
     public bool HasItemByTag(string tag)
     {

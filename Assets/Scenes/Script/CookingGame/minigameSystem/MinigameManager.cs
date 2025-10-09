@@ -35,16 +35,14 @@ public class MinigameManager : MonoBehaviour
 
     public void StartMinigame(string type, System.Action<bool, int> onComplete)
     {
-        
-        Debug.Log($"啟動小遊戲時事件狀態：Active={RandomEventManager.Instance?.IsEventActive}, Effect={RandomEventManager.Instance?.CurrentEffect}");
-
         if (currentMinigame != null)
         {
             Debug.LogWarning("已有小遊戲在進行中！");
             return;
         }
 
-        if (BaseMinigame.HasMaxDishRecords())
+        // 直接透過 InventoryManager 做數量限制檢查
+        if (InventoryManager.Instance != null && InventoryManager.Instance.GetItemCount() >= 2)
         {
             Debug.LogWarning("你已經有兩項料理紀錄，請先清除後再繼續！");
             return;
@@ -77,7 +75,7 @@ public class MinigameManager : MonoBehaviour
         currentMinigame.StartMinigame((success, rank) =>
         {
             onComplete?.Invoke(success, rank);
-            StartCoroutine(DestroyAfterDelay(instanceObj, 0.5f)); // 修正：從這裡執行 Coroutine
+            StartCoroutine(DestroyAfterDelay(instanceObj, 0.5f)); // 由這裡負責銷毀
             currentMinigame = null;
         });
     }
@@ -85,6 +83,6 @@ public class MinigameManager : MonoBehaviour
     private IEnumerator DestroyAfterDelay(GameObject obj, float delay)
     {
         yield return new WaitForSeconds(delay);
-        Destroy(obj);
+        if (obj != null) Destroy(obj);
     }
 }

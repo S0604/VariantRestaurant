@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   grade: 2
   itemName: Drink
-  gradeSprites:
-  - {fileID: 21300000, guid: 669048b30030d8943a0a1e14f4455836, type: 3}
-  - {fileID: 21300000, guid: 1bf37363ec4b0aa40b5e3602e203ca2f, type: 3}
-  - {fileID: 21300000, guid: 567d965733a4b83418dd965d516f726f, type: 3}
-  - {fileID: 21300000, guid: 567d965733a4b83418dd965d516f726f, type: 3}
   itemTag: 003
-  itemImage: {fileID: 21300000, guid: 38a1ba2a3181c4447b8d45eb85703495, type: 3}
+  gradeSprites:
+  - {fileID: 21300000, guid: 7496d7e808345d149857ccd217cb636f, type: 3}
+  - {fileID: 21300000, guid: 7496d7e808345d149857ccd217cb636f, type: 3}
+  - {fileID: 21300000, guid: 7496d7e808345d149857ccd217cb636f, type: 3}
+  - {fileID: 21300000, guid: 7496d7e808345d149857ccd217cb636f, type: 3}
+  - {fileID: 21300000, guid: 7496d7e808345d149857ccd217cb636f, type: 3}
+  itemImage: {fileID: 21300000, guid: 7496d7e808345d149857ccd217cb636f, type: 3}

@@ -30,6 +30,10 @@ public class BurgerMinigame : BaseMinigame
     [Tooltip("每層子資料夾命名；Layer{0} 會得到 Layer0/Layer1…")]
     public string layerFolderFormat = "Layer{0}";
 
+    // ★ 新增：擷取適配器
+    [Header("Capture")]
+    [SerializeField] private BurgerCaptureAdapter captureAdapter;
+
     private readonly List<KeyCode> sequence = new();
     private readonly List<Image> sequenceIcons = new();
     private readonly List<KeyCode> playerInput = new();
@@ -40,7 +44,6 @@ public class BurgerMinigame : BaseMinigame
     {
         base.StartMinigame(callback);
 
-        // 背景與圖示使用「本局快照」決定（不受中途變動影響）
         ApplyBackgroundByEventSnapshot();
         ApplyWASDIconsByEventSnapshot();
 
@@ -50,7 +53,6 @@ public class BurgerMinigame : BaseMinigame
         foreach (Transform child in stackContainer)
             Destroy(child.gameObject);
 
-        // 指令長度：Extension 才 7，其他 5（依快照）
         int commandLength = (IsEventActiveThisRun() && EventEffectThisRun() == EventEffectType.Extension) ? 7 : 5;
         for (int i = 0; i < commandLength; i++)
             sequence.Add(wasdKeys[Random.Range(0, wasdKeys.Length)]);
@@ -118,7 +120,6 @@ public class BurgerMinigame : BaseMinigame
                 AddStackItem(key, step);
                 playerInput.Add(key);
 
-                // Mutation：每次正確後重抽剩餘步驟並刷新圖示（依快照）
                 if (IsEventActiveThisRun() && EventEffectThisRun() == EventEffectType.Mutation)
                 {
                     MutateRemainingSequence(step + 1);
@@ -209,7 +210,6 @@ public class BurgerMinigame : BaseMinigame
         }
     }
 
-    // ★ 這裡只分「一般素材庫 / 事件素材庫」兩種
     void AddStackItem(KeyCode key, int stepIndex)
     {
         string baseFolder = IsEventActiveThisRun() ? eventAssetFolder : normalAssetFolder;
@@ -219,7 +219,6 @@ public class BurgerMinigame : BaseMinigame
 
         Sprite[] sprites = Resources.LoadAll<Sprite>(folderPath);
 
-        // 事件庫缺圖時回退一般庫，避免空集合
         if ((sprites == null || sprites.Length == 0) && baseFolder != normalAssetFolder)
             sprites = Resources.LoadAll<Sprite>($"{normalAssetFolder}/{layerPath}");
 
@@ -270,7 +269,6 @@ public class BurgerMinigame : BaseMinigame
         return null;
     }
 
-    // ----- Mutation（依快照）-----
     void MutateRemainingSequence(int fromIndex)
     {
         if (fromIndex < 0) fromIndex = 0;
@@ -290,5 +288,68 @@ public class BurgerMinigame : BaseMinigame
             if (anim != null) anim.SetTrigger("Idle");
         }
     }
-    // ----------------------------
+
+    // ============ ★ 重點：覆寫結束流程，成功時改走「擷取 → 加入 Inventory」 ============
+    protected override void FinishMinigameInternal(bool success, int rank = 0)
+    {
+        if (!success)
+        {
+            // 失敗情況保持原流程（加入 Garbage / Fail）
+            base.FinishMinigameInternal(false, 0);
+            return;
+        }
+
+        // 成功情況：用 off-screen 擷取生成漢堡圖示
+        StartCoroutine(FinishSuccessWithCapture(rank));
+    }
+
+    IEnumerator FinishSuccessWithCapture(int rank)
+    {
+        // 結束時關閉玩家烹飪狀態
+        if (MinigameManager.Instance?.player != null)
+            MinigameManager.Instance.player.isCooking = false;
+
+        // 決定最終等級（事件啟動且非 Fail → Mutated）
+        DishGrade finalGrade = (DishGrade)rank;
+        if (IsEventActiveThisRun() && finalGrade != DishGrade.Fail)
+            finalGrade = DishGrade.Mutated;
+
+        // 組層：依 stackContainer 當前子物件順序（自下而上）
+        // 取代你原本的組層段落
+        var layers = new List<BurgerCaptureAdapter.LayerData>();
+        int idx = 0;
+        foreach (Transform child in stackContainer)
+        {
+            var img = child.GetComponentInChildren<UnityEngine.UI.Image>(true); // ★ 抓孫層也可
+            if (img && img.sprite)
+            {
+                layers.Add(new BurgerCaptureAdapter.LayerData { sprite = img.sprite, index = idx });
+                idx++;
+            }
+        }
+        Debug.Log($"[BurgerMinigame] layers collected={layers.Count}");
+
+
+        if (captureAdapter == null)
+        {
+            Debug.LogError("[BurgerMinigame] captureAdapter 未指派，無法擷取漢堡圖示。");
+        }
+        else
+        {
+            string nameForUI = (baseMenuItem != null && !string.IsNullOrEmpty(baseMenuItem.itemName))
+                                ? baseMenuItem.itemName
+                                : "Burger";
+            string tagForUI = (baseMenuItem != null && !string.IsNullOrEmpty(baseMenuItem.itemTag))
+                                ? baseMenuItem.itemTag
+                                : "Burger";
+
+            // 擷取並加入 Inventory（覆蓋為擷取圖）
+            yield return captureAdapter.CaptureAndAddToInventory(layers, finalGrade, nameForUI, tagForUI);
+        }
+
+        // 關閉本局 UI 並回調
+        if (cookingUI != null) cookingUI.SetActive(false);
+        onCompleteCallback?.Invoke(true, rank);
+    }
+    // =====================================================================================
 }

@@ -43,7 +43,15 @@ public abstract class BaseMinigame : MonoBehaviour
     protected bool isPlaying = false;
     private bool hasEnded = false;
 
-    public enum DishGrade { Perfect = 3, Good = 2, Bad = 1, Fail = 0 }
+    public enum DishGrade
+    {
+        Perfect = 3,
+        Good = 2,
+        Bad = 1,
+        Fail = 0,
+        // 」 穝糤跑钵ㄆン盡妮﹚单
+        Mutated = 4
+    }
 
     public static BaseMinigame CurrentInstance { get; private set; }
 
@@ -148,15 +156,28 @@ public abstract class BaseMinigame : MonoBehaviour
 
     protected void GenerateMenuItemByGrade(DishGrade grade)
     {
-        MenuItem item = (grade == DishGrade.Fail || grade == DishGrade.Bad) ? garbageItem : Instantiate(baseMenuItem);
-        item.grade = grade;
+        // ∕﹚程单
+        DishGrade finalGrade = grade;
+        if (IsEventActiveThisRun() && grade != DishGrade.Fail)
+            finalGrade = DishGrade.Mutated;
+
+        // ㄌ程单珼家狾Mutated ǐタ盽坝珇家狾
+        MenuItem template = (finalGrade == DishGrade.Fail) ? garbageItem : baseMenuItem;
+        if (template == null)
+        {
+            Debug.LogWarning("[BaseMinigame] 玻家狾ゼ砞竚");
+            return;
+        }
+
+        MenuItem item = Instantiate(template);
+        item.grade = finalGrade;
+
+        // ˙ itemImage倒侣 UI
+        item.SyncImageToGrade();
+
         InventoryManager.Instance.AddItem(item);
     }
 
-    public static bool HasMaxDishRecords()
-    {
-        return InventoryManager.Instance.GetItemCount() >= 2;
-    }
 
     protected void PlayCorrectSFX()
     {
