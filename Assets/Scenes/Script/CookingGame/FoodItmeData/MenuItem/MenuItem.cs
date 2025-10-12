@@ -13,7 +13,13 @@ public class MenuItem : ScriptableObject
     [Header("顯示圖組（依 DishGrade 索引：Fail=0, Bad=1, Good=2, Perfect=3, Mutated=4）")]
     public Sprite[] gradeSprites;
 
-    // ★ 向下相容：舊程式仍讀取 itemImage，就讓它存在並自動同步
+    [Header("手動覆寫")]
+    [Tooltip("勾選時會依 gradeSprites 自動帶入；取消勾選可手動指定下方圖片")]
+    public bool lockImageToGrade = true;
+    [Tooltip("取消勾選上方開關後，這張圖會直接用作 itemImage")]
+    public Sprite manualImageOverride;
+
+    // ★ 向下相容：舊程式仍讀取 itemImage，就讓它存在並自動同步/或覆寫
     public Sprite itemImage;
 
     public Sprite GetSpriteByGrade(BaseMinigame.DishGrade g)
@@ -24,15 +30,25 @@ public class MenuItem : ScriptableObject
             : null;
     }
 
-    // ★ 在 Inspector 改東西時自動同步 itemImage
+    // Inspector 改東西時自動同步（但可被手動覆寫）
     private void OnValidate()
     {
-        itemImage = GetSpriteByGrade(grade);
+        if (lockImageToGrade)
+        {
+            itemImage = GetSpriteByGrade(grade);
+        }
+        else
+        {
+            itemImage = manualImageOverride != null ? manualImageOverride : itemImage;
+        }
     }
 
-    // ★ 供外部在改變 grade 後手動同步（如出菜時）
+    // 外部在改變 grade 後手動同步（如出菜時）
     public void SyncImageToGrade()
     {
-        itemImage = GetSpriteByGrade(grade);
+        if (lockImageToGrade)
+            itemImage = GetSpriteByGrade(grade);
+        else
+            itemImage = (manualImageOverride != null) ? manualImageOverride : itemImage;
     }
 }

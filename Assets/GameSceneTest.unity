@@ -2380,7 +2380,7 @@ MonoBehaviour:
   itemContainer: {fileID: 1926203670}
   itemBoxSize: {x: 155, y: 200}
   useFixedDisplaySize: 1
-  preserveAspect: 1
+  bottomAlign: 1
   slotSpacing: 100
 --- !u!1 &127464288
 GameObject:
@@ -26480,7 +26480,7 @@ SpriteRenderer:
   m_Size: {x: 7.2, y: 10.8}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1683407083
@@ -28640,7 +28640,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -111, y: 184}
+  m_AnchoredPosition: {x: -111, y: 169.7}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1926203671
@@ -28661,7 +28661,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 0
-  m_Spacing: -20
+  m_Spacing: 0
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
