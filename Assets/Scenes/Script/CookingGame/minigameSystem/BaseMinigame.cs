@@ -161,6 +161,9 @@ public abstract class BaseMinigame : MonoBehaviour
         if (IsEventActiveThisRun() && grade != DishGrade.Fail)
             finalGrade = DishGrade.Mutated;
 
+        // 」 冀癸莱单垫ぃ紇臫ㄤ瑈祘
+        GameAudio.Instance?.PlayDishComplete(finalGrade);
+
         // ㄌ程单珼家狾Mutated ǐタ盽坝珇家狾
         MenuItem template = (finalGrade == DishGrade.Fail) ? garbageItem : baseMenuItem;
         if (template == null)
@@ -177,6 +180,7 @@ public abstract class BaseMinigame : MonoBehaviour
 
         InventoryManager.Instance.AddItem(item);
     }
+
 
 
     protected void PlayCorrectSFX()

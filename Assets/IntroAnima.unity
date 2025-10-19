@@ -382,7 +382,7 @@ MonoBehaviour:
   pressAnyKeyText: {fileID: 317992240}
   skipAllButton: {fileID: 452816700}
   skipButtonLabelWhenLoading: 
-  nextSceneName: GameScene
+  nextSceneName: GameScene 1
   showOnlyOncePerRun: 1
 --- !u!4 &324167980
 Transform:

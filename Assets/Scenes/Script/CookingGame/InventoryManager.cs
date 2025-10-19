@@ -14,6 +14,7 @@ public class InventoryManager : MonoBehaviour
     public IReadOnlyList<MenuItem> Items => items;
 
     public static event System.Action<List<MenuItem>> OnInventoryChanged;
+    public static event System.Action<MenuItem> OnItemAdded;
     private List<MenuItem> inventoryItems = new List<MenuItem>();
 
     public MenuItem GarbageItem; // 設定垃圾 MenuItem
@@ -40,35 +41,37 @@ public class InventoryManager : MonoBehaviour
 
         items.Add(newItem);
         NotifyInventoryChanged();
+
+        // ★ 觸發單筆新增事件
+        OnItemAdded?.Invoke(newItem);
+
         Debug.Log($"加入新物品：{newItem.name}");
         return true;
     }
+
 
     // ★ 新增：直接用 Sprite 建立一個臨時 MenuItem 加入（給 Burger 擷取）
     public void AddItemFromSprite(Sprite sprite, string itemName, string itemTag, BaseMinigame.DishGrade grade)
     {
         if (items.Count >= maxSlots)
         {
-            Debug.Log("背包已滿，無法加入新圖片物品");
+            Debug.Log("背包已滿，無法加入新物品（Sprite）");
             return;
         }
 
-        if (sprite == null)
-        {
-            Debug.LogWarning("AddItemFromSprite: sprite 為 null");
-            return;
-        }
-
-        MenuItem newItem = ScriptableObject.CreateInstance<MenuItem>();
-        newItem.itemName = string.IsNullOrEmpty(itemName) ? "Burger" : itemName;
-        newItem.itemTag = string.IsNullOrEmpty(itemTag) ? "Burger" : itemTag;
+        var newItem = ScriptableObject.CreateInstance<MenuItem>();
+        newItem.itemName = itemName;
+        newItem.itemTag = itemTag;
         newItem.grade = grade;
-        newItem.itemImage = sprite;                 // 直接用擷取圖示做 UI 顯示
-        // 如需相容舊流程，也可依 grade 設置 gradeSprites，但非必要
+        newItem.itemImage = sprite;
 
         items.Add(newItem);
         NotifyInventoryChanged();
-        Debug.Log("加入擷取圖示物品：" + newItem.itemName);
+
+        // ★ 觸發單筆新增事件
+        OnItemAdded?.Invoke(newItem);
+
+        Debug.Log($"加入物品（Sprite）：{itemName}");
     }
 
     public void AddItemFromTexture(Texture2D texture, string itemName)
@@ -87,11 +90,13 @@ public class InventoryManager : MonoBehaviour
         Rect rect = new Rect(0, 0, texture.width, texture.height);
         Vector2 pivot = new Vector2(0.5f, 0.5f);
         Sprite sprite = Sprite.Create(texture, rect, pivot);
-
         newItem.itemImage = sprite;
 
         items.Add(newItem);
         NotifyInventoryChanged();
+
+        // ★ 觸發單筆新增事件
+        OnItemAdded?.Invoke(newItem);
 
         Debug.Log("加入截圖物品：" + itemName);
     }
