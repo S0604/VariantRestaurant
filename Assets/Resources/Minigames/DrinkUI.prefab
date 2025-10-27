@@ -1328,6 +1328,8 @@ MonoBehaviour:
   mutationBackground: {fileID: 21300000, guid: cdb479b4f554c2b498aa19253ee61797, type: 3}
   reversalBackground: {fileID: 21300000, guid: cdb479b4f554c2b498aa19253ee61797, type: 3}
   extensionBackground: {fileID: 21300000, guid: cdb479b4f554c2b498aa19253ee61797, type: 3}
+  normalVideoBasePath: DrinkAssets
+  eventVideoBasePath: DrinkAssets_Event
   stageContainer: {fileID: 3638817974093315374}
   wrongIconResetDelay: 0.5
   stagePrefab: {fileID: 524881280977114084}

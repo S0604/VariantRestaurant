@@ -17,6 +17,9 @@ public class CookingStation : MonoBehaviour
 
     public MenuItem energySupplyItem; // 指定補給箱 MenuItem
 
+    [Header("UI 引用")]
+    public Transform supplyContainer; // ← 取代 GameObject.Find
+
     void Start()
     {
         currentEnergy = maxEnergy;
@@ -130,19 +133,17 @@ public class CookingStation : MonoBehaviour
 
     private int GetSupplyAmount()
     {
-        return UpgradeManager.Instance != null ? UpgradeManager.Instance.supplyAmount : 1;
+        return UpgradeManager.Instance != null
+            ? Mathf.Max(1, Mathf.RoundToInt(
+                UpgradeManager.Instance.GetValue(UpgradeType.SupplyPickupAmount)))
+            : 1;
     }
 
     private void ClearSupplyUI()
     {
-        GameObject container = GameObject.Find("SupplyContainer");
-        if (container != null)
-        {
-            foreach (Transform child in container.transform)
-            {
-                Destroy(child.gameObject);
-            }
-        }
+        if (!supplyContainer) return;
+        for (int i = supplyContainer.childCount - 1; i >= 0; i--)
+            Destroy(supplyContainer.GetChild(i).gameObject);
     }
 
     private void OnTriggerEnter(Collider other)
