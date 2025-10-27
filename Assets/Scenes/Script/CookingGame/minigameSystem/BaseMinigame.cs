@@ -43,7 +43,15 @@ public abstract class BaseMinigame : MonoBehaviour
     protected bool isPlaying = false;
     private bool hasEnded = false;
 
-    public enum DishGrade { Perfect = 3, Good = 2, Bad = 1, Fail = 0 }
+    public enum DishGrade
+    {
+        Perfect = 3,
+        Good = 2,
+        Bad = 1,
+        Fail = 0,
+        // ★ 新增：變異事件專屬的判定等級
+        Mutated = 4
+    }
 
     public static BaseMinigame CurrentInstance { get; private set; }
 
@@ -148,15 +156,32 @@ public abstract class BaseMinigame : MonoBehaviour
 
     protected void GenerateMenuItemByGrade(DishGrade grade)
     {
-        MenuItem item = (grade == DishGrade.Fail || grade == DishGrade.Bad) ? garbageItem : Instantiate(baseMenuItem);
-        item.grade = grade;
+        // 先決定「最後等級」
+        DishGrade finalGrade = grade;
+        if (IsEventActiveThisRun() && grade != DishGrade.Fail)
+            finalGrade = DishGrade.Mutated;
+
+        // ★ 播放對應等級的出菜音效（不影響其他流程）
+        GameAudio.Instance?.PlayDishComplete(finalGrade);
+
+        // 再依「最後等級」挑模板：Mutated 走正常商品模板
+        MenuItem template = (finalGrade == DishGrade.Fail) ? garbageItem : baseMenuItem;
+        if (template == null)
+        {
+            Debug.LogWarning("[BaseMinigame] 產物模板未設置！");
+            return;
+        }
+
+        MenuItem item = Instantiate(template);
+        item.grade = finalGrade;
+
+        // 同步 itemImage（給舊 UI）
+        item.SyncImageToGrade();
+
         InventoryManager.Instance.AddItem(item);
     }
 
-    public static bool HasMaxDishRecords()
-    {
-        return InventoryManager.Instance.GetItemCount() >= 2;
-    }
+
 
     protected void PlayCorrectSFX()
     {

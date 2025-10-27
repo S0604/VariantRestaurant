@@ -136,18 +136,14 @@ public class SubmitPoint : MonoBehaviour
                     case BaseMinigame.DishGrade.Good:
                         multiplier = 1;
                         break;
+                    case BaseMinigame.DishGrade.Mutated:
+                        multiplier = 3;
+                        break;
                 }
 
-                int exp = baseReward * multiplier;
-                int pop = baseReward * multiplier;
-                int money = baseReward * multiplier;
-
-                totalExp += exp;
-                totalPopularity += pop;
-                totalMoney += money;
-
-                // ✅ 新增 Debug
-                Debug.Log($"評級: {orderItem.menuItem.grade} 經驗: {exp} 人氣: {pop} 金錢: {money}");
+                totalExp += baseReward * multiplier;
+                totalPopularity += baseReward * multiplier;
+                totalMoney += baseReward * multiplier;
             }
 
             SessionRewardTracker.Instance.AddRewards(totalExp, totalPopularity, totalMoney);

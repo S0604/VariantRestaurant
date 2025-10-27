@@ -51,7 +51,7 @@ public class DialogueManager : MonoBehaviour
         // 以下原有程式碼不動 …
         if (player != null)
         {
-            player.isLocked = true;
+           // player.isLocked = true;
             if (player.TryGetComponent<Animator>(out Animator anim))
                 anim.SetBool("Ismoving", false);
         }
@@ -70,7 +70,7 @@ public class DialogueManager : MonoBehaviour
         // ✅ 解凍世界
         Time.timeScale = 1f;
 
-        if (player != null) player.isLocked = false;
+       // if (player != null) player.isLocked = false;
         if (dialogueCanvas != null)
         {
             //dialogueCanvas.gameObject.SetActive(false);

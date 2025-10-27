@@ -1,29 +1,27 @@
-ï»¿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 public class MinigameManager : MonoBehaviour
 {
     public static MinigameManager Instance { get; private set; }
 
-    [Header("å°éŠæˆ²ç™»è¨˜è¡¨")]
     public List<MinigameEntry> minigames = new List<MinigameEntry>();
     public Transform minigameContainer;
-    [Header("ç©å®¶å¼•ç”¨")]
+
+    [Header("ª±®a±±¨î")]
     public Player player;
 
     private BaseMinigame currentMinigame;
     public bool IsPlaying => currentMinigame != null;
 
-    /* ========== é– & å°è©±æ¨™è¨˜ ========== */
-    private static bool isSpawning = false;
-    private static bool hasSpawnedGame5Dialogue = false;
-    /* ==================================== */
-
     void Awake()
     {
-        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
@@ -35,202 +33,56 @@ public class MinigameManager : MonoBehaviour
         public string resourcePath;
     }
 
-    /* --------------- å”¯ä¸€å…¥å£ --------------- */
     public void StartMinigame(string type, System.Action<bool, int> onComplete)
     {
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-        
-        Debug.Log($"±Ò°Ê¤p¹CÀ¸®É¨Æ¥óª¬ºA¡GActive={RandomEventManager.Instance?.IsEventActive}, Effect={RandomEventManager.Instance?.CurrentEffect}");
-
         if (currentMinigame != null)
-=======
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-        if (currentMinigame != null || isSpawning) return;
-
-        if (InventoryManager.Instance != null && InventoryManager.Instance.GetItemCount() >= 2)
-        { Debug.LogWarning("èƒŒåŒ…å·²æ»¿ï¼Œç„¡æ³•é–‹å§‹å°éŠæˆ²"); return; }
-
-        if (!hasSpawnedGame5Dialogue)
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
         {
-            hasSpawnedGame5Dialogue = true;
-            isSpawning = true;
-            StartCoroutine(SpawnThenDialogue(type, onComplete));
+            Debug.LogWarning("¤w¦³¤p¹CÀ¸¦b¶i¦æ¤¤¡I");
             return;
         }
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-        if (BaseMinigame.HasMaxDishRecords())
+        // ª½±µ³z¹L InventoryManager °µ¼Æ¶q­­¨îÀË¬d
+        if (InventoryManager.Instance != null && InventoryManager.Instance.GetItemCount() >= 2)
         {
             Debug.LogWarning("§A¤w¸g¦³¨â¶µ®Æ²z¬ö¿ı¡A½Ğ¥ı²M°£«á¦AÄ~Äò¡I");
             return;
         }
-=======
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-        isSpawning = true;
-        ProceedToStartMinigame(type, onComplete);
-    }
-
-    /* ç”Ÿæˆ â†’ ç«‹å³å°è©± â†’ è§£å‡å¾Œæ‰è·‘å›å‘¼ */
-    private IEnumerator SpawnThenDialogue(string type, System.Action<bool, int> onComplete)
-    {
-        yield return null; // ç­‰ä¸€å¸§ï¼Œç¢ºä¿å¤–éƒ¨ isSpawning ç”Ÿæ•ˆ
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 
         var entry = minigames.Find(m => m.minigameType == type);
-        if (entry == null) { isSpawning = false; yield break; }
-
-        GameObject prefab = Resources.Load<GameObject>(entry.resourcePath);
-        if (prefab == null) { isSpawning = false; yield break; }
-
-        /* 1ï¸âƒ£ ç¬é–“ç”Ÿæˆåˆ°å ´æ™¯ */
-        GameObject instance = Instantiate(prefab, minigameContainer);
-        currentMinigame = instance.GetComponent<BaseMinigame>();
-        if (currentMinigame == null)
-        { Destroy(instance); isSpawning = false; yield break; }
-
-        /* 2ï¸âƒ£ ç”Ÿæˆå¾Œã€Œä¸‹ä¸€è¡Œã€ç«‹å³å‡çµ+å°è©± */
-        Time.timeScale = 0f;
-        if (TutorialDialogueController.Instance != null)
-            yield return TutorialDialogueController.Instance.PlaySingleChapter("5");
-        Time.timeScale = 1f;
-
-        /* 3ï¸âƒ£ è¨»å†ŠçµæŸå›å‘¼ */
-        currentMinigame.StartMinigame((success, rank) =>
+        if (entry == null)
         {
-            onComplete?.Invoke(success, rank);
-            StartCoroutine(DestroyAfterDelay(instance, 0.5f));
-            currentMinigame = null;
-        });
-
-        isSpawning = false;
-    }
-
-    /* éç¬¬ä¸€æ¬¡çš„ç”Ÿæˆ */
-    private void ProceedToStartMinigame(string type, System.Action<bool, int> onComplete)
-    {
-        var entry = minigames.Find(m => m.minigameType == type);
-        if (entry == null) { isSpawning = false; return; }
+            Debug.LogError($"§ä¤£¨ì¹ïÀ³¤p¹CÀ¸Ãş«¬: {type}");
+            return;
+        }
 
         GameObject prefab = Resources.Load<GameObject>(entry.resourcePath);
-        if (prefab == null) { isSpawning = false; return; }
+        if (prefab == null)
+        {
+            Debug.LogError($"µLªk±q Resources ¸ü¤J prefab: {entry.resourcePath}");
+            return;
+        }
 
-        GameObject instance = Instantiate(prefab, minigameContainer);
-        currentMinigame = instance.GetComponent<BaseMinigame>();
+        GameObject instanceObj = Instantiate(prefab, minigameContainer);
+        currentMinigame = instanceObj.GetComponent<BaseMinigame>();
+
         if (currentMinigame == null)
-        { Destroy(instance); isSpawning = false; return; }
+        {
+            Debug.LogError("¸ü¤Jªº¤p¹CÀ¸ prefab ¯Ê¤Ö BaseMinigame ²Õ¥ó¡I");
+            Destroy(instanceObj);
+            return;
+        }
 
         currentMinigame.StartMinigame((success, rank) =>
         {
             onComplete?.Invoke(success, rank);
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-            StartCoroutine(DestroyAfterDelay(instanceObj, 0.5f)); // ­×¥¿¡G±q³o¸Ì°õ¦æ Coroutine
-=======
-            StartCoroutine(DestroyAfterDelay(instance, 0.5f));
->>>>>>> Stashed changes
-=======
-            StartCoroutine(DestroyAfterDelay(instance, 0.5f));
->>>>>>> Stashed changes
-=======
-            StartCoroutine(DestroyAfterDelay(instance, 0.5f));
->>>>>>> Stashed changes
-=======
-            StartCoroutine(DestroyAfterDelay(instance, 0.5f));
->>>>>>> Stashed changes
-=======
-            StartCoroutine(DestroyAfterDelay(instance, 0.5f));
->>>>>>> Stashed changes
-=======
-            StartCoroutine(DestroyAfterDelay(instance, 0.5f));
->>>>>>> Stashed changes
-=======
-            StartCoroutine(DestroyAfterDelay(instance, 0.5f));
->>>>>>> Stashed changes
+            StartCoroutine(DestroyAfterDelay(instanceObj, 0.5f)); // ¥Ñ³o¸Ì­t³d¾P·´
             currentMinigame = null;
         });
-
-        isSpawning = false;
     }
 
     private IEnumerator DestroyAfterDelay(GameObject obj, float delay)
     {
         yield return new WaitForSeconds(delay);
-        Destroy(obj);
+        if (obj != null) Destroy(obj);
     }
 }
