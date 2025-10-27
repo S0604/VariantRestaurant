@@ -40,11 +40,14 @@ public class MinigameManager : MonoBehaviour
     {
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         
         Debug.Log($"±Ò°Ê¤p¹CÀ¸®É¨Æ¥óª¬ºA¡GActive={RandomEventManager.Instance?.IsEventActive}, Effect={RandomEventManager.Instance?.CurrentEffect}");
 
         if (currentMinigame != null)
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
         if (currentMinigame != null || isSpawning) return;
@@ -54,6 +57,9 @@ public class MinigameManager : MonoBehaviour
 
         if (!hasSpawnedGame5Dialogue)
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -66,12 +72,15 @@ public class MinigameManager : MonoBehaviour
 
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         if (BaseMinigame.HasMaxDishRecords())
         {
             Debug.LogWarning("§A¤w¸g¦³¨â¶µ®Æ²z¬ö¿ı¡A½Ğ¥ı²M°£«á¦AÄ~Äò¡I");
             return;
         }
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
         isSpawning = true;
@@ -83,6 +92,9 @@ public class MinigameManager : MonoBehaviour
     {
         yield return null; // ç­‰ä¸€å¸§ï¼Œç¢ºä¿å¤–éƒ¨ isSpawning ç”Ÿæ•ˆ
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -135,7 +147,11 @@ public class MinigameManager : MonoBehaviour
             onComplete?.Invoke(success, rank);
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             StartCoroutine(DestroyAfterDelay(instanceObj, 0.5f)); // ­×¥¿¡G±q³o¸Ì°õ¦æ Coroutine
+=======
+            StartCoroutine(DestroyAfterDelay(instance, 0.5f));
+>>>>>>> Stashed changes
 =======
             StartCoroutine(DestroyAfterDelay(instance, 0.5f));
 >>>>>>> Stashed changes

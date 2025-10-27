@@ -1,5 +1,9 @@
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+﻿using System.Collections.Generic;
+>>>>>>> Stashed changes
 =======
 ﻿using System.Collections.Generic;
 >>>>>>> Stashed changes
@@ -81,7 +85,10 @@ public class InventoryManager : MonoBehaviour
 
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
     /* 拍照專用 */
@@ -108,6 +115,9 @@ public class InventoryManager : MonoBehaviour
 
     /* 其他原有方法保持不動 */
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -132,12 +142,16 @@ public class InventoryManager : MonoBehaviour
 
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
 
     public bool HasItemByTag(string tag)
     {
         return items.Exists(item => item.itemTag == tag);
     }
+=======
+    public bool HasItemByTag(string tag) => items.Exists(item => item.itemTag == tag);
+>>>>>>> Stashed changes
 =======
     public bool HasItemByTag(string tag) => items.Exists(item => item.itemTag == tag);
 >>>>>>> Stashed changes

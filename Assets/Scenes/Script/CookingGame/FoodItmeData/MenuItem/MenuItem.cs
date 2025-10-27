@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
 public enum ItemGrade
 {
@@ -9,10 +10,13 @@ public enum ItemGrade
 }
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 
 [CreateAssetMenu(fileName = "New Menu Item", menuName = "Menu/Menu Item")]
 public class MenuItem : ScriptableObject
 {
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
     public BaseMinigame.DishGrade grade; 
@@ -24,6 +28,8 @@ public class MenuItem : ScriptableObject
 
     public Sprite GetSpriteByGrade(ItemGrade grade)
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
     // 餐點的評級（可能會在烹飪小遊戲後被改變，例如 Mutated 為特殊菜色）
@@ -60,7 +66,10 @@ public class MenuItem : ScriptableObject
 
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
     /// <summary>
