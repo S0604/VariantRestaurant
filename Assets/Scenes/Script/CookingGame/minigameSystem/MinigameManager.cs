@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -6,22 +6,23 @@ public class MinigameManager : MonoBehaviour
 {
     public static MinigameManager Instance { get; private set; }
 
+    [Header("å°éŠæˆ²ç™»è¨˜è¡¨")]
     public List<MinigameEntry> minigames = new List<MinigameEntry>();
     public Transform minigameContainer;
-
-    [Header("ª±®a±±¨î")]
+    [Header("ç©å®¶å¼•ç”¨")]
     public Player player;
 
     private BaseMinigame currentMinigame;
     public bool IsPlaying => currentMinigame != null;
 
+    /* ========== é– & å°è©±æ¨™è¨˜ ========== */
+    private static bool isSpawning = false;   // æ­£åœ¨ç”Ÿæˆ or å°è©±ä¸­
+    private static bool hasSpawnedGame5Dialogue = false;
+    /* ==================================== */
+
     void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
+        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
@@ -33,53 +34,85 @@ public class MinigameManager : MonoBehaviour
         public string resourcePath;
     }
 
+    /* --------------- å”¯ä¸€å…¥å£ --------------- */
     public void StartMinigame(string type, System.Action<bool, int> onComplete)
     {
-        if (currentMinigame != null)
+        if (currentMinigame != null || isSpawning) return;
+
+        if (InventoryManager.Instance != null && InventoryManager.Instance.GetItemCount() >= 2)
+        { Debug.LogWarning("èƒŒåŒ…å·²æ»¿ï¼ˆâ‰¥2ï¼‰ï¼Œç„¡æ³•é–‹å§‹å°éŠæˆ²"); return; }
+
+        if (!hasSpawnedGame5Dialogue)
         {
-            Debug.LogWarning("¤w¦³¤p¹CÀ¸¦b¶i¦æ¤¤¡I");
+            hasSpawnedGame5Dialogue = true;
+            isSpawning = true;
+            StartCoroutine(SpawnThenDialogue(type, onComplete));
             return;
         }
 
-        // ª½±µ³z¹L InventoryManager °µ¼Æ¶q­­¨îÀË¬d
-        if (InventoryManager.Instance != null && InventoryManager.Instance.GetItemCount() >= 2)
-        {
-            Debug.LogWarning("§A¤w¸g¦³¨â¶µ®Æ²z¬ö¿ı¡A½Ğ¥ı²M°£«á¦AÄ~Äò¡I");
-            return;
-        }
+        isSpawning = true;
+        ProceedToStartMinigame(type, onComplete);
+    }
+
+    /* ç”Ÿæˆ â†’ ç«‹å³å‡çµ+å°è©± â†’ è§£å‡å¾Œæ‰è·‘å›å‘¼ */
+    private IEnumerator SpawnThenDialogue(string type, System.Action<bool, int> onComplete)
+    {
+        yield return null; // ç­‰ä¸€å¸§ï¼Œç¢ºä¿å¤–éƒ¨ isSpawning ç”Ÿæ•ˆ
 
         var entry = minigames.Find(m => m.minigameType == type);
-        if (entry == null)
-        {
-            Debug.LogError($"§ä¤£¨ì¹ïÀ³¤p¹CÀ¸Ãş«¬: {type}");
-            return;
-        }
+        if (entry == null) { isSpawning = false; yield break; }
 
         GameObject prefab = Resources.Load<GameObject>(entry.resourcePath);
-        if (prefab == null)
-        {
-            Debug.LogError($"µLªk±q Resources ¸ü¤J prefab: {entry.resourcePath}");
-            return;
-        }
+        if (prefab == null) { isSpawning = false; yield break; }
 
-        GameObject instanceObj = Instantiate(prefab, minigameContainer);
-        currentMinigame = instanceObj.GetComponent<BaseMinigame>();
-
+        /* 1ï¸âƒ£ ç¬é–“ç”Ÿæˆåˆ°å ´æ™¯ */
+        GameObject instance = Instantiate(prefab, minigameContainer);
+        currentMinigame = instance.GetComponent<BaseMinigame>();
         if (currentMinigame == null)
+        { Destroy(instance); isSpawning = false; yield break; }
+
+        /* 2ï¸âƒ£ ç”Ÿæˆå¾Œã€Œä¸‹ä¸€è¡Œã€ç«‹å³å‡çµ+å°è©± */
+        Time.timeScale = 0f;
+        if (TutorialDialogueController.Instance != null)
+            yield return TutorialDialogueController.Instance.PlaySingleChapter("5");
+        Time.timeScale = 1f;
+
+        /* 3ï¸âƒ£ è¨»å†ŠçµæŸå›å‘¼ */
+        currentMinigame.StartMinigame((success, rank) =>
         {
-            Debug.LogError("¸ü¤Jªº¤p¹CÀ¸ prefab ¯Ê¤Ö BaseMinigame ²Õ¥ó¡I");
-            Destroy(instanceObj);
-            return;
-        }
+            onComplete?.Invoke(success, rank);
+            StartCoroutine(DestroyAfterDelay(instance, 0.5f));
+            currentMinigame = null;
+        });
+
+        isSpawning = false;
+    }
+
+    /* éç¬¬ä¸€æ¬¡çš„ç”Ÿæˆ */
+    private void ProceedToStartMinigame(string type, System.Action<bool, int> onComplete)
+    {
+        var entry = minigames.Find(m => m.minigameType == type);
+        if (entry == null) { isSpawning = false; return; }
+
+        GameObject prefab = Resources.Load<GameObject>(entry.resourcePath);
+        if (prefab == null) { isSpawning = false; return; }
+
+        GameObject instance = Instantiate(prefab, minigameContainer);
+        currentMinigame = instance.GetComponent<BaseMinigame>();
+        if (currentMinigame == null)
+        { Destroy(instance); isSpawning = false; return; }
 
         currentMinigame.StartMinigame((success, rank) =>
         {
             onComplete?.Invoke(success, rank);
-            StartCoroutine(DestroyAfterDelay(instanceObj, 0.5f)); // ¥Ñ³o¸Ì­t³d¾P·´
+            StartCoroutine(DestroyAfterDelay(instance, 0.5f));
             currentMinigame = null;
         });
+
+        isSpawning = false;
     }
 
+    /* å»¶é²éŠ·æ¯€ */
     private IEnumerator DestroyAfterDelay(GameObject obj, float delay)
     {
         yield return new WaitForSeconds(delay);

@@ -1,71 +1,90 @@
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// ¥ş§½­µ®ÄºŞ²z¡G¥Xµæ¨Ìµ¥¯Å¼½©ñ¡F¨ú±o¸Éµ¹¼½©ñ¡C
-/// ³õ´º©ñ¤@­Ó§Y¥i¡]DontDestroyOnLoad ¥i¨Ì»İ­n¶}±Ò¡^¡C
+/// çµ±ä¸€ç®¡ç†ã€Œå®Œæˆæ–™ç†ã€èˆ‡ã€Œæ‹¾å–è£œçµ¦ã€å…©ç¨®ç¬é–“éŸ³æ•ˆã€‚
+/// å ´æ™¯å…§æ›ä¸€é¡† GameObject å³å¯ï¼Œæœƒè‡ªå‹•å»ºç«‹ AudioSourceã€‚
 /// </summary>
 public class GameAudio : MonoBehaviour
 {
     public static GameAudio Instance { get; private set; }
 
-    [Header("¥Xµæ­µ®Ä¡]¨Ì DishGrade ¯Á¤Ş¡^")]
-    [Tooltip("Fail=0, Bad=1, Good=2, Perfect=3, Mutated=4")]
+    [Header("å®Œæˆæ–™ç†éŸ³æ•ˆ (å°æ‡‰ DishGrade)")]
+    [Tooltip("Fail=0, Normal=1, Good=2, Perfect=3, Mutated=4")]
     public AudioClip[] dishGradeClips = new AudioClip[5];
 
-    [Header("¨ú±o¸Éµ¹­µ®Ä")]
+    [Header("æ‹¾å–è£œçµ¦éŸ³æ•ˆ")]
     public AudioClip supplyPickupClip;
 
-    [Header("¦@¥Î­µ¶q")]
+    [Header("éŸ³é‡")]
     [Range(0f, 1f)] public float sfxVolume = 1f;
 
-    [Tooltip("­Y¥¼«ü©w¡A·|¦b Awake «Ø¤@­Ó")]
+    [Header("è‹¥ç©ºè‘—æœƒè‡ªå‹•å»ºç«‹")]
     public AudioSource sharedSource;
 
+    /* ---------- ç”Ÿå‘½é€±æœŸ ---------- */
     private void Awake()
     {
-        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
         Instance = this;
+
+        // éœ€è¦è·¨å ´æ™¯å°±é–‹å•Ÿ
+        // DontDestroyOnLoad(gameObject);
+
         if (sharedSource == null)
         {
             sharedSource = gameObject.AddComponent<AudioSource>();
             sharedSource.playOnAwake = false;
         }
-        // ­Y·Q¸ó³õ´º«O¯d¡A¨ú®øµù¸Ñ¡G
-        // DontDestroyOnLoad(gameObject);
     }
 
     private void OnEnable()
     {
-        // ºÊÅ¥­I¥]·s¼Wª««~ ¡÷ §PÂ_¸Éµ¹
-        InventoryManager.OnItemAdded += HandleItemAdded;
+        // ç›£è½èƒŒåŒ…æ–°å¢äº‹ä»¶ï¼ˆè£œçµ¦ç®±åˆ¤å®šï¼‰
+        InventoryManager.OnInventoryChanged += HandleInventoryChanged;
     }
 
     private void OnDisable()
     {
-        InventoryManager.OnItemAdded -= HandleItemAdded;
+        InventoryManager.OnInventoryChanged -= HandleInventoryChanged;
     }
 
-    void HandleItemAdded(MenuItem item)
-    {
-        if (item == null) return;
-
-        // §A±M®×¸Ì¸Éµ¹ªº§PÂ_¡G¥Î tag "SupplyBox"¡]¤]¥i¦b³o¸ÌÂX¥R¡^
-        if (!string.IsNullOrEmpty(item.itemTag) &&
-            (item.itemTag == "SupplyBox" || item.itemTag == "Supply" || item.itemTag == "SUPPLY"))
-        {
-            PlaySupplyPickup();
-        }
-    }
-
+    /* ========== å…¬é–‹å‘¼å« ========== */
+    /// <summary>
+    /// å°éŠæˆ²çµæŸæ™‚å‘¼å«ï¼šä¾æœ€çµ‚ç­‰ç´šæ’­æ”¾å°æ‡‰éŸ³æ•ˆã€‚
+    /// </summary>
     public void PlayDishComplete(BaseMinigame.DishGrade grade)
     {
         int idx = Mathf.Clamp((int)grade, 0, dishGradeClips.Length - 1);
-        var clip = (dishGradeClips != null && idx < dishGradeClips.Length) ? dishGradeClips[idx] : null;
+        AudioClip clip = dishGradeClips[idx];
         if (clip != null) sharedSource.PlayOneShot(clip, sfxVolume);
     }
 
+    /// <summary>
+    /// æ‹¾å–è£œçµ¦ç®±æ™‚å‘¼å«ï¼ˆä¹Ÿå¯ç”±å¤–éƒ¨æ‰‹å‹•è§¸ç™¼ï¼‰ã€‚
+    /// </summary>
     public void PlaySupplyPickup()
     {
         if (supplyPickupClip != null) sharedSource.PlayOneShot(supplyPickupClip, sfxVolume);
+    }
+
+    /* ========== å…§éƒ¨ç›£è½ ========== */
+    private void HandleInventoryChanged(List<MenuItem> currentItems)
+    {
+        if (currentItems.Count == 0) return;
+
+        MenuItem newest = currentItems[currentItems.Count - 1];
+        if (newest == null) return;
+
+        // ç°¡å–®åˆ¤å®šï¼štag å« Supply å°±æ’­
+        if (!string.IsNullOrEmpty(newest.itemTag) &&
+            newest.itemTag.ToUpper().Contains("SUPPLY"))
+        {
+            PlaySupplyPickup();
+        }
     }
 }

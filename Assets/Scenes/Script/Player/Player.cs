@@ -3,12 +3,14 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public bool canMove = true; // 加在這裡！
-
+    public bool canMove = true;
     private Animator animator;
     private Vector3 lastDirection;
     private float moveSpeed = 8f;
     public bool isCooking = false;
+
+    [Header("對話鎖定")]
+    public bool isLocked = false;   // ← 新增這行
 
     void Start()
     {
@@ -17,9 +19,8 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-
+        if (isLocked) return;
         canMove = !isCooking;
-
         if (!canMove) return; // 加入移動控制
 
         float inputX = Input.GetAxisRaw("Horizontal");

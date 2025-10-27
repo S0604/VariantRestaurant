@@ -25,12 +25,13 @@ public class CookingStation : MonoBehaviour
 
     void Update()
     {
-        if (playerInRange && Input.GetKeyDown(KeyCode.E))
-        {
-            TryInteract();
-        }
-    }
+        /* 1. 對話期間直接 return（Time.timeScale=0 仍會跑 Update）*/
+        if (Time.timeScale <= 0f) return;
 
+        /* 2. 原有邏輯 */
+        if (playerInRange && Input.GetKeyDown(KeyCode.E))
+            TryInteract();
+    }
     private void TryInteract()
     {
         var inventory = InventoryManager.Instance;

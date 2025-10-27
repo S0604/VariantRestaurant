@@ -2,45 +2,46 @@
 
 public class KitchenWasteBin : MonoBehaviour
 {
+    [Header("補給箱 UI 清除設定")]
+    public Transform iconSpawnPoint;
+
     private bool isPlayerNearby = false;
 
-    [Header("補給箱 UI 清除設定")]
-    public Transform iconSpawnPoint;  // 指向補給箱 UI 生成位置
+    /* 🔒 只播一次 6_3 */
+    private static bool hasClearedOnce = false;
 
-    private void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
-        {
-            isPlayerNearby = true;
-        }
+        if (other.CompareTag("Player")) isPlayerNearby = true;
     }
 
-    private void OnTriggerExit(Collider other)
+    void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player"))
-        {
-            isPlayerNearby = false;
-        }
+        if (other.CompareTag("Player")) isPlayerNearby = false;
     }
 
-    private void Update()
+    void Update()
     {
         if (isPlayerNearby && Input.GetKeyDown(KeyCode.E))
         {
             InventoryManager.Instance.ClearInventory();
             ClearSupplyUI();
+
+            /* 第一次清空 → 播 6_3（只一次） */
+            if (!hasClearedOnce)
+            {
+                hasClearedOnce = true;
+                if (TutorialDialogueController.Instance != null)
+                    TutorialDialogueController.Instance.PlayChapter("6_3");
+            }
+
             Debug.Log("廚餘桶已清空玩家背包與補給 UI！");
         }
     }
 
-    private void ClearSupplyUI()
+    void ClearSupplyUI()
     {
         if (iconSpawnPoint != null)
-        {
-            foreach (Transform child in iconSpawnPoint)
-            {
-                Destroy(child.gameObject); // 移除所有補給圖示
-            }
-        }
+            foreach (Transform t in iconSpawnPoint) Destroy(t.gameObject);
     }
 }

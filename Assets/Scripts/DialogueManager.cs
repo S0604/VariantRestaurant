@@ -8,114 +8,77 @@ public class DialogueManager : MonoBehaviour
     [Header("UI 元件")]
     public Image leftPortrait;
     public Image rightPortrait;
-    public Image dialogueBoxImage;   // 對話框背景
+    public Image dialogueBoxImage;
 
     [Header("文字框 (左右分開)")]
-    public TMP_Text leftDialogueText;   // 左側文字
-    public TMP_Text rightDialogueText;  // 右側文字
+    public TMP_Text leftDialogueText;
+    public TMP_Text rightDialogueText;
 
     [Header("資料來源")]
     public DialogueData dialogueData;
     private int currentIndex = 0;
 
     private AudioSource audioSource;
-
     [Header("Canvas 控制")]
-    public Canvas dialogueCanvas;   // 👈 這個用來關閉整個對話 UI
+    public Canvas dialogueCanvas;
 
-    private Player player; // ✅ 玩家控制引用
+    private Player player;
     private bool isTyping = false;
 
+    /* ---------- 生命週期 ---------- */
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
-        if (audioSource == null)
-            audioSource = gameObject.AddComponent<AudioSource>();
+        if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
 
-        // 自動找 Canvas（如果沒手動指定）
-        if (dialogueCanvas == null)
-            dialogueCanvas = GetComponentInParent<Canvas>();
-
-        // ✅ 自動找到 Player
+        if (dialogueCanvas == null) dialogueCanvas = GetComponentInParent<Canvas>();
         player = FindObjectOfType<Player>();
-
-        if (dialogueData != null)
-            StartCoroutine(PlayDialogue());
     }
 
-    public IEnumerator PlayDialogue()
+    /* ---------- 公開入口 ---------- */
+    public IEnumerator PlayDialogueCoroutine()
     {
-        // ✅ 凍結整個世界
+        currentIndex = 0;
+        yield return StartCoroutine(PlayDialogue());
+    }
+
+    /* ---------- 核心流程 ---------- */
+    IEnumerator PlayDialogue()
+    {
+        /* 1. 凍結世界 */
         Time.timeScale = 0f;
 
-        // 以下原有程式碼不動 …
+        /* 2. 鎖玩家（可選）*/
         if (player != null)
         {
-           // player.isLocked = true;
+            player.isLocked = true;
             if (player.TryGetComponent<Animator>(out Animator anim))
                 anim.SetBool("Ismoving", false);
         }
 
+        /* 3. 逐句播放 */
         while (currentIndex < dialogueData.lines.Length)
         {
             DialogueLine line = dialogueData.lines[currentIndex];
             UpdateUI(line);
             yield return StartCoroutine(TypeText(line.text, line.isLeftSide));
+
+            // 等待點擊（RealTime 版，確保讀得到輸入）
             yield return new WaitUntil(() => Input.GetMouseButtonDown(0));
             currentIndex++;
         }
 
-        Debug.Log("📘 對話結束。");
-
-        // ✅ 解凍世界
+        /* 4. 解凍世界 */
         Time.timeScale = 1f;
 
-       // if (player != null) player.isLocked = false;
-        if (dialogueCanvas != null)
-        {
-            //dialogueCanvas.gameObject.SetActive(false);
-            Debug.Log("🎬 DialogueCanvas 已關閉。");
-        }
-    }
-    void UpdateUI(DialogueLine line)
-    {
-        // 角色立繪切換
-        if (line.isLeftSide)
-        {
-            leftPortrait.sprite = line.portrait;
-            leftPortrait.color = Color.white;
-            rightPortrait.color = new Color(1, 1, 1, 0f); // 完全透明
-        }
-        else
-        {
-            rightPortrait.sprite = line.portrait;
-            rightPortrait.color = Color.white;
-            leftPortrait.color = new Color(1, 1, 1, 0f); // 完全透明
-        }
-
-        // 對話框切換
-        if (line.dialogueBox != null)
-        {
-            dialogueBoxImage.sprite = line.dialogueBox;
-            dialogueBoxImage.color = Color.white;
-        }
-
-        // 語音播放
-        if (line.voiceClip != null)
-        {
-            audioSource.clip = line.voiceClip;
-            audioSource.Play();
-        }
-
-        // 顯示哪個文字框
-        leftDialogueText.gameObject.SetActive(line.isLeftSide);
-        rightDialogueText.gameObject.SetActive(!line.isLeftSide);
+        if (player != null) player.isLocked = false;
+        if (dialogueCanvas != null) dialogueCanvas.gameObject.SetActive(false);
     }
 
+    /* ---------- 打字協程（RealTime） ---------- */
     IEnumerator TypeText(string text, bool isLeft)
     {
         isTyping = true;
-
         text = text.Replace("\\n", "\n");
 
         TMP_Text activeText = isLeft ? leftDialogueText : rightDialogueText;
@@ -124,14 +87,45 @@ public class DialogueManager : MonoBehaviour
         foreach (char c in text)
         {
             activeText.text += c;
-            yield return new WaitForSecondsRealtime(0.02f); // ⬅️ 用真實時間
+            yield return new WaitForSecondsRealtime(0.02f); // ← 關鍵：不受 timeScale 影響
         }
 
         isTyping = false;
     }
-    public IEnumerator PlayDialogueCoroutine()
+
+    /* ---------- UI 更新 ---------- */
+    void UpdateUI(DialogueLine line)
     {
-        currentIndex = 0;
-        yield return StartCoroutine(PlayDialogue());
+        // 立繪
+        if (line.isLeftSide)
+        {
+            leftPortrait.sprite = line.portrait;
+            leftPortrait.color = Color.white;
+            rightPortrait.color = new Color(1, 1, 1, 0f);
+        }
+        else
+        {
+            rightPortrait.sprite = line.portrait;
+            rightPortrait.color = Color.white;
+            leftPortrait.color = new Color(1, 1, 1, 0f);
+        }
+
+        // 對話框背景
+        if (line.dialogueBox != null)
+        {
+            dialogueBoxImage.sprite = line.dialogueBox;
+            dialogueBoxImage.color = Color.white;
+        }
+
+        // 語音
+        if (line.voiceClip != null)
+        {
+            audioSource.clip = line.voiceClip;
+            audioSource.Play();
+        }
+
+        // 顯示哪一側文字
+        leftDialogueText.gameObject.SetActive(line.isLeftSide);
+        rightDialogueText.gameObject.SetActive(!line.isLeftSide);
     }
 }
