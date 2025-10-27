@@ -2,6 +2,7 @@
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
 public enum ItemGrade
 {
@@ -9,6 +10,8 @@ public enum ItemGrade
     Good,
     Garbage
 }
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -23,6 +26,7 @@ public class MenuItem : ScriptableObject
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     public BaseMinigame.DishGrade grade; 
 
     public string itemName;
@@ -32,6 +36,8 @@ public class MenuItem : ScriptableObject
 
     public Sprite GetSpriteByGrade(ItemGrade grade)
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -74,7 +80,10 @@ public class MenuItem : ScriptableObject
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======

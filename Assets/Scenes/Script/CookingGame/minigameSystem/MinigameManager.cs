@@ -42,11 +42,14 @@ public class MinigameManager : MonoBehaviour
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         
         Debug.Log($"啟動小遊戲時事件狀態：Active={RandomEventManager.Instance?.IsEventActive}, Effect={RandomEventManager.Instance?.CurrentEffect}");
 
         if (currentMinigame != null)
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -62,6 +65,9 @@ public class MinigameManager : MonoBehaviour
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -80,12 +86,15 @@ public class MinigameManager : MonoBehaviour
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         if (BaseMinigame.HasMaxDishRecords())
         {
             Debug.LogWarning("你已經有兩項料理紀錄，請先清除後再繼續！");
             return;
         }
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -103,6 +112,9 @@ public class MinigameManager : MonoBehaviour
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -161,7 +173,11 @@ public class MinigameManager : MonoBehaviour
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             StartCoroutine(DestroyAfterDelay(instanceObj, 0.5f)); // 修正：從這裡執行 Coroutine
+=======
+            StartCoroutine(DestroyAfterDelay(instance, 0.5f));
+>>>>>>> Stashed changes
 =======
             StartCoroutine(DestroyAfterDelay(instance, 0.5f));
 >>>>>>> Stashed changes
