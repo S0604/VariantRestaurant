@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26057268ef99e9c4b9866c9ff347b4c8, type: 3}
   m_Name: "\u6211\u4F86\u70BA\u60A8\u670D\u52D9!"
   m_EditorClassIdentifier: 
-  skillName: "\u6211\u4F86\u70BA\u60A8\u670D\u52D9!"
+  skillName: "\u6211\u4F86\u70BA\u60A8\u670D\u52D9"
   description: " \u7ACB\u5373\u56DE\u5FA9\u9867\u5BA2\u8010\u5FC3+5S"
   extraSeconds: 5

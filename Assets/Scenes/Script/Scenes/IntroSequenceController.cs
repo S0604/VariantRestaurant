@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -7,50 +7,52 @@ using TMPro;
 
 public class IntroSequenceController : MonoBehaviour
 {
-    [Header("Clips¡]¨Ì¶¶§Ç¡^")]
+    [Header("å½±ç‰‡å‰ªè¼¯è¨­å®š")]
     public List<VideoClip> clips = new List<VideoClip>();
+    // è¦ä¾åºæ’­æ”¾çš„å½±ç‰‡åˆ—è¡¨
 
-    [Header("UI")]
-    public RawImage videoTarget;            // Åã¥Ü¼v¤ùªº RawImage¡]¨ä Texture «ü¨ì¤@­Ó RenderTexture¡^
-    public TMP_Text pressAnyKeyText;        // ´£¥Ü¤å¦r¡G¤¤¶¡¬q¸¨¡u«ö¥ô·NÁäÄ~Äò¡v¡B³Ì«á¤@¬q¼½§¹«á·|Åã¥Ü¡u«ö¥ô·NÁä¶}©l¡v
-    public Button skipAllButton;            // ³oÁû«ö¶s = ¸õ¹L¥ş³¡°Êµe
-    public string skipButtonLabelWhenLoading = "Loading..."; // ¸õ¹L¤¤Åã¥Ü
+    [Header("UI ä»‹é¢")]
+    public RawImage videoTarget;            // ç”¨ä¾†é¡¯ç¤ºå½±ç‰‡çš„ RawImageï¼ˆRenderTexture æœƒè¢«æŒ‡æ´¾åˆ°é€™è£¡ï¼‰
+    public TMP_Text pressAnyKeyText;        // ã€ŒæŒ‰ä»»æ„éµç¹¼çºŒã€æˆ–ã€ŒæŒ‰ä»»æ„éµé–‹å§‹ã€æç¤ºæ–‡å­—
+    public Button skipAllButton;            // ã€Œè·³éå…¨éƒ¨ã€æŒ‰éˆ•
+    public string skipButtonLabelWhenLoading = "Loading..."; // ç•¶è·³éå¾Œè¼‰å…¥æ™‚é¡¯ç¤ºçš„æ–‡å­—
 
-    [Header("³õ´º/±±¨î")]
-    public string nextSceneName = "GameScene";  // ¥ş³¡µ²§ô©Î¸õ¹L«á­n¶i¤Jªº³õ´º
-    public bool showOnlyOncePerRun = false;     // ¥»¦¸±Ò°Ê¥uÅã¥Ü¤@¦¸¡]¨Ò¦p¤ÏÂĞ¦^¥D¿ï³æ¤£¦A¥X²{¡^
-    private static bool hasShownThisRun = false;
+    [Header("å ´æ™¯åˆ‡æ›è¨­å®š")]
+    public string nextSceneName = "GameScene";  // æ’­æ”¾çµæŸå¾Œè¦è¼‰å…¥çš„å ´æ™¯åç¨±
+    public bool showOnlyOncePerRun = false;     // æ˜¯å¦åªåœ¨é€™æ¬¡éŠæˆ²é‹è¡Œä¸­é¡¯ç¤ºä¸€æ¬¡ï¼ˆé˜²æ­¢é‡æ’­ï¼‰
+    private static bool hasShownThisRun = false; // è¨˜éŒ„æ˜¯å¦å·²é¡¯ç¤ºé
 
     private VideoPlayer vp;
     private AudioSource audioSource;
 
-    private int index = 0;
-    private bool waitingForInput = false;   // ¥u¦³·í«e¤@¬q¡u¼½§¹¡v«á¤~·|¶}©ñ
-    private bool finishedAll = false;       // ©Ò¦³¬q¸¨³£¼½§¹
-    private bool isLoading = false;
+    private int index = 0;             // ç›®å‰æ’­æ”¾ä¸­çš„å½±ç‰‡ç´¢å¼•
+    private bool waitingForInput = false;   // æ˜¯å¦æ­£åœ¨ç­‰å¾…ç©å®¶æŒ‰éµç¹¼çºŒ
+    private bool finishedAll = false;       // æ˜¯å¦æ‰€æœ‰å½±ç‰‡éƒ½æ’­å®Œäº†
+    private bool isLoading = false;         // æ˜¯å¦æ­£åœ¨è¼‰å…¥ä¸‹ä¸€å ´æ™¯
 
     void Awake()
     {
-        // ¤@¦¸©ÊÅã¥Ü¡G­Y¥»¦¸±Ò°Ê¤w¸g¬İ¹L¡Aª½±µ¤Á¨ì¥D³õ´º
+        // è‹¥è¨­å®šæˆã€Œé€™æ¬¡éŠæˆ²åªæ’­æ”¾ä¸€æ¬¡ã€ï¼Œè€Œä¸”ä¹‹å‰å·²ç¶“æ’­éï¼Œå°±ç›´æ¥è·³åˆ°ä¸»å ´æ™¯
         if (showOnlyOncePerRun && hasShownThisRun)
         {
             LoadNextScene();
             return;
         }
 
+        // æº–å‚™ VideoPlayer èˆ‡ AudioSource
         vp = GetComponent<VideoPlayer>();
         if (vp == null) vp = gameObject.AddComponent<VideoPlayer>();
 
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
 
-        // VideoPlayer °ò¥»³]©w
+        // è¨­å®š VideoPlayer åƒæ•¸
         vp.playOnAwake = false;
-        vp.renderMode = VideoRenderMode.RenderTexture; // ·f°t RawImage+RenderTexture
+        vp.renderMode = VideoRenderMode.RenderTexture; // ä½¿ç”¨ RenderTexture è¼¸å‡º
         vp.audioOutputMode = VideoAudioOutputMode.AudioSource;
         vp.SetTargetAudioSource(0, audioSource);
         vp.isLooping = false;
-        vp.loopPointReached += OnClipFinished;
+        vp.loopPointReached += OnClipFinished; // ç•¶å½±ç‰‡æ’­æ”¾å®Œç•¢æ™‚å‘¼å« OnClipFinished()
 
         if (pressAnyKeyText) pressAnyKeyText.gameObject.SetActive(false);
 
@@ -65,14 +67,14 @@ public class IntroSequenceController : MonoBehaviour
     {
         if (showOnlyOncePerRun) hasShownThisRun = true;
 
-        // ¨S¼v¤ù ¡÷ ª½±µ¶i¥D³õ´º
+        // æ²’æœ‰å½±ç‰‡çš„è©±ï¼Œç›´æ¥é€²å ´æ™¯
         if (clips == null || clips.Count == 0)
         {
             LoadNextScene();
             return;
         }
 
-        // ¦Û°Ê¼½²Ä¤@¬q
+        // æ’­æ”¾ç¬¬ä¸€æ”¯å½±ç‰‡
         PlayClip(0);
     }
 
@@ -80,7 +82,7 @@ public class IntroSequenceController : MonoBehaviour
     {
         if (isLoading) return;
 
-        // ¥u¦³¦b¡u¤W¤@¬q¼½§¹¡v¤~±µ¨ü¥ô·NÁä
+        // å¦‚æœæ­£åœ¨ç­‰å¾…ç©å®¶æŒ‰éµ
         if (waitingForInput && Input.anyKeyDown)
         {
             waitingForInput = false;
@@ -88,12 +90,12 @@ public class IntroSequenceController : MonoBehaviour
 
             if (finishedAll)
             {
-                // ³Ì«á¤@¬q¤w¼½§¹¡A¦A«ö¥ô·NÁä¤~¤Á³õ´º
+                // æ‰€æœ‰å½±ç‰‡æ’­å®Œ â†’ ä»»ä½•éµé–‹å§‹éŠæˆ²
                 LoadNextScene();
                 return;
             }
 
-            // ¼½¤U¤@¬q
+            // æ’­æ”¾ä¸‹ä¸€æ”¯å½±ç‰‡
             index++;
             if (index < clips.Count)
             {
@@ -101,7 +103,7 @@ public class IntroSequenceController : MonoBehaviour
             }
             else
             {
-                // ²z½×¤W¤£·|¨ì³o¸Ì¡]¦] loopPointReached ¤w³B²z finishedAll¡^
+                // ç†è«–ä¸Šä¸æœƒé€²åˆ°é€™è£¡ï¼ˆæœ€å¾Œä¸€æ”¯æœƒç”± OnClipFinished è™•ç†ï¼‰
                 finishedAll = true;
                 ShowPressAnyKeyToStart();
             }
@@ -112,7 +114,7 @@ public class IntroSequenceController : MonoBehaviour
     {
         if (i < 0 || i >= clips.Count)
         {
-            // ¨¾§b¡G­Y¯Á¤Ş¿ù»~´Nª½±µ¦¬³õ
+            // éŒ¯èª¤ä¿è­·ï¼šè‹¥è¶…å‡ºç¯„åœï¼Œå°±ç›´æ¥çµæŸ
             finishedAll = true;
             ShowPressAnyKeyToStart();
             return;
@@ -130,13 +132,15 @@ public class IntroSequenceController : MonoBehaviour
 
     private System.Collections.IEnumerator PlayWhenPrepared()
     {
-        while (!vp.isPrepared) yield return null;
-        vp.Play();
+        while (!vp.isPrepared) yield return null; // ç­‰å¾…å½±ç‰‡æº–å‚™å¥½
+        vp.Play(); // é–‹å§‹æ’­æ”¾
     }
 
     private void OnClipFinished(VideoPlayer _)
     {
-        // ¤@¬q¼½§¹ ¡÷ ÁÙ¦³¤U¤@¬q¡HÅã¥Ü¡§«ö¥ô·NÁäÄ~Äò¡¨¡F¨S¦³¤U¤@¬q¡HÅã¥Ü¡§«ö¥ô·NÁä¶}©l¡]¶i¤J¥D³õ´º¡^¡¨
+        // ç•¶å½±ç‰‡æ’­å®Œæ™‚ï¼š
+        // è‹¥é‚„æœ‰ä¸‹ä¸€æ”¯ â†’ é¡¯ç¤ºã€ŒPress any key to continueã€
+        // è‹¥æ˜¯æœ€å¾Œä¸€æ”¯ â†’ é¡¯ç¤ºã€ŒPress any key to startã€
         if (index < clips.Count - 1)
         {
             waitingForInput = true;
@@ -167,7 +171,7 @@ public class IntroSequenceController : MonoBehaviour
     {
         if (isLoading) return;
 
-        // ÂIÀ» UI «ö¶s¸õ¹L¥ş³¡
+        // é»æ“Šè·³éæŒ‰éˆ•æ™‚ â†’ åœç”¨æŒ‰éˆ•ã€é¡¯ç¤º Loading... ä¸¦ç›´æ¥è¼‰å…¥ä¸»å ´æ™¯
         if (skipAllButton)
         {
             skipAllButton.interactable = false;
@@ -186,6 +190,17 @@ public class IntroSequenceController : MonoBehaviour
         if (vp) vp.loopPointReached -= OnClipFinished;
 
         if (!string.IsNullOrEmpty(nextSceneName))
-            SceneManager.LoadScene(nextSceneName);
+        {
+            SceneManager.sceneLoaded += OnSceneLoaded; // ç›£è½è¼‰å…¥å®Œæˆ
+            SceneManager.LoadScene(nextSceneName, LoadSceneMode.Single);
+        }
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+
+        // éŠ·æ¯€è‡ªå·±ï¼ˆé¿å…æ®˜ç•™ï¼‰
+        Destroy(gameObject);
     }
 }

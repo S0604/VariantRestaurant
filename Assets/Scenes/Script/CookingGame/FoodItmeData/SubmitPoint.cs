@@ -138,9 +138,16 @@ public class SubmitPoint : MonoBehaviour
                         break;
                 }
 
-                totalExp += baseReward * multiplier;
-                totalPopularity += baseReward * multiplier;
-                totalMoney += baseReward * multiplier;
+                int exp = baseReward * multiplier;
+                int pop = baseReward * multiplier;
+                int money = baseReward * multiplier;
+
+                totalExp += exp;
+                totalPopularity += pop;
+                totalMoney += money;
+
+                // ✅ 新增 Debug
+                Debug.Log($"評級: {orderItem.menuItem.grade} 經驗: {exp} 人氣: {pop} 金錢: {money}");
             }
 
             SessionRewardTracker.Instance.AddRewards(totalExp, totalPopularity, totalMoney);

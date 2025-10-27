@@ -20,6 +20,11 @@ public class CardClickEffectUI : MonoBehaviour, IPointerClickHandler
     public float cooldownTime = 5f;            // 每張卡的冷卻時間
     public Image cooldownMask;                 // UI 遮罩 (Image type = Filled, Fill Method = Vertical)
 
+    [Header("使用次數設定")]
+    public int maxUses = 3;                    // 使用次數上限
+    private int remainingUses;                 // 當前剩餘可用次數
+    public Text useCountText;                  // 顯示剩餘次數（可選）
+
     private Vector2 originalPos;
     private Vector3 originalScale;
     private Quaternion originalRotation;
@@ -34,24 +39,26 @@ public class CardClickEffectUI : MonoBehaviour, IPointerClickHandler
         originalScale = rectTransform.localScale;
         originalRotation = rectTransform.localRotation;
 
+        remainingUses = maxUses;
+
         if (cooldownMask != null)
-        {
             cooldownMask.fillAmount = 0f;
-        }
+
+        UpdateUseCountUI();
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        // 如果已經被鎖住或在冷卻 → 直接忽略
         if (IsLocked || isCoolingDown) return;
 
-        //  一旦點擊就立刻鎖住，避免重複進 queue
-        IsLocked = true;
-
-        CardClickManager.Instance.EnqueueCard(this);
+        // 若仍有可用次數
+        if (remainingUses > 0)
+        {
+            IsLocked = true;
+            CardClickManager.Instance.EnqueueCard(this);
+        }
     }
 
-    // 進場 + 停留（這部分會阻塞下一張）
     public IEnumerator PlayEnterAndStay()
     {
         IsLocked = true;
@@ -63,52 +70,51 @@ public class CardClickEffectUI : MonoBehaviour, IPointerClickHandler
             Quaternion.identity,
             moveDuration));
 
-        // 👉 這裡觸發主動技
+        // 觸發主動技
         var card = GetComponent<CardHoverEffect>();
         if (card != null && card.activeSkill != null)
         {
-            // 假設有 Player
             GameObject player = GameObject.FindWithTag("Player");
             card.activeSkill.Activate(player);
         }
 
-        // 停留一段時間
+        // 使用次數 -1
+        remainingUses = Mathf.Max(remainingUses - 1, 0);
+        UpdateUseCountUI();
+
         yield return new WaitForSeconds(stayDuration);
     }
 
-    // 離場（獨立進行，不阻塞下一張）
     public IEnumerator PlayExit()
     {
-        // 移動回原位
         yield return StartCoroutine(MoveToUIPosition(
             originalPos,
             originalScale,
             originalRotation,
             moveDuration));
 
-        // 強制重置 hover
         var hoverEffect = GetComponent<CardHoverEffect>();
         if (hoverEffect != null)
             hoverEffect.ForceExit();
 
-        //  確保完全回位後 → 進入冷卻
         rectTransform.anchoredPosition = originalPos;
         rectTransform.localScale = originalScale;
         rectTransform.localRotation = originalRotation;
 
-        // 啟動冷卻
-        StartCoroutine(StartCooldown());
+        IsLocked = false;
+
+        // ✅ 所有次數用完後才觸發冷卻
+        if (remainingUses <= 0 && !isCoolingDown)
+            StartCoroutine(StartCooldown());
     }
 
     private IEnumerator StartCooldown()
     {
         isCoolingDown = true;
-        IsLocked = false; // 解鎖，但仍然因為冷卻無法被點擊
+        IsLocked = false;
 
         if (cooldownMask != null)
-        {
             cooldownMask.fillAmount = 1f;
-        }
 
         float elapsed = 0f;
         while (elapsed < cooldownTime)
@@ -125,20 +131,28 @@ public class CardClickEffectUI : MonoBehaviour, IPointerClickHandler
         if (cooldownMask != null)
             cooldownMask.fillAmount = 0f;
 
-        isCoolingDown = false; // 完成冷卻，允許再次使用
+        // ✅ 冷卻結束後重置次數
+        remainingUses = maxUses;
+        UpdateUseCountUI();
+
+        isCoolingDown = false;
+    }
+
+    private void UpdateUseCountUI()
+    {
+        if (useCountText != null)
+            useCountText.text = remainingUses.ToString();
     }
 
     public void SetWaitingState(bool active)
     {
         if (active)
         {
-            // Z=0、Y 抬高
             rectTransform.localRotation = Quaternion.identity;
             rectTransform.anchoredPosition = new Vector2(originalPos.x, originalPos.y + waitingHeight);
         }
         else
         {
-            // 還原
             rectTransform.anchoredPosition = originalPos;
             rectTransform.localRotation = originalRotation;
         }

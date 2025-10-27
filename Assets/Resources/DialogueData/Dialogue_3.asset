@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60d17c80e6061324697c7fc576fb47fb, type: 3}
+  m_Name: Dialogue_3
+  m_EditorClassIdentifier: 
+  lines:
+  - characterName: "\u7D05\u54B2"
+    isLeftSide: 1
+    text: "\u6211\u5011\u73FE\u5728\u6B63\u8655\u65BC\u71DF\u696D\u4E2D\u7684\u72C0\u614B\uFF0C\\n\u6B63\u5E38\u4F86\u8AAA\u6703\u9678\u9678\u7E8C\u7E8C\u51FA\u73FE\u98E2\u8178\u8F46\u8F46\u7684\u9867\u5BA2\u5011"
+    portrait: {fileID: 21300000, guid: b398f0d8e787ec7438089abdd112ad4a, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
+  - characterName: "\u7D05\u54B2"
+    isLeftSide: 1
+    text: "\u4F46\u9019\u662F\u6559\u5B78\u6F14\u793A\u6240\u4EE5\u4E0D\u7528\u64D4\u5FC3"
+    portrait: {fileID: 21300000, guid: 9ae4c685858bdca41b8c812a5fa0e442, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
+  - characterName: "\u7D05\u54B2"
+    isLeftSide: 1
+    text: "\u90A3\u6211\u5011\u5148\u5B78\u7FD2\u5982\u4F55\u4F7F\u7528\u70F9\u98EA\u53F0\u88FD\u4F5C\u6599\u7406\u5427!"
+    portrait: {fileID: 21300000, guid: 9ae4c685858bdca41b8c812a5fa0e442, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
+  - characterName: "\u7D05\u54B2"
+    isLeftSide: 1
+    text: "\u4F7F\u7528 \"WASD\" \u9032\u884C\u79FB\u52D5\uFF0C\\n\u79FB\u52D5\u5230\u5230\u5E36\u8457\u7D05\u8272\"
+      ! \"\u865F\u7684\u70F9\u98EA\u53F0\u524D"
+    portrait: {fileID: 21300000, guid: 9ae4c685858bdca41b8c812a5fa0e442, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}

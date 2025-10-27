@@ -9,14 +9,17 @@ EditorBuildSettings:
     path: Assets/MainMenu.unity
     guid: d4c53a75b577fa3408b569c2378c5008
   - enabled: 1
-    path: Assets/IntroAnima.unity
-    guid: fa50283b45661ea44a4f33960fd9043b
-  - enabled: 1
-    path: Assets/GameSceneTest.unity
-    guid: 8d1fcb988208cc9499ab09b6f71b16a0
+    path: Assets/GameScene.unity
+    guid: 4ffa3dd532413e64c80a561426c78f97
   - enabled: 1
     path: Assets/Loading.unity
     guid: b5de0846e050cd146b8d3681f1046f00
+  - enabled: 1
+    path: Assets/IntroAnima.unity
+    guid: fa50283b45661ea44a4f33960fd9043b
+  - enabled: 0
+    path: Assets/GameSceneTest.unity
+    guid: 8d1fcb988208cc9499ab09b6f71b16a0
   - enabled: 0
     path: Assets/CookingUIRnD.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab

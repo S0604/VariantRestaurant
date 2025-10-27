@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60d17c80e6061324697c7fc576fb47fb, type: 3}
+  m_Name: Dialogue_5
+  m_EditorClassIdentifier: 
+  lines:
+  - characterName: "\u7D05\u54B2"
+    isLeftSide: 1
+    text: "\u8207\u70F9\u98EA\u53F0\u4E92\u52D5\u5F8C\u5C07\u9032\u884C\u6599\u7406\u88FD\u4F5C\uFF0C\\n\u88FD\u4F5C\u904E\u7A0B\u4E26\u4E0D\u8907\u96DC\u53EA\u9700\u7167\u8457\u70F9\u98EA\u53F0\\n\u4E0B\u65B9\u7684\u7BAD\u982D\u6309\u4E0B\u5C0D\u61C9\u7684\u6848\u4EF6\u5C31\u884C\u56C9!"
+    portrait: {fileID: 21300000, guid: b398f0d8e787ec7438089abdd112ad4a, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
+  - characterName: "\u7D05\u54B2"
+    isLeftSide: 1
+    text: "\"\u4E0A = W\u3001\u4E0B = S\\nA = \u5DE6\u3001D = \u53F3 \"\\n\u8A66\u8A66\u770B\u6210\u529F\u70F9\u98EA\u51FA\u4E00\u500B\u6599\u7406\u5427!"
+    portrait: {fileID: 21300000, guid: b398f0d8e787ec7438089abdd112ad4a, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
