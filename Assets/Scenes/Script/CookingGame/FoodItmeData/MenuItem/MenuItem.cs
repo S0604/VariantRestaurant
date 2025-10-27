@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
 public enum ItemGrade
 {
@@ -12,10 +13,13 @@ public enum ItemGrade
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 
 [CreateAssetMenu(fileName = "New Menu Item", menuName = "Menu/Menu Item")]
 public class MenuItem : ScriptableObject
 {
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
@@ -28,6 +32,8 @@ public class MenuItem : ScriptableObject
 
     public Sprite GetSpriteByGrade(ItemGrade grade)
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -67,7 +73,10 @@ public class MenuItem : ScriptableObject
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======

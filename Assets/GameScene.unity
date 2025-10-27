@@ -1296,11 +1296,15 @@ Transform:
   m_Father: {fileID: 0}
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
   m_RootOrder: 18
 =======
   m_RootOrder: 16
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+  m_RootOrder: 16
+>>>>>>> Stashed changes
 =======
   m_RootOrder: 16
 >>>>>>> Stashed changes
@@ -2406,7 +2410,10 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -2955,11 +2962,15 @@ Transform:
   m_Father: {fileID: 0}
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
   m_RootOrder: 9
 =======
   m_RootOrder: 11
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+  m_RootOrder: 11
+>>>>>>> Stashed changes
 =======
   m_RootOrder: 11
 >>>>>>> Stashed changes
@@ -3461,11 +3472,15 @@ Transform:
   m_Father: {fileID: 0}
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
   m_RootOrder: 10
 =======
   m_RootOrder: 12
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+  m_RootOrder: 12
+>>>>>>> Stashed changes
 =======
   m_RootOrder: 12
 >>>>>>> Stashed changes
@@ -3677,11 +3692,15 @@ PrefabInstance:
       propertyPath: m_RootOrder
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
       value: 15
 =======
       value: 13
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+      value: 13
+>>>>>>> Stashed changes
 =======
       value: 13
 >>>>>>> Stashed changes
@@ -4414,11 +4433,15 @@ Transform:
   m_Father: {fileID: 0}
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
   m_RootOrder: 19
 =======
   m_RootOrder: 17
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+  m_RootOrder: 17
+>>>>>>> Stashed changes
 =======
   m_RootOrder: 17
 >>>>>>> Stashed changes
@@ -5154,11 +5177,15 @@ Transform:
   m_Father: {fileID: 0}
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
   m_RootOrder: 8
 =======
   m_RootOrder: 10
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+  m_RootOrder: 10
+>>>>>>> Stashed changes
 =======
   m_RootOrder: 10
 >>>>>>> Stashed changes
@@ -12627,6 +12654,7 @@ MonoBehaviour:
   experienceSlider: {fileID: 608673076}
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
 --- !u!1 &770784924
 GameObject:
@@ -12682,6 +12710,8 @@ CanvasGroup:
   m_IgnoreParentGroups: 0
 =======
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -14429,6 +14459,7 @@ Transform:
   m_Children: []
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
   m_Father: {fileID: 0}
   m_RootOrder: 12
@@ -14436,6 +14467,10 @@ Transform:
   m_Father: {fileID: 214549424}
   m_RootOrder: 1
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+  m_Father: {fileID: 214549424}
+  m_RootOrder: 1
+>>>>>>> Stashed changes
 =======
   m_Father: {fileID: 214549424}
   m_RootOrder: 1
@@ -18233,11 +18268,15 @@ Transform:
   m_Father: {fileID: 0}
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
   m_RootOrder: 17
 =======
   m_RootOrder: 15
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+  m_RootOrder: 15
+>>>>>>> Stashed changes
 =======
   m_RootOrder: 15
 >>>>>>> Stashed changes
@@ -21882,6 +21921,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -21892,13 +21932,18 @@ RectTransform:
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -1.1, y: 59.5}
   m_SizeDelta: {x: 200, y: 50}
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -23269,6 +23314,7 @@ Transform:
   m_Children: []
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
   m_Father: {fileID: 0}
   m_RootOrder: 14
@@ -23276,6 +23322,10 @@ Transform:
   m_Father: {fileID: 214549424}
   m_RootOrder: 3
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+  m_Father: {fileID: 214549424}
+  m_RootOrder: 3
+>>>>>>> Stashed changes
 =======
   m_Father: {fileID: 214549424}
   m_RootOrder: 3
@@ -25170,11 +25220,15 @@ Transform:
   m_Father: {fileID: 0}
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
   m_RootOrder: 6
 =======
   m_RootOrder: 8
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+  m_RootOrder: 8
+>>>>>>> Stashed changes
 =======
   m_RootOrder: 8
 >>>>>>> Stashed changes
@@ -26730,6 +26784,7 @@ Transform:
   m_Children: []
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
   m_Father: {fileID: 0}
   m_RootOrder: 11
@@ -26737,6 +26792,10 @@ Transform:
   m_Father: {fileID: 214549424}
   m_RootOrder: 0
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+  m_Father: {fileID: 214549424}
+  m_RootOrder: 0
+>>>>>>> Stashed changes
 =======
   m_Father: {fileID: 214549424}
   m_RootOrder: 0
@@ -26788,11 +26847,15 @@ Transform:
   m_Father: {fileID: 0}
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
   m_RootOrder: 16
 =======
   m_RootOrder: 14
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+  m_RootOrder: 14
+>>>>>>> Stashed changes
 =======
   m_RootOrder: 14
 >>>>>>> Stashed changes
@@ -29544,6 +29607,7 @@ RectTransform:
   m_Children: []
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
   m_Father: {fileID: 0}
   m_RootOrder: 20
@@ -29551,6 +29615,10 @@ RectTransform:
   m_Father: {fileID: 2015986017}
   m_RootOrder: 0
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+  m_Father: {fileID: 2015986017}
+  m_RootOrder: 0
+>>>>>>> Stashed changes
 =======
   m_Father: {fileID: 2015986017}
   m_RootOrder: 0
@@ -29840,6 +29908,7 @@ Transform:
   m_Children: []
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
   m_Father: {fileID: 0}
   m_RootOrder: 13
@@ -29847,6 +29916,10 @@ Transform:
   m_Father: {fileID: 214549424}
   m_RootOrder: 2
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+  m_Father: {fileID: 214549424}
+  m_RootOrder: 2
+>>>>>>> Stashed changes
 =======
   m_Father: {fileID: 214549424}
   m_RootOrder: 2
@@ -30737,11 +30810,15 @@ Transform:
   m_Father: {fileID: 0}
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
   m_RootOrder: 5
 =======
   m_RootOrder: 7
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+  m_RootOrder: 7
+>>>>>>> Stashed changes
 =======
   m_RootOrder: 7
 >>>>>>> Stashed changes
@@ -31658,11 +31735,15 @@ RectTransform:
   m_AnchorMax: {x: 0.5, y: 0.5}
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
   m_AnchoredPosition: {x: -148, y: 226}
 =======
   m_AnchoredPosition: {x: -111, y: 167}
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+  m_AnchoredPosition: {x: -111, y: 167}
+>>>>>>> Stashed changes
 =======
   m_AnchoredPosition: {x: -111, y: 167}
 >>>>>>> Stashed changes
@@ -31691,11 +31772,15 @@ MonoBehaviour:
   m_ChildAlignment: 0
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
   m_Spacing: -100
 =======
   m_Spacing: 10
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+  m_Spacing: 10
+>>>>>>> Stashed changes
 =======
   m_Spacing: 10
 >>>>>>> Stashed changes
@@ -34312,11 +34397,15 @@ Transform:
   m_Father: {fileID: 0}
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
   m_RootOrder: 7
 =======
   m_RootOrder: 9
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+  m_RootOrder: 9
+>>>>>>> Stashed changes
 =======
   m_RootOrder: 9
 >>>>>>> Stashed changes
@@ -35088,6 +35177,7 @@ CanvasRenderer:
   m_CullTransparentMesh: 1
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
 --- !u!1001 &886679896079407139
 PrefabInstance:
@@ -35188,6 +35278,8 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: b3d9cb82b50892d448fe244925f74cb8, type: 3}
 =======
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
