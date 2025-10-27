@@ -12,15 +12,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16f2095d963c7cb42926c428ca741b61, type: 3}
   m_Name: Drink
   m_EditorClassIdentifier: 
-  grade: 2
+  grade: 3
   itemName: Drink
-  itemTag: 003
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+  itemTag: 02
+>>>>>>> Stashed changes
+=======
+  itemTag: 02
+>>>>>>> Stashed changes
+=======
+  itemTag: 02
+>>>>>>> Stashed changes
+=======
+  itemTag: 02
+>>>>>>> Stashed changes
+=======
+  itemTag: 02
+>>>>>>> Stashed changes
+=======
+  itemTag: 02
+>>>>>>> Stashed changes
   gradeSprites:
-  - {fileID: 21300000, guid: 931f7efd268f1d2438cb4111af1c21b9, type: 3}
-  - {fileID: 21300000, guid: 931f7efd268f1d2438cb4111af1c21b9, type: 3}
-  - {fileID: 21300000, guid: 931f7efd268f1d2438cb4111af1c21b9, type: 3}
-  - {fileID: 21300000, guid: 931f7efd268f1d2438cb4111af1c21b9, type: 3}
-  - {fileID: 21300000, guid: 931f7efd268f1d2438cb4111af1c21b9, type: 3}
-  lockImageToGrade: 0
-  manualImageOverride: {fileID: 21300000, guid: 567d965733a4b83418dd965d516f726f, type: 3}
-  itemImage: {fileID: 21300000, guid: 567d965733a4b83418dd965d516f726f, type: 3}
+  - {fileID: 21300000, guid: 669048b30030d8943a0a1e14f4455836, type: 3}
+  - {fileID: 21300000, guid: 1bf37363ec4b0aa40b5e3602e203ca2f, type: 3}
+  - {fileID: 21300000, guid: 567d965733a4b83418dd965d516f726f, type: 3}
+  - {fileID: 21300000, guid: 567d965733a4b83418dd965d516f726f, type: 3}
+  itemTag: 003
+  itemImage: {fileID: 21300000, guid: 38a1ba2a3181c4447b8d45eb85703495, type: 3}

@@ -1,6 +1,29 @@
-using System.Collections.Generic;
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+ï»¿using System.Collections.Generic;
+>>>>>>> Stashed changes
+=======
+ï»¿using System.Collections.Generic;
+>>>>>>> Stashed changes
+=======
+ï»¿using System.Collections.Generic;
+>>>>>>> Stashed changes
+=======
+ï»¿using System.Collections.Generic;
+>>>>>>> Stashed changes
+=======
+ï»¿using System.Collections.Generic;
+>>>>>>> Stashed changes
+=======
+ï»¿using System.Collections.Generic;
+>>>>>>> Stashed changes
 using UnityEngine;
-using UnityEngine.UI;
+using System.Collections.Generic;
 using System.IO;
 
 public class InventoryManager : MonoBehaviour
@@ -9,14 +32,17 @@ public class InventoryManager : MonoBehaviour
 
     [SerializeField] private int maxSlots = 2;
     [SerializeField] private InventoryUI inventoryUI;
+    [SerializeField] private MenuItem GarbageItem;        // åœ¨ Inspector æ‹–å…¥åƒåœ¾æ¨¡æ¿
 
     private List<MenuItem> items = new List<MenuItem>();
     public IReadOnlyList<MenuItem> Items => items;
 
     public static event System.Action<List<MenuItem>> OnInventoryChanged;
-    private List<MenuItem> inventoryItems = new List<MenuItem>();
 
-    public MenuItem GarbageItem; // ³]©w©U§£ MenuItem
+    /* ===== é¦–æ¬¡æ¨™è¨˜ ===== */
+    private static bool firstDishGot = false;   // ç¬¬ä¸€æ¬¡ç²å¾—ã€Œéåƒåœ¾æ–™ç†ã€
+    private static bool firstGarbageGot = false;  // ç¬¬ä¸€æ¬¡ç²å¾—ã€Œåƒåœ¾ã€
+    /* ==================== */
 
     private void Awake()
     {
@@ -28,34 +54,70 @@ public class InventoryManager : MonoBehaviour
         Instance = this;
     }
 
-    // === ®Ö¤ß¥\¯à ===
+    /* é€šç”¨é¦–æ¬¡æª¢æŸ¥ */
+    private void CheckFirstItems(MenuItem newItem)
+    {
+        bool isGarbage = newItem.grade == BaseMinigame.DishGrade.Fail || newItem == GarbageItem;
+
+        /* ç¬¬ä¸€æ¬¡æ‹¿åˆ°ã€Œæ­£å¸¸æ–™ç†ã€â†’ å°è©±6 */
+        if (!firstDishGot && !isGarbage)
+        {
+            firstDishGot = true;
+            if (TutorialDialogueController.Instance != null)
+                TutorialDialogueController.Instance.PlayChapter("6");
+            return;   // é¿å…åŒå¸§åˆåˆ¤åˆ°åƒåœ¾
+        }
+
+        /* ç¬¬ä¸€æ¬¡æ‹¿åˆ°ã€Œåƒåœ¾ã€â†’ å°è©±6_1 */
+        if (!firstGarbageGot && isGarbage)
+        {
+            firstGarbageGot = true;
+            if (TutorialDialogueController.Instance != null)
+                TutorialDialogueController.Instance.PlayChapter("6_1");
+        }
+    }
+
+    /* --------------- å°å¤– API --------------- */
 
     public bool AddItem(MenuItem newItem)
     {
         if (items.Count >= maxSlots)
         {
-            Debug.Log("­I¥]¤wº¡¡AµLªk¥[¤J·sª««~");
+            Debug.Log("èƒŒåŒ…å·²æ»¿ï¼Œç„¡æ³•æ”¾å…¥æ–°é“å…·");
             return false;
         }
 
         items.Add(newItem);
         NotifyInventoryChanged();
-        Debug.Log($"¥[¤J·sª««~¡G{newItem.name}");
+        Debug.Log($"æ”¾å…¥æ–°é“å…·ï¼š{newItem.name}");
+
+        CheckFirstItems(newItem);   // âœ… æª¢æŸ¥ç¬¬ä¸€æ¬¡
         return true;
     }
 
-    // ¡¹ ·s¼W¡Gª½±µ¥Î Sprite «Ø¥ß¤@­ÓÁ{®É MenuItem ¥[¤J¡]µ¹ Burger Â^¨ú¡^
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+    /* æ‹ç…§å°ˆç”¨ */
     public void AddItemFromSprite(Sprite sprite, string itemName, string itemTag, BaseMinigame.DishGrade grade)
     {
         if (items.Count >= maxSlots)
         {
-            Debug.Log("­I¥]¤wº¡¡AµLªk¥[¤J·s¹Ï¤ùª««~");
-            return;
-        }
-
-        if (sprite == null)
-        {
-            Debug.LogWarning("AddItemFromSprite: sprite ¬° null");
+            Debug.Log("èƒŒåŒ…å·²æ»¿ï¼Œç„¡æ³•æ”¾å…¥æ–°æ‹ç…§é“å…·");
             return;
         }
 
@@ -63,21 +125,35 @@ public class InventoryManager : MonoBehaviour
         newItem.itemName = string.IsNullOrEmpty(itemName) ? "Burger" : itemName;
         newItem.itemTag = string.IsNullOrEmpty(itemTag) ? "Burger" : itemTag;
         newItem.grade = grade;
-        newItem.itemImage = sprite;                 // ª½±µ¥ÎÂ^¨ú¹Ï¥Ü°µ UI Åã¥Ü
-        // ¦p»İ¬Û®eÂÂ¬yµ{¡A¤]¥i¨Ì grade ³]¸m gradeSprites¡A¦ı«D¥²­n
+        newItem.itemImage = sprite;
 
         items.Add(newItem);
         NotifyInventoryChanged();
-        Debug.Log("¥[¤JÂ^¨ú¹Ï¥Üª««~¡G" + newItem.itemName);
+        Debug.Log("æ”¾å…¥æ‹ç…§é“å…·ï¼š" + newItem.itemName);
+
+        CheckFirstItems(newItem);   // âœ… æª¢æŸ¥ç¬¬ä¸€æ¬¡
     }
 
+    /* å…¶ä»–åŸæœ‰æ–¹æ³•ä¿æŒä¸å‹• */
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
     public void AddItemFromTexture(Texture2D texture, string itemName)
     {
-        if (items.Count >= maxSlots)
-        {
-            Debug.Log("­I¥]¤wº¡¡AµLªk¥[¤J·s¹Ï¤ùª««~");
-            return;
-        }
+        if (items.Count >= maxSlots) return;
 
         MenuItem newItem = ScriptableObject.CreateInstance<MenuItem>();
         newItem.itemName = itemName;
@@ -85,21 +161,45 @@ public class InventoryManager : MonoBehaviour
         newItem.grade = BaseMinigame.DishGrade.Perfect;
 
         Rect rect = new Rect(0, 0, texture.width, texture.height);
-        Vector2 pivot = new Vector2(0.5f, 0.5f);
-        Sprite sprite = Sprite.Create(texture, rect, pivot);
-
+        Sprite sprite = Sprite.Create(texture, rect, new Vector2(0.5f, 0.5f));
         newItem.itemImage = sprite;
 
         items.Add(newItem);
         NotifyInventoryChanged();
 
-        Debug.Log("¥[¤JºI¹Ïª««~¡G" + itemName);
+        CheckFirstItems(newItem);   // âœ… æª¢æŸ¥ç¬¬ä¸€æ¬¡
     }
+
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+
 
     public bool HasItemByTag(string tag)
     {
         return items.Exists(item => item.itemTag == tag);
     }
+=======
+    public bool HasItemByTag(string tag) => items.Exists(item => item.itemTag == tag);
+>>>>>>> Stashed changes
+=======
+    public bool HasItemByTag(string tag) => items.Exists(item => item.itemTag == tag);
+>>>>>>> Stashed changes
+=======
+    public bool HasItemByTag(string tag) => items.Exists(item => item.itemTag == tag);
+>>>>>>> Stashed changes
+=======
+    public bool HasItemByTag(string tag) => items.Exists(item => item.itemTag == tag);
+>>>>>>> Stashed changes
+=======
+    public bool HasItemByTag(string tag) => items.Exists(item => item.itemTag == tag);
+>>>>>>> Stashed changes
+=======
+    public bool HasItemByTag(string tag) => items.Exists(item => item.itemTag == tag);
+>>>>>>> Stashed changes
 
     public bool RemoveItemByTag(string tag)
     {
@@ -128,32 +228,19 @@ public class InventoryManager : MonoBehaviour
     public void ClearItems()
     {
         items.Clear();
-        Debug.Log("ª±®a­I¥]¤w²MªÅ");
+        Debug.Log("èƒŒåŒ…å·²æ¸…ç©º");
         NotifyInventoryChanged();
     }
 
-    public bool HasGarbage()
-    {
-        return items.Exists(item => item == GarbageItem || item.grade == BaseMinigame.DishGrade.Fail);
-    }
+    public bool HasGarbage() => items.Exists(item => item == GarbageItem || item.grade == BaseMinigame.DishGrade.Fail);
 
-    public bool HasItem(MenuItem item)
-    {
-        return items.Contains(item);
-    }
-
-    private void NotifyInventoryChanged()
-    {
-        OnInventoryChanged?.Invoke(new List<MenuItem>(items));
-    }
-
-    // === ¬°¤F¬Û®eÂÂµ{¦¡½X·s¼Wªº API ===
-
-    public void ClearInventory() => ClearItems();
+    public bool HasItem(MenuItem item) => items.Contains(item);
 
     public List<MenuItem> GetItems() => new List<MenuItem>(items);
 
-    public List<MenuItem> GetAllItems() => GetItems();
-
     public int GetItemCount() => items.Count;
+
+    public void ClearInventory() => ClearItems();
+
+    private void NotifyInventoryChanged() => OnInventoryChanged?.Invoke(new List<MenuItem>(items));
 }

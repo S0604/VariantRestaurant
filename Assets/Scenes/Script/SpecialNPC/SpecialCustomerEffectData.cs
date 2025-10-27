@@ -7,7 +7,7 @@ public class SpecialCustomerEffectData : ScriptableObject
     {
         ModifyPatienceRate,
         ModifySpawnInterval,
-        ModifyCookTime // ✅ 新增這個項目
+        ModifyCookTime 
     }
 
     public EffectType effectType;

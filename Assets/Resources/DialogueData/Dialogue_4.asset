@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60d17c80e6061324697c7fc576fb47fb, type: 3}
+  m_Name: Dialogue_4
+  m_EditorClassIdentifier: 
+  lines:
+  - characterName: "\u7D05\u54B2"
+    isLeftSide: 1
+    text: "\u8981\u4F7F\u7528\u70F9\u98EA\u53F0\u6307\u9700\u8981\u5C0D\u4ED6\u6309\u4E0B\"
+      E \" \u5C31\u80FD\u4F7F\u7528"
+    portrait: {fileID: 21300000, guid: b398f0d8e787ec7438089abdd112ad4a, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}

@@ -14,10 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   grade: 0
   itemName: Garbage
+  itemTag: Garbage
   gradeSprites:
   - {fileID: 21300000, guid: 08e5b709f1e68004b9bb682565ea8137, type: 3}
   - {fileID: 21300000, guid: 08e5b709f1e68004b9bb682565ea8137, type: 3}
   - {fileID: 21300000, guid: 08e5b709f1e68004b9bb682565ea8137, type: 3}
   - {fileID: 21300000, guid: 08e5b709f1e68004b9bb682565ea8137, type: 3}
-  itemTag: 004
+  lockImageToGrade: 1
+  manualImageOverride: {fileID: 0}
   itemImage: {fileID: 21300000, guid: 08e5b709f1e68004b9bb682565ea8137, type: 3}
