@@ -1295,7 +1295,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   m_RootOrder: 14
+=======
+  m_RootOrder: 17
+>>>>>>> Stashed changes
 =======
   m_RootOrder: 17
 >>>>>>> Stashed changes
@@ -2270,6 +2274,9 @@ MonoBehaviour:
 =======
   bottomAlign: 1
   useGradeSpriteInUI: 1
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
   slotSpacing: 100
 --- !u!1001 &120384698
@@ -2941,7 +2948,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   m_RootOrder: 9
+=======
+  m_RootOrder: 12
+>>>>>>> Stashed changes
 =======
   m_RootOrder: 12
 >>>>>>> Stashed changes
@@ -3439,7 +3450,11 @@ Transform:
   - {fileID: 1346340328}
   m_Father: {fileID: 0}
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   m_RootOrder: 10
+=======
+  m_RootOrder: 13
+>>>>>>> Stashed changes
 =======
   m_RootOrder: 13
 >>>>>>> Stashed changes
@@ -3647,7 +3662,11 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 13f393c1d8659f14a956c55ad2c83b73, type: 3}
       propertyPath: m_RootOrder
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
       value: 11
+=======
+      value: 14
+>>>>>>> Stashed changes
 =======
       value: 14
 >>>>>>> Stashed changes
@@ -4394,7 +4413,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   m_RootOrder: 15
+=======
+  m_RootOrder: 18
+>>>>>>> Stashed changes
 =======
   m_RootOrder: 18
 >>>>>>> Stashed changes
@@ -5223,8 +5246,13 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   m_Father: {fileID: 0}
   m_RootOrder: 8
+=======
+  m_Father: {fileID: 1911247782}
+  m_RootOrder: 1
+>>>>>>> Stashed changes
 =======
   m_Father: {fileID: 1911247782}
   m_RootOrder: 1
@@ -7898,7 +7926,11 @@ RectTransform:
   - {fileID: 1261515450}
   m_Father: {fileID: 0}
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   m_RootOrder: 4
+=======
+  m_RootOrder: 7
+>>>>>>> Stashed changes
 =======
   m_RootOrder: 7
 >>>>>>> Stashed changes
@@ -18559,7 +18591,11 @@ Transform:
   - {fileID: 1339087913}
   m_Father: {fileID: 0}
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   m_RootOrder: 13
+=======
+  m_RootOrder: 16
+>>>>>>> Stashed changes
 =======
   m_RootOrder: 16
 >>>>>>> Stashed changes
@@ -25438,7 +25474,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   m_RootOrder: 6
+=======
+  m_RootOrder: 10
+>>>>>>> Stashed changes
 =======
   m_RootOrder: 10
 >>>>>>> Stashed changes
@@ -27050,7 +27090,11 @@ Transform:
   - {fileID: 189106071}
   m_Father: {fileID: 0}
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   m_RootOrder: 12
+=======
+  m_RootOrder: 15
+>>>>>>> Stashed changes
 =======
   m_RootOrder: 15
 >>>>>>> Stashed changes
@@ -29865,14 +29909,20 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 16
 =======
+=======
+>>>>>>> Stashed changes
   m_Children:
   - {fileID: 929616920}
   m_Father: {fileID: 223449909}
   m_RootOrder: 0
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -31187,7 +31237,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   m_RootOrder: 5
+=======
+  m_RootOrder: 9
+>>>>>>> Stashed changes
 =======
   m_RootOrder: 9
 >>>>>>> Stashed changes
@@ -32049,7 +32103,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   m_RootOrder: 3
+=======
+  m_RootOrder: 5
+>>>>>>> Stashed changes
 =======
   m_RootOrder: 5
 >>>>>>> Stashed changes
@@ -33577,7 +33635,11 @@ Transform:
   - {fileID: 1104583576}
   m_Father: {fileID: 0}
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   m_RootOrder: 2
+=======
+  m_RootOrder: 4
+>>>>>>> Stashed changes
 =======
   m_RootOrder: 4
 >>>>>>> Stashed changes
@@ -34770,8 +34832,13 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   m_Father: {fileID: 0}
   m_RootOrder: 7
+=======
+  m_Father: {fileID: 1911247782}
+  m_RootOrder: 0
+>>>>>>> Stashed changes
 =======
   m_Father: {fileID: 1911247782}
   m_RootOrder: 0

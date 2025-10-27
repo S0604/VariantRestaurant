@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+<<<<<<< Updated upstream
 
 public enum ItemGrade
 {
@@ -6,10 +7,13 @@ public enum ItemGrade
     Good,
     Garbage
 }
+=======
+>>>>>>> Stashed changes
 
 [CreateAssetMenu(fileName = "New Menu Item", menuName = "Menu/Menu Item")]
 public class MenuItem : ScriptableObject
 {
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
     public BaseMinigame.DishGrade grade; 
 
@@ -20,6 +24,8 @@ public class MenuItem : ScriptableObject
 
     public Sprite GetSpriteByGrade(ItemGrade grade)
 =======
+=======
+>>>>>>> Stashed changes
     // 餐點的評級（可能會在烹飪小遊戲後被改變，例如 Mutated 為特殊菜色）
     public BaseMinigame.DishGrade grade;
 
@@ -53,7 +59,10 @@ public class MenuItem : ScriptableObject
         return null;
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
     /// <summary>
     /// 當在 Inspector 編輯此 ScriptableObject 時自動執行，
     /// 用於即時更新圖片顯示（避免手動同步）。

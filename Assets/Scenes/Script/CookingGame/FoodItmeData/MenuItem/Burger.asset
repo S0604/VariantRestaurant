@@ -15,6 +15,10 @@ MonoBehaviour:
   grade: 2
   itemName: Burger
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+  itemTag: Burger
+>>>>>>> Stashed changes
 =======
   itemTag: Burger
 >>>>>>> Stashed changes

@@ -1294,11 +1294,15 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
   m_RootOrder: 18
 =======
   m_RootOrder: 16
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+  m_RootOrder: 16
+>>>>>>> Stashed changes
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &66615166
 GameObject:
@@ -2396,7 +2400,10 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 886679895410656635, guid: b3d9cb82b50892d448fe244925f74cb8, type: 3}
   m_PrefabInstance: {fileID: 120384698}
   m_PrefabAsset: {fileID: 0}
+<<<<<<< Updated upstream
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+>>>>>>> Stashed changes
 --- !u!1 &127464288
 GameObject:
   m_ObjectHideFlags: 0
@@ -2939,11 +2946,15 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
   m_RootOrder: 9
 =======
   m_RootOrder: 11
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+  m_RootOrder: 11
+>>>>>>> Stashed changes
   m_LocalEulerAnglesHint: {x: 0, y: 315, z: 0}
 --- !u!65 &172477627
 BoxCollider:
@@ -3437,11 +3448,15 @@ Transform:
   - {fileID: 1795018108}
   - {fileID: 1346340328}
   m_Father: {fileID: 0}
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
   m_RootOrder: 10
 =======
   m_RootOrder: 12
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+  m_RootOrder: 12
+>>>>>>> Stashed changes
   m_LocalEulerAnglesHint: {x: 0, y: 315, z: 0}
 --- !u!114 &214549425
 MonoBehaviour:
@@ -3645,11 +3660,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 13f393c1d8659f14a956c55ad2c83b73, type: 3}
       propertyPath: m_RootOrder
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
       value: 15
 =======
       value: 13
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+      value: 13
+>>>>>>> Stashed changes
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 13f393c1d8659f14a956c55ad2c83b73, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4374,11 +4393,15 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
   m_RootOrder: 19
 =======
   m_RootOrder: 17
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+  m_RootOrder: 17
+>>>>>>> Stashed changes
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &240509644
 GameObject:
@@ -5106,11 +5129,15 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
   m_RootOrder: 8
 =======
   m_RootOrder: 10
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+  m_RootOrder: 10
+>>>>>>> Stashed changes
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &266455051
 GameObject:
@@ -12571,6 +12598,7 @@ MonoBehaviour:
   popularityText: {fileID: 465824500}
   customerFlowText: {fileID: 1157587329}
   experienceSlider: {fileID: 608673076}
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
 --- !u!1 &770784924
 GameObject:
@@ -12626,6 +12654,8 @@ CanvasGroup:
   m_IgnoreParentGroups: 0
 =======
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+>>>>>>> Stashed changes
 --- !u!1 &776685386
 GameObject:
   m_ObjectHideFlags: 0
@@ -14367,6 +14397,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
   m_Father: {fileID: 0}
   m_RootOrder: 12
@@ -14374,6 +14405,10 @@ Transform:
   m_Father: {fileID: 214549424}
   m_RootOrder: 1
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+  m_Father: {fileID: 214549424}
+  m_RootOrder: 1
+>>>>>>> Stashed changes
   m_LocalEulerAnglesHint: {x: 0, y: 135, z: 0}
 --- !u!1 &911431893
 GameObject:
@@ -18161,11 +18196,15 @@ Transform:
   - {fileID: 923132075}
   - {fileID: 1339087913}
   m_Father: {fileID: 0}
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
   m_RootOrder: 17
 =======
   m_RootOrder: 15
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+  m_RootOrder: 15
+>>>>>>> Stashed changes
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1116036603
 GameObject:
@@ -21802,17 +21841,23 @@ RectTransform:
   m_Father: {fileID: 831556870}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: -1.699997, y: -0.8999999}
   m_SizeDelta: {x: 6.2000027, y: 0.20000005}
 =======
+=======
+>>>>>>> Stashed changes
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -1.1, y: 59.5}
   m_SizeDelta: {x: 200, y: 50}
+<<<<<<< Updated upstream
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+>>>>>>> Stashed changes
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1280451573
 MonoBehaviour:
@@ -23177,6 +23222,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
   m_Father: {fileID: 0}
   m_RootOrder: 14
@@ -23184,6 +23230,10 @@ Transform:
   m_Father: {fileID: 214549424}
   m_RootOrder: 3
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+  m_Father: {fileID: 214549424}
+  m_RootOrder: 3
+>>>>>>> Stashed changes
   m_LocalEulerAnglesHint: {x: 0, y: 45, z: 0}
 --- !u!1 &1354506805
 GameObject:
@@ -25068,11 +25118,15 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
   m_RootOrder: 6
 =======
   m_RootOrder: 8
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+  m_RootOrder: 8
+>>>>>>> Stashed changes
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1467490832
 MonoBehaviour:
@@ -26620,6 +26674,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
   m_Father: {fileID: 0}
   m_RootOrder: 11
@@ -26627,6 +26682,10 @@ Transform:
   m_Father: {fileID: 214549424}
   m_RootOrder: 0
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+  m_Father: {fileID: 214549424}
+  m_RootOrder: 0
+>>>>>>> Stashed changes
   m_LocalEulerAnglesHint: {x: 0, y: 315, z: 0}
 --- !u!1 &1535243108
 GameObject:
@@ -26668,11 +26727,15 @@ Transform:
   - {fileID: 291832174}
   - {fileID: 189106071}
   m_Father: {fileID: 0}
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
   m_RootOrder: 16
 =======
   m_RootOrder: 14
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+  m_RootOrder: 14
+>>>>>>> Stashed changes
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1541895443
 GameObject:
@@ -29416,6 +29479,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
   m_Father: {fileID: 0}
   m_RootOrder: 20
@@ -29423,6 +29487,10 @@ RectTransform:
   m_Father: {fileID: 2015986017}
   m_RootOrder: 0
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+  m_Father: {fileID: 2015986017}
+  m_RootOrder: 0
+>>>>>>> Stashed changes
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -29702,6 +29770,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
   m_Father: {fileID: 0}
   m_RootOrder: 13
@@ -29709,6 +29778,10 @@ Transform:
   m_Father: {fileID: 214549424}
   m_RootOrder: 2
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+  m_Father: {fileID: 214549424}
+  m_RootOrder: 2
+>>>>>>> Stashed changes
   m_LocalEulerAnglesHint: {x: 0, y: 45, z: 0}
 --- !u!1 &1798235974
 GameObject:
@@ -30589,11 +30662,15 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
   m_RootOrder: 5
 =======
   m_RootOrder: 7
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+  m_RootOrder: 7
+>>>>>>> Stashed changes
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1849881587
 MonoBehaviour:
@@ -31502,11 +31579,15 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
   m_AnchoredPosition: {x: -148, y: 226}
 =======
   m_AnchoredPosition: {x: -111, y: 167}
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+  m_AnchoredPosition: {x: -111, y: 167}
+>>>>>>> Stashed changes
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1926203671
@@ -31527,11 +31608,15 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 0
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
   m_Spacing: -100
 =======
   m_Spacing: 10
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+  m_Spacing: 10
+>>>>>>> Stashed changes
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
@@ -34140,11 +34225,15 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
   m_RootOrder: 7
 =======
   m_RootOrder: 9
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+  m_RootOrder: 9
+>>>>>>> Stashed changes
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2095075983
 GameObject:
@@ -34908,6 +34997,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2145753935}
   m_CullTransparentMesh: 1
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream:Assets/GameSceneTest.unity
 --- !u!1001 &886679896079407139
 PrefabInstance:
@@ -35008,3 +35098,5 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: b3d9cb82b50892d448fe244925f74cb8, type: 3}
 =======
 >>>>>>> Stashed changes:Assets/GameScene.unity
+=======
+>>>>>>> Stashed changes

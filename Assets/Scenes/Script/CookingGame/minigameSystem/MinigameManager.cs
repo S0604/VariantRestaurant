@@ -39,17 +39,23 @@ public class MinigameManager : MonoBehaviour
     public void StartMinigame(string type, System.Action<bool, int> onComplete)
     {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         
         Debug.Log($"±Ò°Ê¤p¹CÀ¸®É¨Æ¥óª¬ºA¡GActive={RandomEventManager.Instance?.IsEventActive}, Effect={RandomEventManager.Instance?.CurrentEffect}");
 
         if (currentMinigame != null)
 =======
+=======
+>>>>>>> Stashed changes
         if (currentMinigame != null || isSpawning) return;
 
         if (InventoryManager.Instance != null && InventoryManager.Instance.GetItemCount() >= 2)
         { Debug.LogWarning("èƒŒåŒ…å·²æ»¿ï¼Œç„¡æ³•é–‹å§‹å°éŠæˆ²"); return; }
 
         if (!hasSpawnedGame5Dialogue)
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
         {
             hasSpawnedGame5Dialogue = true;
@@ -59,12 +65,15 @@ public class MinigameManager : MonoBehaviour
         }
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         if (BaseMinigame.HasMaxDishRecords())
         {
             Debug.LogWarning("§A¤w¸g¦³¨â¶µ®Æ²z¬ö¿ı¡A½Ğ¥ı²M°£«á¦AÄ~Äò¡I");
             return;
         }
 =======
+=======
+>>>>>>> Stashed changes
         isSpawning = true;
         ProceedToStartMinigame(type, onComplete);
     }
@@ -73,6 +82,9 @@ public class MinigameManager : MonoBehaviour
     private IEnumerator SpawnThenDialogue(string type, System.Action<bool, int> onComplete)
     {
         yield return null; // ç­‰ä¸€å¸§ï¼Œç¢ºä¿å¤–éƒ¨ isSpawning ç”Ÿæ•ˆ
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
         var entry = minigames.Find(m => m.minigameType == type);
@@ -122,7 +134,11 @@ public class MinigameManager : MonoBehaviour
         {
             onComplete?.Invoke(success, rank);
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             StartCoroutine(DestroyAfterDelay(instanceObj, 0.5f)); // ­×¥¿¡G±q³o¸Ì°õ¦æ Coroutine
+=======
+            StartCoroutine(DestroyAfterDelay(instance, 0.5f));
+>>>>>>> Stashed changes
 =======
             StartCoroutine(DestroyAfterDelay(instance, 0.5f));
 >>>>>>> Stashed changes
