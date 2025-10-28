@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60d17c80e6061324697c7fc576fb47fb, type: 3}
+  m_Name: Dialogue_13_1
+  m_EditorClassIdentifier: 
+  lines:
+  - characterName: "\u771F\u767D"
+    isLeftSide: 0
+    text: "\u9019\u662F\u600E\u9EBC\u56DE\u4E8B!"
+    portrait: {fileID: 21300000, guid: 0ad79e36d38c7fb43b76daa558c549aa, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 62e6767e9383a324d9e073572324a095, type: 3}
+  - characterName: "\u7D05\u54B2"
+    isLeftSide: 1
+    text: "\u9019\u662F!\u9019\u662F\u98DF\u6750\u6B63\u8655\u8B8A\u7570\u66B4\u8D70"
+    portrait: {fileID: 21300000, guid: 9ae4c685858bdca41b8c812a5fa0e442, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
+  - characterName: "\u7D05\u54B2"
+    isLeftSide: 1
+    text: "\u9677\u5165\u8B8A\u7570\u66B4\u8D70\u7684\u98DF\u6750\u6703\u8B8A\u5F97\u96E3\u4EE5\u6599\u7406"
+    portrait: {fileID: 21300000, guid: 9ae4c685858bdca41b8c812a5fa0e442, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
+  - characterName: "\u771F\u767D"
+    isLeftSide: 0
+    text: "\u96E3\u4EE5\u6599\u7406\uFF0C\u5225\u958B\u73A9\u7B11\u6211\u624D\u4E0D\u6703\u8F38\u7D66\u9019\u4E9B\u7121\u7406\u53D6\u9B27\u7684\u98DF\u6750"
+    portrait: {fileID: 21300000, guid: 0ad79e36d38c7fb43b76daa558c549aa, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 0}
+  - characterName: "\u7D05\u54B2"
+    isLeftSide: 1
+    text: "\u90A3\u8981\u6CE8\u610F\uFF0C\u6709\u4E9B\u8B8A\u7570\u6703\u4F7F\u539F\u672C\u88FD\u4F5C\u6599\u7406\u7684\u908F\u8F2F\u6539\u8B8A\u3002"
+    portrait: {fileID: 21300000, guid: b398f0d8e787ec7438089abdd112ad4a, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
+  - characterName: "\u771F\u767D"
+    isLeftSide: 0
+    text: "\u6536\u5230\uFF0C\u770B\u6211\u600E\u9EBC\u6599\u7406\u6599\u7406\u4ED6\u5011"
+    portrait: {fileID: 21300000, guid: 0ad79e36d38c7fb43b76daa558c549aa, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 0}

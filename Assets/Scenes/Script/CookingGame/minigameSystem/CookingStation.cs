@@ -16,7 +16,7 @@ public class CookingStation : MonoBehaviour
     public GameObject energyBarUI;
 
     public MenuItem energySupplyItem; // 指定補給箱 MenuItem
-
+    private static bool firstEnergyDepleted = false;
     void Start()
     {
         currentEnergy = maxEnergy;
@@ -103,15 +103,31 @@ public class CookingStation : MonoBehaviour
 
     private void OnMinigameComplete(bool success, int rank)
     {
+        bool wasPositive = currentEnergy > 0;
+        currentEnergy = Mathf.Max(currentEnergy - 1, 0);
+
+        /* 第一次「從正變零」→ 播對話 1 + 解鎖 EnergyDepleted */
+        if (!firstEnergyDepleted && wasPositive && currentEnergy == 0)
+        {
+            firstEnergyDepleted = true;
+
+            // 1. 播對話
+            if (TutorialDialogueController.Instance != null)
+                TutorialDialogueController.Instance.PlayChapter("14");
+
+            // 2. 解鎖事件
+            if (TutorialProgressManager.Instance != null)
+                TutorialProgressManager.Instance.CompleteEvent("EnergyDepleted");
+        }
+
+        // 原有日誌 & UI
         if (success)
             Debug.Log(minigameType + " 製作成功，等級: " + rank);
         else
             Debug.Log(minigameType + " 製作失敗");
 
-        currentEnergy = Mathf.Max(currentEnergy - 1, 0);
         UpdateEnergyUI();
     }
-
     private void UpdateEnergyUI()
     {
         float ratio = (float)currentEnergy / maxEnergy;

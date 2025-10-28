@@ -10,30 +10,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 60d17c80e6061324697c7fc576fb47fb, type: 3}
-  m_Name: Dialogue_8
+  m_Name: Dialogue_13
   m_EditorClassIdentifier: 
   lines:
   - characterName: "\u7D05\u54B2"
     isLeftSide: 1
-    text: "\u606D\u559C\u59B3\u5B78\u6703\u5982\u4F55\u88FD\u4F5C\u6599\u7406\u4E86"
+    text: "\u606D\u559C\u59B3\u5B78\u6703\u71DF\u696D\u7684\u57FA\u790E\u64CD\u4F5C\u4E86!"
     portrait: {fileID: 21300000, guid: b61592ca625ed8444b494723b2715971, type: 3}
     voiceClip: {fileID: 0}
     dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
   - characterName: "\u7D05\u54B2"
     isLeftSide: 1
-    text: "\u63A5\u4E0B\u4F86\uFF0C\u8B93\u6211\u5011\u8A66\u8A66\u4F9D\u7167\u9867\u5BA2\u7684\\n\u9700\u6C42\u4E0A\u5C0D\u61C9\u7684\u9910\u9EDE\u5427!"
+    text: "\u90A3\u9EBC\u8B93\u6211\u5011\u9032\u5165\u5BE6\u6230\u5427!"
     portrait: {fileID: 21300000, guid: 9ae4c685858bdca41b8c812a5fa0e442, type: 3}
     voiceClip: {fileID: 0}
     dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
   - characterName: "\u7D05\u54B2"
     isLeftSide: 1
-    text: "\u6211\u525B\u525B\u5F9E\u5916\u9762\u8ACB\u4F86\u4E00\u4E9B\u8DEF\u4EBA\\n\u4F5C\u70BA\u6211\u5011\u7DF4\u7FD2\u7684\u5C0D\u8C61"
-    portrait: {fileID: 21300000, guid: b398f0d8e787ec7438089abdd112ad4a, type: 3}
-    voiceClip: {fileID: 0}
-    dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
-  - characterName: "\u7D05\u54B2"
-    isLeftSide: 1
-    text: "\u8B93\u6211\u5011\u770B\u770B\u4ED6\u5011\u9700\u8981\u751A\u9EBC\u5427!"
-    portrait: {fileID: 21300000, guid: b398f0d8e787ec7438089abdd112ad4a, type: 3}
+    text: "\u8A66\u8A66\u5728\u6B47\u696D\u524D\u76E1\u53EF\u80FD\u5730\u5B8C\u6210\u591A\u540D\u9867\u5BA2\u8A02\u55AE\u5427!"
+    portrait: {fileID: 21300000, guid: b61592ca625ed8444b494723b2715971, type: 3}
     voiceClip: {fileID: 0}
     dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}

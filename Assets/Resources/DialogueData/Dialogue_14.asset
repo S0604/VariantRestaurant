@@ -10,18 +10,30 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 60d17c80e6061324697c7fc576fb47fb, type: 3}
-  m_Name: Dialogue_6_1
+  m_Name: Dialogue_14
   m_EditorClassIdentifier: 
   lines:
   - characterName: "\u7D05\u54B2"
     isLeftSide: 1
-    text: "\u554A\u555E\u555E!\u6599\u7406\u88FD\u4F5C\u5931\u6557\uFF0C\u53EA\u80FD\u628A\u5979\u8655\u7406\u6389\u4E86\u5462!"
+    text: "\u770B\u6A23\u5B50\u70F9\u98EA\u53F0\u6C92\u6709\u80FD\u91CF\u4E86"
     portrait: {fileID: 21300000, guid: b398f0d8e787ec7438089abdd112ad4a, type: 3}
     voiceClip: {fileID: 0}
     dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
   - characterName: "\u7D05\u54B2"
     isLeftSide: 1
-    text: "\u5230\u5783\u573E\u6876\u524D\u5C07\u5B83\u8655\u7406\u6389\u5427!"
+    text: "\u6C92\u6709\u80FD\u91CF\u7684\u70F9\u98EA\u53F0\u662F\u7121\u6CD5\u4F7F\u7528\u7684"
+    portrait: {fileID: 21300000, guid: b61592ca625ed8444b494723b2715971, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
+  - characterName: "\u7D05\u54B2"
+    isLeftSide: 1
+    text: "\u9019\u6642\u5C31\u9700\u8981\u5230\u51B0\u7BB1\u62FF\u88DC\u7D66\u56DE\u5FA9\u80FD\u91CF"
+    portrait: {fileID: 21300000, guid: b61592ca625ed8444b494723b2715971, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
+  - characterName: "\u7D05\u54B2"
+    isLeftSide: 1
+    text: "\u5230\u51B0\u7BB1\u524D\u6309\u4E0B\" E \"\u62FF\u53D6\u88DC\u7D66"
     portrait: {fileID: 21300000, guid: b398f0d8e787ec7438089abdd112ad4a, type: 3}
     voiceClip: {fileID: 0}
     dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
