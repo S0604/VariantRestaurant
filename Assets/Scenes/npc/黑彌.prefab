@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7087934222738376126}
   - component: {fileID: 1972943304902563049}
   - component: {fileID: 1972943304902563031}
-  - component: {fileID: 196354227489465898}
+  - component: {fileID: 4407993212345507682}
   - component: {fileID: 2058813173380755808}
   - component: {fileID: 8281430436026058074}
   m_Layer: 6
@@ -165,7 +165,7 @@ NavMeshAgent:
   m_BaseOffset: 5
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &196354227489465898
+--- !u!114 &4407993212345507682
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -177,6 +177,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c419eb93fa3a9bb4c9322dd57da7cec6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fixedOrder: []
   selectedItems: []
 --- !u!114 &2058813173380755808
 MonoBehaviour:
@@ -207,9 +208,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c0344bfb2fef6e45bb95d9b3a8be2f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  totalPatienceTime: 15
+  maxPatience: 9
+  currentPatience: 9
   patienceUIPrefab: {fileID: 8460288403528722513, guid: 0589a37977e98b24bb08346bcb0a986f, type: 3}
   uiAnchor: {fileID: 7873407814884844372}
+  heartScale: 0.06
 --- !u!1 &8588640244262489049
 GameObject:
   m_ObjectHideFlags: 0

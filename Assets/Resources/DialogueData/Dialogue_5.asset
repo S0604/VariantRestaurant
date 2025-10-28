@@ -21,7 +21,7 @@ MonoBehaviour:
     dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
   - characterName: "\u7D05\u54B2"
     isLeftSide: 1
-    text: "\"\u4E0A = W\u3001\u4E0B = S\\nA = \u5DE6\u3001D = \u53F3 \"\\n\u8A66\u8A66\u770B\u6210\u529F\u70F9\u98EA\u51FA\u4E00\u500B\u6599\u7406\u5427!"
+    text: "\"\u4E0A = W\u3001\u4E0B = S\\n \u5DE6 = A\u3001\u53F3 = D \"\\n\u8A66\u8A66\u770B\u6210\u529F\u70F9\u98EA\u51FA\u4E00\u500B\u6599\u7406\u5427!"
     portrait: {fileID: 21300000, guid: 9ae4c685858bdca41b8c812a5fa0e442, type: 3}
     voiceClip: {fileID: 0}
     dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}

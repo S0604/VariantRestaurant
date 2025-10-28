@@ -8,23 +8,59 @@ public class OrderItem
     public MenuItem menuItem;
     public bool isCompleted;
 }
+[System.Serializable]
+public class FixedOrderEntry
+{
+    public MenuItem menuItem;
+    public int quantity = 1;
+}
 
 public class CustomerOrder : MonoBehaviour
 {
+    [Header("固定菜單設定 (Inspector 可拖拽)")]
+    public List<FixedOrderEntry> fixedOrder = new List<FixedOrderEntry>();
+
     public List<OrderItem> selectedItems = new List<OrderItem>();
     public bool IsOrderReady { get; private set; } = false;
     private BaseMinigame baseMinigame;
 
     void Start()
     {
-        baseMinigame = FindObjectOfType<BaseMinigame>(); // 或透過其他方式取得參考
+        baseMinigame = FindObjectOfType<BaseMinigame>();
     }
 
+    /// <summary>
+    /// 生成訂單，若 Inspector 固定菜單非空則使用固定
+    /// </summary>
+    /// <param name="database">菜單資料庫，隨機生成用</param>
+    /// <param name="isSpecialCustomer">特殊顧客標記，隨機生成用</param>
     public void GenerateOrder(MenuDatabase database, bool isSpecialCustomer)
     {
         selectedItems.Clear();
         IsOrderReady = false;
 
+        // 如果 Inspector 固定菜單有設定，優先使用
+        if (fixedOrder != null && fixedOrder.Count > 0)
+        {
+            foreach (var entry in fixedOrder)
+            {
+                if (entry.menuItem == null || entry.quantity < 1) continue;
+
+                for (int i = 0; i < entry.quantity; i++)
+                {
+                    selectedItems.Add(new OrderItem
+                    {
+                        menuItem = entry.menuItem,
+                        isCompleted = false
+                    });
+                }
+            }
+
+            IsOrderReady = true;
+            return;
+        }
+
+        // === 隨機生成邏輯 ===
         if (database == null || database.allMenuItems.Length < 1)
         {
             Debug.LogWarning("MenuDatabase 為空或菜色不足！");
@@ -35,28 +71,25 @@ public class CustomerOrder : MonoBehaviour
 
         if (isSpecialCustomer)
         {
-            // === 特殊顧客：A×3、A×2+B×1、A×1+B×2 ===
             int totalDishes = 3;
-            int dishTypes = Random.Range(1, 3); // 1 或 2 種
-
+            int dishTypes = Random.Range(1, 3);
             List<MenuItem> selectedMenuItems = shuffled.Take(dishTypes).ToList();
-            List<int> quantities = new List<int>();
+            List<int> dishQuantities = new List<int>();
 
             if (dishTypes == 1)
             {
-                quantities.Add(3); // 全部分給一種
+                dishQuantities.Add(3);
             }
             else
             {
-                int firstCount = Random.Range(1, 3); // 1 或 2
-                int secondCount = totalDishes - firstCount;
-                quantities.Add(firstCount);
-                quantities.Add(secondCount);
+                int firstCount = Random.Range(1, 3);
+                dishQuantities.Add(firstCount);
+                dishQuantities.Add(totalDishes - firstCount);
             }
 
             for (int i = 0; i < selectedMenuItems.Count; i++)
             {
-                for (int j = 0; j < quantities[i]; j++)
+                for (int j = 0; j < dishQuantities[i]; j++)
                 {
                     selectedItems.Add(new OrderItem
                     {
@@ -68,26 +101,17 @@ public class CustomerOrder : MonoBehaviour
         }
         else
         {
-            // === 普通顧客：A×1、A×2、A×1 + B×1（最多兩份） ===
-            int totalDishes = Random.Range(1, 3); // 1 或 2 份
-            int dishTypes = totalDishes == 1 ? 1 : Random.Range(1, 3); // 如果只要一份，必為一種；若兩份，有可能是 A×2 或 A×1+B×1
-
+            int totalDishes = Random.Range(1, 3);
+            int dishTypes = totalDishes == 1 ? 1 : Random.Range(1, 3);
             List<MenuItem> selectedMenuItems = shuffled.Take(dishTypes).ToList();
-            List<int> quantities = new List<int>();
+            List<int> dishQuantities = new List<int>();
 
-            if (dishTypes == 1)
-            {
-                quantities.Add(totalDishes); // A×1 或 A×2
-            }
-            else
-            {
-                quantities.Add(1); // A×1
-                quantities.Add(1); // B×1
-            }
+            if (dishTypes == 1) dishQuantities.Add(totalDishes);
+            else { dishQuantities.Add(1); dishQuantities.Add(1); }
 
             for (int i = 0; i < selectedMenuItems.Count; i++)
             {
-                for (int j = 0; j < quantities[i]; j++)
+                for (int j = 0; j < dishQuantities[i]; j++)
                 {
                     selectedItems.Add(new OrderItem
                     {
@@ -101,7 +125,6 @@ public class CustomerOrder : MonoBehaviour
         IsOrderReady = true;
     }
 
-    // 提交物品時呼叫，標記符合 itemTag 的項目為完成
     public bool SubmitItem(MenuItem submittedItem)
     {
         if (submittedItem.grade == BaseMinigame.DishGrade.Fail ||
@@ -118,13 +141,12 @@ public class CustomerOrder : MonoBehaviour
             {
                 orderItem.isCompleted = true;
                 found = true;
-                break; // 只提交一個
+                break;
             }
         }
         return found;
     }
 
-    // 判斷訂單是否完成（所有項目都完成）
     public bool IsOrderComplete()
     {
         return selectedItems.All(item => item.isCompleted);

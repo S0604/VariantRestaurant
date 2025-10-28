@@ -22,5 +22,5 @@ MonoBehaviour:
   - {fileID: 21300000, guid: a1cf3099741276f4a80c9475b9b319bb, type: 3}
   - {fileID: 21300000, guid: a1cf3099741276f4a80c9475b9b319bb, type: 3}
   lockImageToGrade: 0
-  manualImageOverride: {fileID: 21300000, guid: a1cf3099741276f4a80c9475b9b319bb, type: 3}
-  itemImage: {fileID: 21300000, guid: a1cf3099741276f4a80c9475b9b319bb, type: 3}
+  manualImageOverride: {fileID: 21300000, guid: d6f63c0febc50fd439bee27c7bbed26f, type: 3}
+  itemImage: {fileID: 21300000, guid: d6f63c0febc50fd439bee27c7bbed26f, type: 3}

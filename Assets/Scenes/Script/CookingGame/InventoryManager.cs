@@ -17,10 +17,10 @@ public class InventoryManager : MonoBehaviour
     public static event System.Action<List<MenuItem>> OnInventoryChanged;
 
     /* ===== 首次標記 ===== */
-    private static bool firstDishGot = false;   // 第一次獲得「非垃圾料理」
-    private static bool firstGarbageGot = false;  // 第一次獲得「垃圾」
-    private static bool firstFriesGot = false;   // 第一次拿到 Fries
-    private static bool hasPlayedFullOnce = false;
+    private static bool firstItemEverGot = false;
+    private static bool firstDishGot = false;
+    private static bool firstGarbageGot = false;
+    private static bool firstFries002Got = false;   
     /* ==================== */
 
     private void Awake()
@@ -34,23 +34,28 @@ public class InventoryManager : MonoBehaviour
     }
 
     /* 通用首次檢查 */
-    /* 通用首次檢查 */
     private void CheckFirstItems(MenuItem newItem)
     {
         bool isGarbage = newItem.grade == BaseMinigame.DishGrade.Fail || newItem == GarbageItem;
 
-        /* 1. 第一次拿到「Fries & 002」→ 對話8 */
-        if (!firstFriesGot && newItem.itemName == "Fries" && newItem.itemTag == "002")
+        /* 1. 第一次任何物品 → 只解鎖 Get garbage */
+        if (!firstItemEverGot)
         {
-            firstFriesGot = true;
-            if (TutorialDialogueController.Instance != null)
-                TutorialDialogueController.Instance.PlayChapter("8");
-            // 若想解鎖事件也可加：
-            // TutorialProgressManager.Instance?.CompleteEvent("First Fries");
-            return;   // 避免同帧又判到下面
+            firstItemEverGot = true;
+            TutorialProgressManager.Instance?.CompleteEvent("Get garbage");
         }
 
-        /* 2. 第一次拿到「正常料理」→ 對話6 + 事件 */
+        /* 2. 第一次拿「Fries & 002」→ 對話8 */
+        if (!firstFries002Got && newItem.itemName == "Fries" && newItem.itemTag == "002")
+        {
+            firstFries002Got = true;
+            if (TutorialDialogueController.Instance != null)
+                TutorialDialogueController.Instance.PlayChapter("8");
+            // 可再加解鎖：
+            // TutorialProgressManager.Instance?.CompleteEvent("First Fries");
+        }
+
+        /* 3. 第一次非垃圾料理 → 保留對話6 + 解鎖 Unlock French Fries」*/
         if (!firstDishGot && !isGarbage)
         {
             firstDishGot = true;
@@ -58,60 +63,40 @@ public class InventoryManager : MonoBehaviour
                 TutorialDialogueController.Instance.PlayChapter("6");
             if (TutorialProgressManager.Instance != null)
                 TutorialProgressManager.Instance.CompleteEvent("Unlock French Fries");
-            return;
         }
 
-        /* 3. 第一次拿到「垃圾」→ 對話6_1 + 事件 */
+        /* 4. 第一次拿垃圾 → 只播 6_1（不解鎖）*/
         if (!firstGarbageGot && isGarbage)
         {
             firstGarbageGot = true;
-            if (TutorialDialogueController.Instance != null)
-                TutorialDialogueController.Instance.PlayChapter("6_1");
-            if (TutorialProgressManager.Instance != null)
-                TutorialProgressManager.Instance.CompleteEvent("Get garbage");
+            TutorialDialogueController.Instance?.PlayChapter("6_1");
         }
-    }
+
+        /* 5. 背包滿 → 不再觸發任何事件或對話 */
+        // 留空
+    }    /* --------------- 對外 API --------------- */
 
     public bool AddItem(MenuItem newItem)
     {
         if (items.Count >= maxSlots)
         {
             Debug.Log("背包已滿，無法放入新道具");
-
-            /* 第一次滿 → 播對話 6_2 + 解鎖 Get garbage */
-            if (!hasPlayedFullOnce)
-            {
-                hasPlayedFullOnce = true;
-                if (TutorialDialogueController.Instance != null)
-                    TutorialDialogueController.Instance.PlayChapter("6_2");
-                if (TutorialProgressManager.Instance != null)
-                    TutorialProgressManager.Instance.CompleteEvent("Get garbage");
-            }
             return false;
         }
 
         items.Add(newItem);
         NotifyInventoryChanged();
         Debug.Log($"放入新道具：{newItem.name}");
+
         CheckFirstItems(newItem);
         return true;
     }
-    /* 拍照專用 */
+
     public void AddItemFromSprite(Sprite sprite, string itemName, string itemTag, BaseMinigame.DishGrade grade)
     {
         if (items.Count >= maxSlots)
         {
             Debug.Log("背包已滿，無法放入新拍照道具");
-
-            /* 第一次滿 → 播對話 6_2 + 解鎖 Get garbage */
-            if (!hasPlayedFullOnce)
-            {
-                hasPlayedFullOnce = true;
-                if (TutorialDialogueController.Instance != null)
-                    TutorialDialogueController.Instance.PlayChapter("6_2");
-                if (TutorialProgressManager.Instance != null)
-                    TutorialProgressManager.Instance.CompleteEvent("Get garbage");
-            }
             return;
         }
 
@@ -125,10 +110,9 @@ public class InventoryManager : MonoBehaviour
         NotifyInventoryChanged();
         Debug.Log("放入拍照道具：" + newItem.itemName);
 
-        CheckFirstItems(newItem);   // ✅ 檢查第一次
+        CheckFirstItems(newItem);
     }
 
-    /* 其他原有方法保持不動 */
     public void AddItemFromTexture(Texture2D texture, string itemName)
     {
         if (items.Count >= maxSlots) return;
@@ -145,7 +129,7 @@ public class InventoryManager : MonoBehaviour
         items.Add(newItem);
         NotifyInventoryChanged();
 
-        CheckFirstItems(newItem);   // ✅ 檢查第一次
+        CheckFirstItems(newItem);
     }
 
     public bool HasItemByTag(string tag) => items.Exists(item => item.itemTag == tag);

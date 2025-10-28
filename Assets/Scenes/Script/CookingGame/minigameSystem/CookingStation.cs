@@ -147,7 +147,7 @@ public class CookingStation : MonoBehaviour
 
     private int GetSupplyAmount()
     {
-        return UpgradeManager.Instance != null ? UpgradeManager.Instance.supplyAmount : 1;
+        return UpgradeManager.Instance != null ? UpgradeManager.Instance.supplyAmount : 3;
     }
 
     private void ClearSupplyUI()

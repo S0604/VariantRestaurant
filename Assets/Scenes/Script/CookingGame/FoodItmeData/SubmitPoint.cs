@@ -6,9 +6,12 @@ using UnityEngine.SceneManagement;
 
 public class SubmitPoint : MonoBehaviour
 {
+    [Header("互動設定")]
     public float interactRange = 3f;
     public CustomerQueueManager queueManager;
     public Transform playerTransform;
+
+    private Customer lastFirstCustomer = null; // 記錄上一位第一位顧客
 
     void OnEnable()
     {
@@ -50,11 +53,52 @@ public class SubmitPoint : MonoBehaviour
         if (playerTransform == null || queueManager == null || InventoryManager.Instance == null)
             return;
 
+        // 每幀檢查第一位顧客是否變更
+        CheckFirstCustomerForDialogue();
+
         float distance = Vector3.Distance(transform.position, playerTransform.position);
         if (distance <= interactRange && Input.GetKeyDown(KeyCode.E))
         {
             TrySubmitOrder();
         }
+    }
+
+    private void CheckFirstCustomerForDialogue()
+    {
+        var queue = queueManager.GetCurrentQueue();
+        if (queue.Count == 0)
+        {
+            lastFirstCustomer = null;
+            return;
+        }
+
+        Customer currentFirst = queue[0];
+        if (currentFirst != lastFirstCustomer)
+        {
+            lastFirstCustomer = currentFirst;
+
+            // 第一位顧客變更，檢查他的訂單
+            var order = currentFirst.GetComponent<CustomerOrder>();
+            if (order != null && order.IsOrderReady)
+            {
+                bool hasDrink003 = order.selectedItems.Any(item =>
+                    item.menuItem.itemName == "Drink" &&
+                    item.menuItem.itemTag == "003");
+
+                if (hasDrink003)
+                {
+                    Debug.Log("第一位顧客包含 Drink (003)，延遲 1 秒觸發對話 10");
+                    StartCoroutine(PlayDialogueDelayed(1f)); // 延遲 1 秒
+                }
+            }
+        }
+    }
+
+    // 延遲播放對話的 Coroutine
+    private IEnumerator PlayDialogueDelayed(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        TutorialDialogueController.Instance.PlayChapter("10");
     }
     void TrySubmitOrder()
     {
@@ -119,7 +163,7 @@ public class SubmitPoint : MonoBehaviour
         {
             Debug.Log("顧客訂單完成，顧客即將離開");
 
-            // ✅ 獎勵計算區
+            // ===== 獎勵計算 =====
             int baseReward = 10;
             int totalExp = 0;
             int totalPopularity = 0;
@@ -151,12 +195,12 @@ public class SubmitPoint : MonoBehaviour
 
             StartCoroutine(DelayCustomerLeave(firstCustomer));
         }
+    }
 
-        IEnumerator DelayCustomerLeave(Customer customer)
-        {
-            yield return new WaitForSeconds(0.5f);
-            customer.ReceiveOrder();
-            queueManager.LeaveQueue(customer);
-        }
+    IEnumerator DelayCustomerLeave(Customer customer)
+    {
+        yield return new WaitForSeconds(0.5f);
+        customer.ReceiveOrder();
+        queueManager.LeaveQueue(customer);
     }
 }

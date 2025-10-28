@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 using System.Collections;
+using System.Collections.Generic;
 
 public class TutorialDialogueController : MonoBehaviour
 {
-    public static TutorialDialogueController Instance;   // ➜ 新增單例
+    public static TutorialDialogueController Instance;
 
     private void Awake()
     {
@@ -19,10 +21,20 @@ public class TutorialDialogueController : MonoBehaviour
     public string chapter1Name = "Chapter1";
     public string chapter2Name = "Chapter2";
 
+    [System.Serializable]
+    public class ChapterEvent
+    {
+        public string chapterName;
+        public UnityEvent onChapterEnd;   // ✅ 對話結束後的事件（可在 Inspector 指派）
+    }
+
+    [Header("章節結束事件列表")]
+    public List<ChapterEvent> chapterEvents = new List<ChapterEvent>();
+
     private bool hasPlayedTutorial = false;
+
     void Start()
     {
-        // ✅ 檢查是否為第一次進入遊戲
         hasPlayedTutorial = PlayerPrefs.GetInt("HasPlayedTutorial", 0) == 1;
 
         if (!hasPlayedTutorial)
@@ -35,9 +47,6 @@ public class TutorialDialogueController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 教學流程：第一章播完 → 自動接第二章
-    /// </summary>
     IEnumerator StartTutorialSequence()
     {
         dialogueCanvas.gameObject.SetActive(true);
@@ -45,18 +54,14 @@ public class TutorialDialogueController : MonoBehaviour
         // ▶ 播放第一章
         yield return PlaySingleChapter(chapter1Name);
 
-        // ▶ 第一章結束後自動播放第二章
+        // ▶ 第一章結束後接第二章
         yield return PlaySingleChapter(chapter2Name);
 
-        // ✅ 教學完成
         dialogueCanvas.gameObject.SetActive(false);
         PlayerPrefs.SetInt("HasPlayedTutorial", 1);
         PlayerPrefs.Save();
     }
 
-    /// <summary>
-    /// 播放單一章節（外部或內部都可呼叫）
-    /// </summary>
     public IEnumerator PlaySingleChapter(string chapterName)
     {
         dialogueCanvas.gameObject.SetActive(true);
@@ -72,15 +77,27 @@ public class TutorialDialogueController : MonoBehaviour
         dialogueManager.dialogueData = data;
         yield return dialogueManager.StartCoroutine(dialogueManager.PlayDialogueCoroutine());
 
-        // 可選：播放結束後暫時關閉 Canvas（視情況而定）
         dialogueCanvas.gameObject.SetActive(false);
+
+        // ✅ 播放結束後觸發該章節的 onChapterEnd 事件
+        TriggerChapterEndEvent(chapterName);
     }
 
-    /// <summary>
-    /// 供外部呼叫播放任意章節（例如觸發第三章）
-    /// </summary>
     public void PlayChapter(string chapterName)
     {
         StartCoroutine(PlaySingleChapter(chapterName));
+    }
+
+    private void TriggerChapterEndEvent(string chapterName)
+    {
+        foreach (var chapterEvent in chapterEvents)
+        {
+            if (chapterEvent.chapterName == chapterName)
+            {
+                Debug.Log($"✅ 對話章節 {chapterName} 結束，觸發事件");
+                chapterEvent.onChapterEnd?.Invoke();
+                break;
+            }
+        }
     }
 }

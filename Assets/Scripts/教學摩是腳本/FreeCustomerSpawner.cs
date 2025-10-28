@@ -15,10 +15,8 @@ public class FreeCustomerSpawner : MonoBehaviour
             modeManager = FreeModeToggleManager.Instance;
     }
 
-    /// <summary>
-    /// 生成一位顧客（由外部手動呼叫）
-    /// </summary>
-    public void SpawnCustomer()
+    /// <summary>生成一位顧客（由外部呼叫）</summary>
+    public void SpawnCustomer(int index = -1)
     {
         if (modeManager == null || !modeManager.IsBusinessMode)
         {
@@ -32,18 +30,32 @@ public class FreeCustomerSpawner : MonoBehaviour
             return;
         }
 
-        // 隨機選擇生成點與顧客預置物
-        Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
-        GameObject prefab = customerPrefabs[Random.Range(0, customerPrefabs.Length)];
+        int prefabIndex = (index >= 0 && index < customerPrefabs.Length)
+            ? index
+            : Random.Range(0, customerPrefabs.Length);
+
+        int spawnIndex = Mathf.Min(index, spawnPoints.Length - 1);
+        Transform spawnPoint = spawnPoints[spawnIndex];
+        GameObject prefab = customerPrefabs[prefabIndex];
 
         GameObject newCustomer = Instantiate(prefab, spawnPoint.position, Quaternion.identity);
         Customer customerScript = newCustomer.GetComponent<Customer>();
 
         if (customerScript != null)
-        {
             customerScript.spawnPoint = spawnPoint;
-        }
 
-        Debug.Log($"✅ 已生成顧客：{newCustomer.name} 於 {spawnPoint.name}");
+        Debug.Log($"✅ 已生成顧客（序號 {index}）：{newCustomer.name} 於 {spawnPoint.name}");
+    }
+
+    /// <summary>依序生成多名顧客</summary>
+    public void SpawnCustomersInOrder(int count)
+    {
+        if (count > spawnPoints.Length)
+            count = spawnPoints.Length;
+
+        for (int i = 0; i < count; i++)
+        {
+            SpawnCustomer(i);
+        }
     }
 }

@@ -22,7 +22,14 @@ public class CustomerQueueManager : MonoBehaviour
     public bool AssignCustomerToSlot(Customer customer, int idx)
     {
         if (idx < 0 || idx >= queueSlots.Length || queueSlots[idx] != null) return false;
-        queueSlots[idx] = customer; UpdateQueuePositions(); return true;
+
+        queueSlots[idx] = customer;
+        UpdateQueuePositions();
+
+        // 播放對話 "9"
+        if (GetCurrentQueue().Count == 1 && TutorialDialogueController.Instance != null)
+            TutorialDialogueController.Instance.PlayChapter("9");
+        return true;
     }
     public void LeaveQueue(Customer customer)
     {
