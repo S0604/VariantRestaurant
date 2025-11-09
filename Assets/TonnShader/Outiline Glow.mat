@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Toon TableR
-  m_Shader: {fileID: -6465566751694194690, guid: 851d20c48a4872c458aee77e2c93b3f3, type: 3}
+  m_Name: Outiline Glow
+  m_Shader: {fileID: -6465566751694194690, guid: 4eadfbddba3656741a6b1c62765c5340, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -64,10 +64,6 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _Texture2D:
-        m_Texture: {fileID: 2800000, guid: 59fa8dce11d970549999b58f0fd5182a, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -102,8 +98,6 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Shading1: 0.01
-    - _Shading2: 0.4
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -111,16 +105,15 @@ Material:
     - _Surface: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
+    - _scale: 0.05
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _LightDir: {r: -1.38, g: 2.5, b: 1, a: 0}
-    - _ShadowColor1: {r: 0.6415094, g: 0.57897234, b: 0.57897234, a: 1}
-    - _ShadowColor2: {r: 0.735849, g: 0.6743306, b: 0.6085795, a: 1}
+    - _OutlineColor: {r: 3.07662, g: 3.8836024, b: 0.033624265, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
---- !u!114 &7997468534198662538
+--- !u!114 &8217163153856876175
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
