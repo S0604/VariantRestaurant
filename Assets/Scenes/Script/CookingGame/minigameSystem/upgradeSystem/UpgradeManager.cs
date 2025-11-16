@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class UpgradeManager : MonoBehaviour
 {
     public static UpgradeManager Instance;
+    public event Action<UpgradeType, int> OnLevelChanged;
 
     [Header("升級清單（在 Inspector 指定）")]
     public List<UpgradeDefinition> upgradeDefs = new();
@@ -95,5 +97,7 @@ public class UpgradeManager : MonoBehaviour
 
         if (def.type == UpgradeType.SupplyPickupAmount)
             supplyAmount = Mathf.Max(1, Mathf.RoundToInt(def.Evaluate(lv)));
+
+        OnLevelChanged?.Invoke(def.type, lv);
     }
 }
