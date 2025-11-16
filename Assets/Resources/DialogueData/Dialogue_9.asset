@@ -27,8 +27,8 @@ MonoBehaviour:
     dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
   - characterName: "\u7D05\u54B2"
     isLeftSide: 1
-    text: "\u53EA\u8981\u4F60\u7684\u9910\u76E4\u4E2D\u6709\u8207\u7B2C\u4E00\u4F4D\u9867\u5BA2\u8A02\u55AE\u76F8\u540C\u7684\u6599\u7406\uFF0C\\n\u5728\u6536\u9280\u6AAF\u524D\u6309\u4E0B\"
-      E \"\\n\u5C31\u80FD\u5C07\u8A72\u6599\u7406\u7D66\u4E88\u9019\u4F4D\u9867\u5BA2"
+    text: "\u53EA\u8981\u4F60\u7684\u9910\u76E4\u4E2D\u6709\u8207\u7B2C\u4E00\u4F4D\u9867\u5BA2\u8A02\u55AE\u76F8\u540C\u7684\u6599\u7406\uFF0C\u5728\u6536\u9280\u6AAF\u524D\u6309\u4E0B\"
+      E \"\u5C31\u80FD\u5C07\u8A72\u6599\u7406\u7D66\u4E88\u9019\u4F4D\u9867\u5BA2"
     portrait: {fileID: 21300000, guid: b398f0d8e787ec7438089abdd112ad4a, type: 3}
     voiceClip: {fileID: 0}
     dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}

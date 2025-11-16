@@ -19,24 +19,27 @@ public class CustomerQueueManager : MonoBehaviour
 
     #region 進出隊列
     public int FindFirstAvailableSlot() => System.Array.FindIndex(queueSlots, s => s == null);
+
     public bool AssignCustomerToSlot(Customer customer, int idx)
     {
         if (idx < 0 || idx >= queueSlots.Length || queueSlots[idx] != null) return false;
 
         queueSlots[idx] = customer;
         UpdateQueuePositions();
-
-        // 播放對話 "9"
-        if (GetCurrentQueue().Count == 1 && TutorialDialogueController.Instance != null)
-            TutorialDialogueController.Instance.PlayChapter("9");
         return true;
     }
+
     public void LeaveQueue(Customer customer)
     {
         for (int i = 0; i < queueSlots.Length; i++)
         {
             if (queueSlots[i] == customer)
-            { queueSlots[i] = null; ShiftQueueForward(); UpdateQueuePositions(); break; }
+            {
+                queueSlots[i] = null;
+                ShiftQueueForward();
+                UpdateQueuePositions();
+                break;
+            }
         }
     }
     #endregion
@@ -47,6 +50,7 @@ public class CustomerQueueManager : MonoBehaviour
         for (int i = 0; i < queueSlots.Length - 1; i++)
             if (queueSlots[i] == null) { queueSlots[i] = queueSlots[i + 1]; queueSlots[i + 1] = null; }
     }
+
     void UpdateQueuePositions()
     {
         for (int i = 0; i < queueSlots.Length; i++)
@@ -56,12 +60,14 @@ public class CustomerQueueManager : MonoBehaviour
                 queueSlots[i].SetQueuePosition(pos, dir);
             }
     }
+
     void GetPosDir(int index, out Vector3 pos, out Vector3 dir)
     {
         float dist = index * queueSpacing;
         for (int i = 0; i < queuePathPoints.Count - 1; i++)
         {
-            var a = queuePathPoints[i].position; var b = queuePathPoints[i + 1].position;
+            var a = queuePathPoints[i].position;
+            var b = queuePathPoints[i + 1].position;
             float seg = Vector3.Distance(a, b);
             if (dist <= seg)
             { dir = (a - b).normalized; pos = a + (b - a).normalized * dist; return; }
@@ -79,20 +85,24 @@ public class CustomerQueueManager : MonoBehaviour
         foreach (var c in queueSlots) if (c != null) list.Add(c);
         return list;
     }
+
     public bool IsInQueue(Customer c) => System.Array.Exists(queueSlots, s => s == c);
     public int GetCustomerPosition(Customer c) => GetCurrentQueue().IndexOf(c);
 
+    // 關店時移除隊伍中超過前4位的顧客
     public void ForceRemoveCustomersAt15F()
     {
         var q = GetCurrentQueue();
-        for (int i = 4; i < q.Count; i++) q[i].LeaveAndDespawn();
+        for (int i = 4; i < q.Count; i++) q[i].ForceLeaveAndDespawn();
 
         foreach (var c in ModeToggleManager.Instance.GetAliveCustomers())
-            if (!IsInQueue(c)) c.LeaveAndDespawn();
+            if (!IsInQueue(c)) c.ForceLeaveAndDespawn();
     }
+
+    // 關店時清空所有顧客
     public void ForceRemoveAllCustomers()
     {
-        foreach (var c in ModeToggleManager.Instance.GetAliveCustomers()) c.LeaveAndDespawn();
+        foreach (var c in ModeToggleManager.Instance.GetAliveCustomers()) c.ForceLeaveAndDespawn();
     }
     #endregion
 }

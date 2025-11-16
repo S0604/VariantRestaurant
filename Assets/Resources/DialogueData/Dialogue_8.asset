@@ -27,7 +27,7 @@ MonoBehaviour:
     dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
   - characterName: "\u7D05\u54B2"
     isLeftSide: 1
-    text: "\u6211\u525B\u525B\u5F9E\u5916\u9762\u8ACB\u4F86\u4E00\u4E9B\u8DEF\u4EBA\\n\u4F5C\u70BA\u6211\u5011\u7DF4\u7FD2\u7684\u5C0D\u8C61"
+    text: "\u6211\u525B\u525B\u5F9E\u5916\u9762\u8ACB\u4F86\u4E00\u4E9B\u8DEF\u4EBA\u4F5C\u70BA\u6211\u5011\u7DF4\u7FD2\u7684\u5C0D\u8C61"
     portrait: {fileID: 21300000, guid: b398f0d8e787ec7438089abdd112ad4a, type: 3}
     voiceClip: {fileID: 0}
     dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}

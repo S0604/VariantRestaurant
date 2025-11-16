@@ -79,21 +79,26 @@ public class DialogueManager : MonoBehaviour
     IEnumerator TypeText(string text, bool isLeft)
     {
         isTyping = true;
-        text = text.Replace("\\n", "\n");
 
+        // 1. 先清空兩邊文字（避免殘影）
+        leftDialogueText.text = "";
+        rightDialogueText.text = "";
+
+        // 2. 選擇當前活躍的文字框
         TMP_Text activeText = isLeft ? leftDialogueText : rightDialogueText;
-        activeText.text = "";
+        activeText.gameObject.SetActive(true);
+        (isLeft ? rightDialogueText : leftDialogueText).gameObject.SetActive(false);
 
+        // 3. 逐字顯示
+        text = text.Replace("\\n", "\n");
         foreach (char c in text)
         {
             activeText.text += c;
-            yield return new WaitForSecondsRealtime(0.02f); // ← 關鍵：不受 timeScale 影響
+            yield return new WaitForSecondsRealtime(0.02f);
         }
 
         isTyping = false;
-    }
-
-    /* ---------- UI 更新 ---------- */
+    }    /* ---------- UI 更新 ---------- */
     void UpdateUI(DialogueLine line)
     {
         // 立繪

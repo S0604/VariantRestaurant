@@ -31,7 +31,7 @@ public class Fridge : MonoBehaviour
             {
                 hasPlayedNotEmptyOnce = true;
                 if (TutorialDialogueController.Instance != null)
-                    TutorialDialogueController.Instance.PlayChapter("14-2");
+                    TutorialDialogueController.Instance.PlayChapter("14_2");
                 Debug.Log("背包非空，播 14-2");
             }
             return;                   // 不發放補給
@@ -42,14 +42,16 @@ public class Fridge : MonoBehaviour
         InventoryManager.Instance.ClearInventory();   // 確保只拿這份
         InventoryManager.Instance.AddItem(itemInstance);
 
-        /* 第一次領補給 → 只播 14-1*/
         if (!hasReceivedSupplyOnce)
         {
             hasReceivedSupplyOnce = true;
             if (TutorialDialogueController.Instance != null)
-                TutorialDialogueController.Instance.PlayChapter("14-1");
+                TutorialDialogueController.Instance.PlayChapter("14_1");
+
             Debug.Log("第一次領補給，播 14-1");
         }
+
+        /* 第一次領補給 → 只播 14-1*/
 
         SpawnSupplyIcon(itemInstance);
     }

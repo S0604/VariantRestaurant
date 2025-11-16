@@ -1,144 +1,123 @@
 ﻿using UnityEngine;
-using DG.Tweening;
+using System.Collections;
+using System.Linq;
+using UnityEngine.UI;
 
 public class CustomerPatience : MonoBehaviour
 {
-    [Header("耐心設定")]
-    public float maxPatience = 9f;       // 最大耐心
-    public float currentPatience = 9f;        // 當前耐心，隨時間減少
+    [Header("最大上限")] public float maxPatience = 9f;
+    [Header("當前初始值")] public float currentPatience = 9f;
+    [Header("每秒遞減量")] public float decreasePerSec = 1f;
 
-    [Header("UI設定")]
+    [Header("UI 設定")]
     public GameObject patienceUIPrefab;
     public Transform uiAnchor;
-    public float heartScale = 0.06f;
 
-    private GameObject uiInstance;
-    private Transform[] hearts;           // 三顆紅心
-    private int currentHeartIndex = 0;
-
+    /* 狀態 */
     private bool isRunning = false;
+    private Coroutine decreaseCoroutine;
 
+    /* UI */
+    private GameObject uiInstance;
+    private Transform[] redHearts;      // 3 顆紅心
+
+    /* ---------- 生命週期 ---------- */
+    void Start()
+    {
+        // 確保不超過最大上限，也不低於 0
+        currentPatience = Mathf.Clamp(currentPatience, 0f, maxPatience);
+    }
+
+    /* ---------- 對外介面 ---------- */
+    /** 開始掉血（受 Time.timeScale 影響） */
     public void StartPatience()
     {
-        currentPatience = maxPatience;
+        if (isRunning) return;
         isRunning = true;
-        UpdateHearts();
+        SpawnUI();
+        decreaseCoroutine = StartCoroutine(DecreaseOverTime());
     }
 
-    void Update()
-    {
-        if (!isRunning) return;
-
-        // 耐心隨時間減少
-        currentPatience -= Time.deltaTime;
-        currentPatience = Mathf.Max(currentPatience, 0);
-
-        UpdateHearts();
-
-        if (currentPatience <= 0)
-        {
-            isRunning = false;
-            OutOfPatience();
-        }
-    }
-
-    private void InitializeUI()
-    {
-        if (uiInstance != null) Destroy(uiInstance);
-
-        if (patienceUIPrefab != null && uiAnchor != null)
-        {
-            uiInstance = Instantiate(patienceUIPrefab, uiAnchor);
-            uiInstance.transform.localScale = Vector3.one * heartScale;
-
-            hearts = uiInstance.GetComponentsInChildren<Transform>();
-            hearts = System.Array.FindAll(hearts, t => t.name.Contains("紅心"));
-            System.Array.Sort(hearts, (a, b) => a.GetSiblingIndex() - b.GetSiblingIndex());
-
-            // 初始全部紅心都可見
-            foreach (var heart in hearts)
-            {
-                heart.localScale = Vector3.one;
-            }
-        }
-        else
-        {
-            Debug.LogWarning("CustomerPatience: 未設定 UI Prefab 或 Anchor");
-        }
-    }
-
+    /** 暫停掉血（對話期用） */
     public void StopPatience()
     {
         isRunning = false;
+        if (decreaseCoroutine != null)
+            StopCoroutine(decreaseCoroutine);
+        CloseUI();
+    }
 
-        if (uiInstance != null)
+    /** 立即增減耐心（不超上限） */
+    public void AddPatience(float amount)
+    {
+        currentPatience = Mathf.Clamp(currentPatience + amount, 0f, maxPatience);
+        UpdateHearts();
+    }
+
+    /** 立即扣血（不超下限） */
+    public void ReducePatience(float amount)
+    {
+        currentPatience = Mathf.Clamp(currentPatience - amount, 0f, maxPatience);
+        if (currentPatience <= 0f) HandleOutOfPatience();
+        else UpdateHearts();
+    }
+
+    /* ---------- 內部實作 ---------- */
+    private IEnumerator DecreaseOverTime()
+    {
+        while (currentPatience > 0f)
         {
-            uiInstance.transform.DOScale(Vector3.zero, 0.3f).SetEase(Ease.InBack)
-                .OnComplete(() =>
-                {
-                    Destroy(uiInstance);
-                    uiInstance = null;
-                });
+            yield return new WaitForSeconds(1f);   // 受 Time.timeScale 影響
+            currentPatience -= decreasePerSec;
+            UpdateHearts();
         }
+        HandleOutOfPatience();
     }
 
     private void UpdateHearts()
     {
-        if (hearts == null || hearts.Length != 3) return;
+        // 🔒 空值保護
+        if (redHearts == null || redHearts.Length == 0) return;
+        for (int i = 0; i < 3; i++)
+            if (redHearts[i] == null) return;
 
-        float ratio = currentPatience / maxPatience;   // 0 ~ 1
-        int heartZone = Mathf.FloorToInt((1 - ratio) * 3f); // 0,1,2
-
-        // 保證索引不超過
-        heartZone = Mathf.Clamp(heartZone, 0, 2);
-
-        // 更新每顆心的縮放
-        for (int i = 0; i < hearts.Length; i++)
+        float oneThird = maxPatience / 3f;
+        for (int i = 0; i < 3; i++)
         {
-            if (i < heartZone)
-            {
-                // 已經消耗完的心，縮到0
-                hearts[i].localScale = Vector3.zero;
-            }
-            else if (i == heartZone)
-            {
-                // 當前區間心，隨耐心值比例縮小
-                float zoneStart = 1f - (i + 1) / 3f;
-                float zoneEnd = 1f - i / 3f;
-                float zoneRatio = Mathf.InverseLerp(zoneStart, zoneEnd, ratio);
-                hearts[i].localScale = Vector3.one * zoneRatio;
-            }
-            else
-            {
-                // 未到的心，保持滿心
-                hearts[i].localScale = Vector3.one;
-            }
+            float lower = i * oneThird;
+            float upper = (i + 1) * oneThird;
+
+            float scale = 0f;
+            if (currentPatience >= upper) scale = 1f;
+            else if (currentPatience > lower) scale = (currentPatience - lower) / oneThird;
+
+            redHearts[i].localScale = Vector3.one * scale;
         }
     }
-
-    private void OutOfPatience()
+    private void HandleOutOfPatience()
     {
+        isRunning = false;
         Debug.Log($"{gameObject.name} 耐心耗盡！");
-        if (uiInstance != null)
-        {
-            uiInstance.transform.DOScale(Vector3.zero, 0.3f).SetEase(Ease.InBack)
-                .OnComplete(() =>
-                {
-                    Destroy(uiInstance);
-                    uiInstance = null;
-                    GetComponent<Customer>()?.LeaveAndDespawn();
-                });
-        }
-        else
-        {
-            GetComponent<Customer>()?.LeaveAndDespawn();
-        }
+        CloseUI();
+        GetComponent<Customer>()?.LeaveAndDespawn();
     }
 
-    // 可以額外增加耐心
-    public void AddExtraPatience(float seconds)
+    private void SpawnUI()
     {
-        currentPatience = Mathf.Min(currentPatience + seconds, maxPatience);
+        if (patienceUIPrefab == null || uiAnchor == null) return;
+        uiInstance = Instantiate(patienceUIPrefab, uiAnchor);
+        redHearts = uiInstance.GetComponentsInChildren<Transform>()
+                              .Where(t => t.name.Contains("紅心"))
+                              .OrderBy(t => t.GetSiblingIndex())
+                              .Take(3)
+                              .ToArray();
         UpdateHearts();
+    }
+
+    private void CloseUI()
+    {
+        if (uiInstance == null) return;
+        Destroy(uiInstance);
+        uiInstance = null;
     }
 }

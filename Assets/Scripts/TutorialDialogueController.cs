@@ -77,12 +77,12 @@ public class TutorialDialogueController : MonoBehaviour
         dialogueManager.dialogueData = data;
         yield return dialogueManager.StartCoroutine(dialogueManager.PlayDialogueCoroutine());
 
+        /* 等 UI 完全關閉後才觸發事件 */
         dialogueCanvas.gameObject.SetActive(false);
 
-        // ✅ 播放結束後觸發該章節的 onChapterEnd 事件
+        // ✅ 對話「完全結束」才觸發事件（世界已解凍、UI 已關）
         TriggerChapterEndEvent(chapterName);
     }
-
     public void PlayChapter(string chapterName)
     {
         StartCoroutine(PlaySingleChapter(chapterName));

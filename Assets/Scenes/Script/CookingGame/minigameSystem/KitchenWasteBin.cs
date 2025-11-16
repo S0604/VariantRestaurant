@@ -27,13 +27,6 @@ public class KitchenWasteBin : MonoBehaviour
             InventoryManager.Instance.ClearInventory();
             ClearSupplyUI();
 
-            /* 第一次清空 → 播 6_3（只一次） */
-            if (!hasClearedOnce)
-            {
-                hasClearedOnce = true;
-                if (TutorialDialogueController.Instance != null)
-                    TutorialDialogueController.Instance.PlayChapter("6_3");
-            }
 
             Debug.Log("廚餘桶已清空玩家背包與補給 UI！");
         }

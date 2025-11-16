@@ -63,13 +63,25 @@ public class CardClickEffectUI : MonoBehaviour, IPointerClickHandler
             Quaternion.identity,
             moveDuration));
 
-        // 👉 這裡觸發主動技
+        // 👉 觸發主動技
         var card = GetComponent<CardHoverEffect>();
         if (card != null && card.activeSkill != null)
         {
-            // 假設有 Player
             GameObject player = GameObject.FindWithTag("Player");
             card.activeSkill.Activate(player);
+        }
+
+        // 🗨️ 播放教學對話（這裡改成你想播的章節名）
+        TutorialDialogueController tutorial = FindObjectOfType<TutorialDialogueController>();
+        if (tutorial != null)
+        {
+            //
+            TutorialDialogueController.Instance.PlayChapter("12");
+            Debug.Log("🎬 已呼叫播放 12 對話");
+        }
+        else
+        {
+            Debug.LogWarning("❌ 找不到 TutorialDialogueController，無法播放對話。");
         }
 
         // 停留一段時間

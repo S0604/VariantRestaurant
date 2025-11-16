@@ -10,12 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 60d17c80e6061324697c7fc576fb47fb, type: 3}
-  m_Name: Dialogue_14-2
+  m_Name: Dialogue_14_1
   m_EditorClassIdentifier: 
   lines:
   - characterName: "\u7D05\u54B2"
     isLeftSide: 1
-    text: "\u6CE8\u610F! \u88DC\u7D66\u662F\u5927\u4EF6\u7269\u54C1\u9910\u76E4\u5FC5\u9808\u6DE8\u7A7A\u624D\u80FD\u7372\u53D6"
-    portrait: {fileID: 21300000, guid: b61592ca625ed8444b494723b2715971, type: 3}
+    text: "\u62FF\u5230\u88DC\u7D66\u5F8C\u5230\u9700\u8981\u7684\u70F9\u98EA\u53F0\u524D\u6309\"
+      E \"\u4E92\u52D5\uFF0C\\n\u5C31\u80FD\u6D88\u8017\u88DC\u7D66\u56DE\u5FA9\u80FD\u91CF"
+    portrait: {fileID: 21300000, guid: b398f0d8e787ec7438089abdd112ad4a, type: 3}
     voiceClip: {fileID: 0}
     dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}

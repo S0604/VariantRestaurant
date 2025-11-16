@@ -87,5 +87,9 @@ PrefabInstance:
       propertyPath: selectedItems.Array.data[1].menuItem
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 7873407814884844372, guid: 2805ece970b95d346bc774be1d6bbdb7, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 9
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2805ece970b95d346bc774be1d6bbdb7, type: 3}
