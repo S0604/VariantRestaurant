@@ -14,6 +14,6 @@ public class PreloadScene : MonoBehaviour
 
     void Start()
     {
-        StartCoroutine(Preload("GameScene"));
+        StartCoroutine(Preload("GameScene 1"));
     }
 }
