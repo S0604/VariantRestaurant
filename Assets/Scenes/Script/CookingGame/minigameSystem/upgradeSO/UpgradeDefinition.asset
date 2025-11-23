@@ -10,11 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 835241feeeda50b46922eef7076ef95e, type: 3}
-  m_Name: MaxEnergy
+  m_Name: UpgradeDefinition
   m_EditorClassIdentifier: 
-  type: 1
+  type: 0
   upgradeId: supply_pickup_amount
   maxLevel: 10
-  baseValue: 5
-  perLevelAdd: 2
+  baseValue: 1
+  perLevelAdd: 0
   perLevelMul: 0
+  displayName: 
+  description: 
+  valueUnit: 
+  baseCost: 100
+  costPerLevelAdd: 100
+  costPerLevelMul: 1

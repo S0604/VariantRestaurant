@@ -13,8 +13,8 @@ public class UpgradeDefinition : ScriptableObject
     public float perLevelMul = 0f;   // 每級 ×x（0 表示不用）
 
     [Header("Display")]
-    public string displayName = "Supply Pickup Amount";
-    [TextArea] public string description = "提升每次補給可補充的數量。";
+    public string displayName = "";
+    [TextArea] public string description = "";
     public string valueUnit = "";  // 例如 " pts"、"x"、" sec"...
 
     [Header("Cost")]
