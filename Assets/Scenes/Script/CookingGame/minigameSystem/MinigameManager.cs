@@ -9,6 +9,7 @@ public class MinigameManager : MonoBehaviour
     [Header("小遊戲登記表")]
     public List<MinigameEntry> minigames = new List<MinigameEntry>();
     public Transform minigameContainer;
+
     [Header("玩家引用")]
     public Player player;
 
@@ -40,7 +41,10 @@ public class MinigameManager : MonoBehaviour
         if (currentMinigame != null || isSpawning) return;
 
         if (InventoryManager.Instance != null && InventoryManager.Instance.GetItemCount() >= 2)
-        { Debug.LogWarning("背包已滿（≥2），無法開始小遊戲"); return; }
+        {
+            Debug.LogWarning("背包已滿（≥2），無法開始小遊戲");
+            return;
+        }
 
         if (!hasSpawnedGame5Dialogue)
         {
@@ -54,10 +58,12 @@ public class MinigameManager : MonoBehaviour
         ProceedToStartMinigame(type, onComplete);
     }
 
-    /* 生成 → 立即凍結+對話 → 解凍後才跑回呼 */
+    /* =====================================================
+       第一次特殊流程： 生成 → 對話（凍結遊戲但不凍結對話）→ 開始小遊戲
+       ===================================================== */
     private IEnumerator SpawnThenDialogue(string type, System.Action<bool, int> onComplete)
     {
-        yield return null; // 等一帧，確保外部 isSpawning 生效
+        yield return null; // 確保 isSpawning 生效
 
         var entry = minigames.Find(m => m.minigameType == type);
         if (entry == null) { isSpawning = false; yield break; }
@@ -65,19 +71,27 @@ public class MinigameManager : MonoBehaviour
         GameObject prefab = Resources.Load<GameObject>(entry.resourcePath);
         if (prefab == null) { isSpawning = false; yield break; }
 
-        /* 1️⃣ 瞬間生成到場景 */
+        /* 1️⃣ 生成 */
         GameObject instance = Instantiate(prefab, minigameContainer);
         currentMinigame = instance.GetComponent<BaseMinigame>();
         if (currentMinigame == null)
-        { Destroy(instance); isSpawning = false; yield break; }
+        {
+            Destroy(instance);
+            isSpawning = false;
+            yield break;
+        }
 
-        /* 2️⃣ 生成後「下一行」立即凍結+對話 */
+        /* 2️⃣ 凍結世界，但 UI+對話不凍結 */
         Time.timeScale = 0f;
+
+        /* 🔥 改為 realtime，不會因為 TimeScale=0 而卡死 */
         if (TutorialDialogueController.Instance != null)
             yield return TutorialDialogueController.Instance.PlaySingleChapter("5");
+
+        /* 3️⃣ 恢復世界 */
         Time.timeScale = 1f;
 
-        /* 3️⃣ 註冊結束回呼 */
+        /* 4️⃣ 啟動小遊戲（正常時間流動） */
         currentMinigame.StartMinigame((success, rank) =>
         {
             onComplete?.Invoke(success, rank);
@@ -88,7 +102,10 @@ public class MinigameManager : MonoBehaviour
         isSpawning = false;
     }
 
-    /* 非第一次的生成 */
+
+    /* =====================================================
+       非第一次的小遊戲啟動（不需要對話）
+       ===================================================== */
     private void ProceedToStartMinigame(string type, System.Action<bool, int> onComplete)
     {
         var entry = minigames.Find(m => m.minigameType == type);
@@ -100,7 +117,11 @@ public class MinigameManager : MonoBehaviour
         GameObject instance = Instantiate(prefab, minigameContainer);
         currentMinigame = instance.GetComponent<BaseMinigame>();
         if (currentMinigame == null)
-        { Destroy(instance); isSpawning = false; return; }
+        {
+            Destroy(instance);
+            isSpawning = false;
+            return;
+        }
 
         currentMinigame.StartMinigame((success, rank) =>
         {
@@ -112,10 +133,19 @@ public class MinigameManager : MonoBehaviour
         isSpawning = false;
     }
 
-    /* 延遲銷毀 */
+    /* =====================================================
+       延遲銷毀（改用 unscaled）
+       ===================================================== */
     private IEnumerator DestroyAfterDelay(GameObject obj, float delay)
     {
-        yield return new WaitForSeconds(delay);
-        if (obj != null) Destroy(obj);
+        float t = 0;
+        while (t < delay)
+        {
+            t += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        if (obj != null)
+            Destroy(obj);
     }
 }

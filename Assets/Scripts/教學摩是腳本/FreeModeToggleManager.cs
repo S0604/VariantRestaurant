@@ -8,6 +8,10 @@ public class FreeModeToggleManager : MonoBehaviour
 {
     public static FreeModeToggleManager Instance;
 
+    [Header("教學模式設定")]
+    [SerializeField] private bool tutorialModeActive = false;  // 教學模式是否開啟
+    public bool TutorialModeActive => tutorialModeActive;
+
     [Header("營業設定")]
     public float businessDuration = 180f;
     public float closingBufferTime = 10f;
@@ -81,15 +85,22 @@ public class FreeModeToggleManager : MonoBehaviour
             ForceRemoveAllCustomers();
         }
     }
-
     #region 營業模式切換
 
     public void ToggleMode()
     {
         if (isBusinessMode) return;
-        StartCoroutine(PlayTransition(EnterBusinessMode));
-    }
 
+        if (tutorialModeActive)
+        {
+            // 教學模式中不直接進入自由營業，先啟動教學
+            EnableTutorialMode();
+        }
+        else
+        {
+            StartCoroutine(PlayTransition(EnterBusinessMode));
+        }
+    }
     private void EnterBusinessMode()
     {
         isBusinessMode = true;
@@ -265,6 +276,29 @@ public class FreeModeToggleManager : MonoBehaviour
             yield return null;
         }
         onComplete?.Invoke();
+    }
+    /// <summary>
+    /// 開啟教學模式
+    /// </summary>
+    public void EnableTutorialMode()
+    {
+        tutorialModeActive = true;
+        allowTimeFlow = false; // 教學模式下暫停遊戲時間
+        Debug.Log("🎓 教學模式已啟用");
+
+        // 可選：啟動第一個教學章節
+        if (TutorialDialogueController.Instance != null)
+            StartCoroutine(TutorialDialogueController.Instance.PlaySingleChapter("1"));
+    }
+
+    /// <summary>
+    /// 關閉教學模式
+    /// </summary>
+    public void DisableTutorialMode()
+    {
+        tutorialModeActive = false;
+        allowTimeFlow = true; // 回到自由營業模式時間流動
+        Debug.Log("🎓 教學模式已關閉，恢復自由營業計時");
     }
 
     #endregion
