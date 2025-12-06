@@ -1,5 +1,13 @@
 using UnityEngine;
 
+public enum UpgradeCategory
+{
+    Supply,          // 補給相關
+    WorkStation,       // 工作站/能量
+    Economy,         // 經濟/被動收益
+    Other
+}
+
 [CreateAssetMenu(fileName = "UpgradeDefinition", menuName = "Game/Upgrade Definition")]
 public class UpgradeDefinition : ScriptableObject
 {
@@ -16,6 +24,9 @@ public class UpgradeDefinition : ScriptableObject
     public string displayName = "";
     [TextArea] public string description = "";
     public string valueUnit = "";  // 例如 " pts"、"x"、" sec"...
+
+    // UpgradeDefinition.cs 內加一行欄位（靠近 displayName/description）
+    public UpgradeCategory category = UpgradeCategory.Other;
 
     [Header("Cost")]
     public int baseCost = 100;

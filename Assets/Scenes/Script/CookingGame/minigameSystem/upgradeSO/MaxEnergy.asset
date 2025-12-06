@@ -21,6 +21,7 @@ MonoBehaviour:
   displayName: Energy Amount
   description: "\u63D0\u5347\u5DE5\u4F5C\u53F0\u6700\u5927\u80FD\u91CF\u3002"
   valueUnit: 
+  category: 1
   baseCost: 100
-  costPerLevelAdd: 100
+  costPerLevelAdd: 150
   costPerLevelMul: 1.5
