@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MaxEnergy
   m_EditorClassIdentifier: 
   type: 1
-  upgradeId: supply_pickup_amount
+  upgradeId: Energy_amount
   maxLevel: 10
   baseValue: 5
   perLevelAdd: 2

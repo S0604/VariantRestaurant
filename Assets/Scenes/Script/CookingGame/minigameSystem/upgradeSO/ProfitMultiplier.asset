@@ -10,17 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 835241feeeda50b46922eef7076ef95e, type: 3}
-  m_Name: UpgradeDefinition
+  m_Name: ProfitMultiplier
   m_EditorClassIdentifier: 
-  type: 0
-  upgradeId: supply_pickup_amount
+  type: 2
+  upgradeId: Profit_amount
   maxLevel: 10
   baseValue: 1
-  perLevelAdd: 0
-  perLevelMul: 0
-  displayName: 
-  description: 
+  perLevelAdd: 0.1
+  perLevelMul: 1.05
+  displayName: Profit multiplier
+  description: "\u589E\u52A0\u6BCF\u6B21\u9001\u9910\u6642\u7684\u6536\u76CA"
   valueUnit: 
+  category: 2
   baseCost: 100
   costPerLevelAdd: 100
-  costPerLevelMul: 1
+  costPerLevelMul: 1.5

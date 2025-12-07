@@ -1,5 +1,6 @@
 public enum UpgradeType
 {
     SupplyPickupAmount,
-    WorkbenchMaxEnergy
+    WorkbenchMaxEnergy,
+    ProfitMultiplier
 }

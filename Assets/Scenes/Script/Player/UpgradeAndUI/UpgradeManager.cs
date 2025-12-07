@@ -12,7 +12,7 @@ public class UpgradeManager : MonoBehaviour
 
     // 相容欄位（保留舊系統可用）
     [Header("相容欄位")]
-    public int supplyAmount = 3;
+    public int supplyAmount = 3;                 // 取得補給數量（舊系統用）
 
     private readonly Dictionary<string, int> _levels = new();
 
@@ -21,6 +21,7 @@ public class UpgradeManager : MonoBehaviour
         if (Instance && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
 
+        // 載入每個升級的等級
         foreach (var def in upgradeDefs)
         {
             if (!def) continue;
@@ -28,9 +29,8 @@ public class UpgradeManager : MonoBehaviour
             _levels[def.upgradeId] = Mathf.Clamp(lv, 0, def.maxLevel);
         }
 
-        var supplyDef = GetDef(UpgradeType.SupplyPickupAmount);
-        if (supplyDef)
-            supplyAmount = Mathf.Max(1, Mathf.RoundToInt(supplyDef.Evaluate(GetLevel(supplyDef.upgradeId))));
+        // 統一重算一次所有生效數值
+        ReapplyRuntimeEffects();
     }
 
     // === 舊 API：保留相容 ===
@@ -53,9 +53,6 @@ public class UpgradeManager : MonoBehaviour
 
         int lv = GetLevel(def.upgradeId) + amount;
         SetLevel(def.upgradeId, lv);
-
-        supplyAmount = Mathf.Max(1, Mathf.RoundToInt(def.Evaluate(GetLevel(def.upgradeId))));
-        Debug.Log($"補給量更新：{supplyAmount}（Lv.{GetLevel(def.upgradeId)}）");
     }
 
     // === 新查值 API（推薦使用）===
@@ -78,6 +75,29 @@ public class UpgradeManager : MonoBehaviour
         if (def) SetLevel(def.upgradeId, level);
     }
 
+    // === 重置 API（做法1，無退款）===
+    public void ResetUpgrade(UpgradeType type)
+    {
+        var def = GetDef(type);
+        if (!def) return;
+        SetLevel(def.upgradeId, 0);
+    }
+
+    public void ResetAllUpgrades()
+    {
+        foreach (var def in upgradeDefs)
+        {
+            if (!def) continue;
+            _levels[def.upgradeId] = 0;
+            PlayerPrefs.SetInt($"UPG_{def.upgradeId}", 0);
+            OnLevelChanged?.Invoke(def.type, 0);
+        }
+        ReapplyRuntimeEffects();
+    }
+
+    [ContextMenu("Reset All Upgrades")]
+    private void _Context_ResetAll() => ResetAllUpgrades();
+
     // --- 私有工具 ---
     private UpgradeDefinition GetDef(UpgradeType type) =>
         upgradeDefs.Find(d => d && d.type == type);
@@ -95,9 +115,50 @@ public class UpgradeManager : MonoBehaviour
         _levels[key] = lv;
         PlayerPrefs.SetInt($"UPG_{key}", lv);
 
-        if (def.type == UpgradeType.SupplyPickupAmount)
-            supplyAmount = Mathf.Max(1, Mathf.RoundToInt(def.Evaluate(lv)));
+        // 統一重算所有生效數值
+        ReapplyRuntimeEffects();
 
+        // 廣播該型別變更（列 UI 會自動刷新）
         OnLevelChanged?.Invoke(def.type, lv);
+    }
+
+    /// <summary>
+    /// 將所有升級的等級→實際生效數值，於此集中計算。
+    /// 目前僅示範相容欄位 supplyAmount；未來你可以在這裡加入其它效果（能量上限、經濟倍率等）。
+    /// </summary>
+    private void ReapplyRuntimeEffects()
+    {
+        // 預設值先回填
+        supplyAmount = 3;
+
+        // 把每個升級的 Evaluate 套回系統
+        foreach (var def in upgradeDefs)
+        {
+            if (!def) continue;
+            int lv = GetLevel(def.upgradeId);
+            if (lv <= 0) continue;
+
+            float v = def.Evaluate(lv);
+
+            switch (def.type)
+            {
+                case UpgradeType.SupplyPickupAmount:
+                    supplyAmount = Mathf.Max(1, Mathf.RoundToInt(v));
+                    break;
+
+                // 未來你可以在這裡加入更多型別：
+                // case UpgradeType.WorkbenchMaxEnergy:
+                //     var maxEnergy = Mathf.RoundToInt(v);
+                //     foreach (var s in FindObjectsOfType<CookingStation>())
+                //     {
+                //         s.maxEnergy = maxEnergy;
+                //         s.UpdateEnergyUI();
+                //     }
+                //     break;
+
+                default:
+                    break;
+            }
+        }
     }
 }

@@ -10,10 +10,13 @@ public class UpgradeMenuControllerTMP : MonoBehaviour
     {
         [Header("頁面命名與根物件")]
         public string pageName = "Supply";
-        public GameObject root;            // 這個頁面的整個面板（顯示/隱藏用）
+        public GameObject root;                 // 這個頁面的整個面板（顯示/隱藏用）
 
         [Header("本頁內容生成容器（不需要 ScrollView）")]
-        public Transform listContainer;    // 生成 UpgradeRowUI_TMP 的父物件
+        public Transform listContainer;         // 生成 UpgradeRowUI_TMP 的父物件
+
+        [Header("Row Prefab（可選：覆寫全域）")]
+        public UpgradeRowUI_TMP rowPrefabOverride; // ← 新增：頁面專用 prefab
 
         [Header("資料來源（二選一）")]
         public bool useExplicitDefs = false;
@@ -37,13 +40,13 @@ public class UpgradeMenuControllerTMP : MonoBehaviour
     [SerializeField] private KeyCode toggleKey = KeyCode.Tab;
     [SerializeField] private bool pauseOnOpen = true;
 
-    [Header("UI 按鈕（可選，不設也能用公開方法）")]
+    [Header("外層 UI 按鈕（可選，不設也能用公開方法）")]
     [SerializeField] private Button openButton;
     [SerializeField] private Button closeButton;
     [SerializeField] private Button toggleButton;
 
-    [Header("列 Prefab")]
-    [SerializeField] private UpgradeRowUI_TMP rowPrefab;   // 單列 Prefab（根上要掛 UpgradeRowUI_TMP）
+    [Header("全域列 Prefab（頁面未覆寫時使用）")]
+    [SerializeField] private UpgradeRowUI_TMP rowPrefab;   // 單列預設 Prefab（根上要掛 UpgradeRowUI_TMP）
 
     [Header("分頁")]
     [SerializeField] private List<Page> pages = new List<Page>();
@@ -107,6 +110,7 @@ public class UpgradeMenuControllerTMP : MonoBehaviour
     //  公開方法（給 UI OnClick 直接用）
     // --------------------
     public void Open() => Open(defaultPageIndex);
+
     public void Open(int pageIndex)
     {
         if (!panelRoot) return;
@@ -136,6 +140,7 @@ public class UpgradeMenuControllerTMP : MonoBehaviour
     }
 
     public void Toggle() => Toggle(defaultPageIndex);
+
     public void Toggle(int pageIndex)
     {
         if (!panelRoot) return;
@@ -153,7 +158,6 @@ public class UpgradeMenuControllerTMP : MonoBehaviour
         if (idx >= 0) ShowPageIndex(idx);
         else Debug.LogWarning($"[UpgradeMenu] Page '{name}' not found.");
     }
-
 
     public void ShowPageIndex(int index)
     {
@@ -185,7 +189,10 @@ public class UpgradeMenuControllerTMP : MonoBehaviour
     void BuildPage(int index)
     {
         var page = pages[index];
-        if (!rowPrefab || !page.listContainer) return;
+
+        // 先決定本頁使用哪個 prefab：頁面覆寫優先，否則用全域預設
+        var prefab = page.rowPrefabOverride ? page.rowPrefabOverride : rowPrefab;
+        if (!prefab || !page.listContainer) return;
 
         // 清空舊列
         for (int i = page.listContainer.childCount - 1; i >= 0; i--)
@@ -215,7 +222,7 @@ public class UpgradeMenuControllerTMP : MonoBehaviour
         // 生成列
         foreach (var def in defs)
         {
-            var row = Instantiate(rowPrefab, page.listContainer);
+            var row = Instantiate(prefab, page.listContainer);
             row.Setup(def, UpgradeManager.Instance, null);
         }
     }
@@ -231,5 +238,20 @@ public class UpgradeMenuControllerTMP : MonoBehaviour
     {
         if (!coinsText || PlayerData.Instance == null) return;
         coinsText.text = $"$ {PlayerData.Instance.stats.money}";
+    }
+
+    //（可選）給按鈕好綁的包裝
+    public void ShowMain() => ShowPageByName("Main");
+    public void ShowEnergy() => ShowPageByName("Energy");
+    public void OpenMain() { Open(); ShowMain(); }
+    public void OpenEnergy() { Open(); ShowEnergy(); }
+
+    //（可選）外部呼叫：重建目前頁（例如重置升級後立即更新）
+    public void RebuildCurrentPage()
+    {
+        if (currentIndex < 0 || currentIndex >= pages.Count) return;
+        pages[currentIndex].builtOnce = false;
+        BuildPage(currentIndex);
+        pages[currentIndex].builtOnce = true;
     }
 }
