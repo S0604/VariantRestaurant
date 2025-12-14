@@ -7,18 +7,15 @@ public class OrderItem
 {
     public MenuItem menuItem;
     public bool isCompleted;
+
+    // ★ 新增：記錄「實際交付」的料理等級（由 Inventory 交出去的那份決定）
+    public BaseMinigame.DishGrade deliveredGrade = BaseMinigame.DishGrade.Fail;
 }
 
 public class CustomerOrder : MonoBehaviour
 {
     public List<OrderItem> selectedItems = new List<OrderItem>();
     public bool IsOrderReady { get; private set; } = false;
-    private BaseMinigame baseMinigame;
-
-    void Start()
-    {
-        baseMinigame = FindObjectOfType<BaseMinigame>(); // 或透過其他方式取得參考
-    }
 
     public void GenerateOrder(MenuDatabase database, bool isSpecialCustomer)
     {
@@ -44,11 +41,11 @@ public class CustomerOrder : MonoBehaviour
 
             if (dishTypes == 1)
             {
-                quantities.Add(3); // 全部分給一種
+                quantities.Add(3);
             }
             else
             {
-                int firstCount = Random.Range(1, 3); // 1 或 2
+                int firstCount = Random.Range(1, 3);
                 int secondCount = totalDishes - firstCount;
                 quantities.Add(firstCount);
                 quantities.Add(secondCount);
@@ -61,7 +58,8 @@ public class CustomerOrder : MonoBehaviour
                     selectedItems.Add(new OrderItem
                     {
                         menuItem = selectedMenuItems[i],
-                        isCompleted = false
+                        isCompleted = false,
+                        deliveredGrade = BaseMinigame.DishGrade.Fail
                     });
                 }
             }
@@ -70,19 +68,19 @@ public class CustomerOrder : MonoBehaviour
         {
             // === 普通顧客：A×1、A×2、A×1 + B×1（最多兩份） ===
             int totalDishes = Random.Range(1, 3); // 1 或 2 份
-            int dishTypes = totalDishes == 1 ? 1 : Random.Range(1, 3); // 如果只要一份，必為一種；若兩份，有可能是 A×2 或 A×1+B×1
+            int dishTypes = totalDishes == 1 ? 1 : Random.Range(1, 3);
 
             List<MenuItem> selectedMenuItems = shuffled.Take(dishTypes).ToList();
             List<int> quantities = new List<int>();
 
             if (dishTypes == 1)
             {
-                quantities.Add(totalDishes); // A×1 或 A×2
+                quantities.Add(totalDishes);
             }
             else
             {
-                quantities.Add(1); // A×1
-                quantities.Add(1); // B×1
+                quantities.Add(1);
+                quantities.Add(1);
             }
 
             for (int i = 0; i < selectedMenuItems.Count; i++)
@@ -92,7 +90,8 @@ public class CustomerOrder : MonoBehaviour
                     selectedItems.Add(new OrderItem
                     {
                         menuItem = selectedMenuItems[i],
-                        isCompleted = false
+                        isCompleted = false,
+                        deliveredGrade = BaseMinigame.DishGrade.Fail
                     });
                 }
             }
@@ -101,27 +100,34 @@ public class CustomerOrder : MonoBehaviour
         IsOrderReady = true;
     }
 
-    // 提交物品時呼叫，標記符合 itemTag 的項目為完成
+    // 提交物品時呼叫，標記符合 itemTag 的項目為完成，並記錄實際交付等級
     public bool SubmitItem(MenuItem submittedItem)
     {
-        if (submittedItem.grade == BaseMinigame.DishGrade.Fail ||
-            submittedItem == BaseMinigame.CurrentInstance.garbageItem)
+        if (submittedItem == null) return false;
+
+        // ★ 更安全：不要依賴 BaseMinigame.CurrentInstance（可能為 null）
+        if (submittedItem.grade == BaseMinigame.DishGrade.Fail) return false;
+        if (InventoryManager.Instance != null && InventoryManager.Instance.GarbageItem != null
+            && submittedItem == InventoryManager.Instance.GarbageItem)
         {
-            Debug.Log("Garbage cannot be submitted.");
             return false;
         }
 
-        bool found = false;
         foreach (var orderItem in selectedItems)
         {
-            if (orderItem.menuItem.itemTag == submittedItem.itemTag && !orderItem.isCompleted)
+            if (orderItem.menuItem != null &&
+                orderItem.menuItem.itemTag == submittedItem.itemTag &&
+                !orderItem.isCompleted)
             {
                 orderItem.isCompleted = true;
-                found = true;
-                break; // 只提交一個
+
+                // ★ 核心：記錄「實際交出去的」料理等級
+                orderItem.deliveredGrade = submittedItem.grade;
+
+                return true; // 只提交一個
             }
         }
-        return found;
+        return false;
     }
 
     // 判斷訂單是否完成（所有項目都完成）

@@ -9,24 +9,43 @@ public class CookingStation : MonoBehaviour
     public string minigameType = "Burger";
 
     [Header("能量條設定")]
+    [Tooltip("Inspector 預設值；若有 WorkbenchMaxEnergy 定義，會以升級值覆蓋")]
     public int maxEnergy = 3;
-    private int currentEnergy;
+
+    [SerializeField] private int currentEnergy;
 
     public Image energyMask;
     public GameObject energyBarUI;
 
-    public MenuItem energySupplyItem; // 指定補給箱 MenuItem
+    public MenuItem energySupplyItem;
 
     [Header("UI 引用")]
-    public Transform supplyContainer; // ← 取代 GameObject.Find
+    public Transform supplyContainer;
 
-    void Start()
+    [Header("升級套用")]
+    public bool useUpgradeMaxEnergy = true;
+
+    [Tooltip("WorkbenchMaxEnergy 變更時是否回滿能量")]
+    public bool refillEnergyWhenMaxEnergyChanges = true;
+
+    private void OnEnable()
     {
-        currentEnergy = maxEnergy;
+        UpgradeManager.OnAnyLevelChanged += HandleAnyUpgradeChanged;
+    }
+
+    private void OnDisable()
+    {
+        UpgradeManager.OnAnyLevelChanged -= HandleAnyUpgradeChanged;
+    }
+
+    private void Start()
+    {
+        ApplyMaxEnergyFromUpgrade(refillToFull: true);
+        if (currentEnergy <= 0) currentEnergy = maxEnergy;
         UpdateEnergyUI();
     }
 
-    void Update()
+    private void Update()
     {
         if (playerInRange && Input.GetKeyDown(KeyCode.E))
         {
@@ -37,54 +56,55 @@ public class CookingStation : MonoBehaviour
     private void TryInteract()
     {
         var inventory = InventoryManager.Instance;
+        if (inventory == null) return;
 
-        // 補給箱邏輯
         if (HasSupplyItem(inventory))
         {
             if (currentEnergy < maxEnergy)
             {
                 RemoveSupplyItem(inventory);
-                currentEnergy = Mathf.Min(currentEnergy + GetSupplyAmount(), maxEnergy);
+
+                int add = GetSupplyAmount();
+                currentEnergy = Mathf.Min(currentEnergy + add, maxEnergy);
+
                 UpdateEnergyUI();
                 ClearSupplyUI();
-                Debug.Log("成功補充能量");
+                Debug.Log($"成功補充能量 +{add}（{currentEnergy}/{maxEnergy}）");
             }
             else
             {
                 Debug.Log("能量已滿，無需補給");
             }
-            return; // 補給後不執行其他互動
+            return;
         }
 
-        // 不能開始：能量不足或小遊戲進行中或持有補給箱
         if (currentEnergy <= 0)
         {
             Debug.Log("能量不足，無法開始小遊戲");
             return;
         }
 
-        if (MinigameManager.Instance.IsPlaying)
+        if (MinigameManager.Instance != null && MinigameManager.Instance.IsPlaying)
         {
             Debug.Log("已有小遊戲正在進行");
             return;
         }
 
-        if (HasSupplyItem(inventory))
-        {
-            Debug.Log("持有補給箱時無法開始小遊戲");
-            return;
-        }
-
-        // 啟動小遊戲
         Debug.Log("開始小遊戲: " + minigameType);
         MinigameManager.Instance.StartMinigame(minigameType, OnMinigameComplete);
     }
 
     private bool HasSupplyItem(InventoryManager inventory)
     {
+        if (inventory == null) return false;
+        if (energySupplyItem == null) return false;
+
+        string supplyTag = energySupplyItem.itemTag;
+        if (string.IsNullOrEmpty(supplyTag)) return false;
+
         foreach (var item in inventory.GetItems())
         {
-            if (item.itemTag == energySupplyItem.itemTag)
+            if (item != null && item.itemTag == supplyTag)
                 return true;
         }
         return false;
@@ -92,10 +112,14 @@ public class CookingStation : MonoBehaviour
 
     private void RemoveSupplyItem(InventoryManager inventory)
     {
+        if (inventory == null || energySupplyItem == null) return;
+
+        string supplyTag = energySupplyItem.itemTag;
         var items = inventory.GetItems();
+
         for (int i = 0; i < items.Count; i++)
         {
-            if (items[i].itemTag == energySupplyItem.itemTag)
+            if (items[i] != null && items[i].itemTag == supplyTag)
             {
                 inventory.RemoveItem(items[i]);
                 break;
@@ -105,17 +129,15 @@ public class CookingStation : MonoBehaviour
 
     private void OnMinigameComplete(bool success, int rank)
     {
-        if (success)
-            Debug.Log(minigameType + " 製作成功，等級: " + rank);
-        else
-            Debug.Log(minigameType + " 製作失敗");
-
         currentEnergy = Mathf.Max(currentEnergy - 1, 0);
         UpdateEnergyUI();
     }
 
     private void UpdateEnergyUI()
     {
+        if (maxEnergy <= 0) maxEnergy = 1;
+        currentEnergy = Mathf.Clamp(currentEnergy, 0, maxEnergy);
+
         float ratio = (float)currentEnergy / maxEnergy;
         if (energyMask != null)
             energyMask.fillAmount = ratio;
@@ -124,19 +146,48 @@ public class CookingStation : MonoBehaviour
             energyBarUI.SetActive(true);
     }
 
-    public void UpgradeEnergy(int amount)
-    {
-        maxEnergy += amount;
-        currentEnergy = maxEnergy;
-        UpdateEnergyUI();
-    }
-
     private int GetSupplyAmount()
     {
-        return UpgradeManager.Instance != null
-            ? Mathf.Max(1, Mathf.RoundToInt(
-                UpgradeManager.Instance.GetValue(UpgradeType.SupplyPickupAmount)))
-            : 1;
+        var upg = UpgradeManager.Instance;
+        if (upg == null) return 1;
+
+        float v = upg.GetValue(UpgradeType.SupplyPickupAmount);
+        int n = Mathf.RoundToInt(v);
+        return Mathf.Max(1, n);
+    }
+
+    private void ApplyMaxEnergyFromUpgrade(bool refillToFull)
+    {
+        if (!useUpgradeMaxEnergy) return;
+
+        int oldMax = Mathf.Max(1, maxEnergy);
+
+        var upg = UpgradeManager.Instance;
+        if (upg == null)
+        {
+            maxEnergy = oldMax;
+            currentEnergy = Mathf.Clamp(currentEnergy, 0, maxEnergy);
+            return;
+        }
+
+        float v = upg.GetValue(UpgradeType.WorkbenchMaxEnergy);
+        int newMax = Mathf.RoundToInt(v);
+        if (newMax <= 0) newMax = oldMax;
+
+        maxEnergy = Mathf.Max(1, newMax);
+
+        if (refillToFull)
+            currentEnergy = maxEnergy;
+        else
+            currentEnergy = Mathf.Clamp(currentEnergy, 0, maxEnergy);
+    }
+
+    private void HandleAnyUpgradeChanged(UpgradeType type, int newLevel)
+    {
+        if (type != UpgradeType.WorkbenchMaxEnergy) return;
+
+        ApplyMaxEnergyFromUpgrade(refillEnergyWhenMaxEnergyChanges);
+        UpdateEnergyUI();
     }
 
     private void ClearSupplyUI()

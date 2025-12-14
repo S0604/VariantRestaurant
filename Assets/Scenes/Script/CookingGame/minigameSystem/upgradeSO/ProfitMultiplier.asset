@@ -20,7 +20,7 @@ MonoBehaviour:
   perLevelMul: 1.05
   displayName: Profit multiplier
   description: "\u589E\u52A0\u6BCF\u6B21\u9001\u9910\u6642\u7684\u6536\u76CA"
-  valueUnit: 
+  valueUnit: x
   category: 2
   baseCost: 100
   costPerLevelAdd: 100

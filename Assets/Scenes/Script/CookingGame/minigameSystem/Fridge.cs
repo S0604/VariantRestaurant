@@ -3,11 +3,10 @@ using UnityEngine.UI;
 
 public class Fridge : MonoBehaviour
 {
-    public MenuItem supplyBoxItem;            // 生成的補給箱物品（ScriptableObject）
-    public Transform iconSpawnPoint;          // 補給圖示生成位置
-    public GameObject iconPrefab;             // 圖示用的 Image prefab
+    public MenuItem supplyBoxItem;
+    public Transform iconSpawnPoint;
+    public GameObject iconPrefab;
 
-    public int supplyAmount = 3;              // 可被升級，實際補多少能量
     private bool playerInRange = false;
 
     private void Update()
@@ -20,17 +19,25 @@ public class Fridge : MonoBehaviour
 
     private void TrySupplyBox()
     {
+        if (InventoryManager.Instance == null) return;
+
         if (InventoryManager.Instance.GetItemCount() > 0)
         {
             Debug.Log("背包必須為空才能領取補給箱！");
             return;
         }
 
-        MenuItem itemInstance = Instantiate(supplyBoxItem);
-        InventoryManager.Instance.ClearInventory();  // 保險做法
-        InventoryManager.Instance.AddItem(itemInstance);
-        Debug.Log("已領取補給箱，佔據整個背包");
+        if (supplyBoxItem == null)
+        {
+            Debug.LogWarning("[Fridge] supplyBoxItem 未設定。");
+            return;
+        }
 
+        MenuItem itemInstance = Instantiate(supplyBoxItem);
+        InventoryManager.Instance.ClearInventory();
+        InventoryManager.Instance.AddItem(itemInstance);
+
+        Debug.Log("已領取補給箱，佔據整個背包");
         SpawnSupplyIcon(itemInstance);
     }
 
@@ -61,11 +68,5 @@ public class Fridge : MonoBehaviour
     {
         if (other.CompareTag("Player"))
             playerInRange = false;
-    }
-
-    public void UpgradeSupplyAmount(int amount)
-    {
-        supplyAmount += amount;
-        Debug.Log($"冰箱補給量升級為：{supplyAmount}");
     }
 }
