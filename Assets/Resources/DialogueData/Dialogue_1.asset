@@ -1,0 +1,304 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60d17c80e6061324697c7fc576fb47fb, type: 3}
+  m_Name: Dialogue_1
+  m_EditorClassIdentifier: 
+  lines:
+  - characterName: "\u7D05\u54B2"
+    isLeftSide: 1
+    text: "\u771F\u767D\uFF0C\u4F60\u4F86\u4E86\u554A"
+    portrait: {fileID: 21300000, guid: 9ae4c685858bdca41b8c812a5fa0e442, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
+  - characterName: "\u771F\u767D"
+    isLeftSide: 0
+    text: "\u4E0B\u8AB2\u6C92\u4E8B\u5C31\u63D0\u65E9\u4F86\u770B\u770B\u59B3\u9700\u4E0D\u9700\u8981\u5E6B\u5FD9"
+    portrait: {fileID: 21300000, guid: 85a31e676969a4142bb6cf446291a7f8, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 36557bed0cb1c0e4282628e8c0514f04, type: 3}
+  - characterName: "\u7D05\u54B2"
+    isLeftSide: 1
+    text: "\u8B1D\u8B1D\u59B3\uFF0C\u6211\u6B63\u5728\u628A\u7B49\u7B49\u71DF\u696D\u8981\u7528\u7684\u6771\u897F\u6574\u7406\u597D"
+    portrait: {fileID: 21300000, guid: b61592ca625ed8444b494723b2715971, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
+  - characterName: "\u7D05\u54B2"
+    isLeftSide: 1
+    text: "\u6709\u4F60\u7684\u5E6B\u52A9\u8AAA\u4E0D\u5B9A\u5F88\u5FEB\u5C31\u80FD\u6574\u7406\u5B8C"
+    portrait: {fileID: 21300000, guid: b61592ca625ed8444b494723b2715971, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
+  - characterName: "\u771F\u767D"
+    isLeftSide: 0
+    text: "\u5C0D\u4E86\u7D05\u54B2\u59B3\u4E0D\u662F\u8AAA\u90A3\u96BB \"\u81ED\u7AE0\u9B5A\"
+      \u6709\u4E8B\u627E\u6211\uFF0C\\n\u600E\u9EBC\u4E0D\u898B\u8E64\u5F71"
+    portrait: {fileID: 21300000, guid: 85a31e676969a4142bb6cf446291a7f8, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 36557bed0cb1c0e4282628e8c0514f04, type: 3}
+  - characterName: "\u7D05\u54B2"
+    isLeftSide: 1
+    text: "\u9019\u9EBC\u8AAA\u5E97\u9577\u4ECA\u5929\u4E00\u76F4\u5F85\u5728\u73ED\u516C\u5BA4\u88E1\u7684\u6A23\u5B50"
+    portrait: {fileID: 21300000, guid: 9ae4c685858bdca41b8c812a5fa0e442, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
+  - characterName: "\u7D05\u54B2"
+    isLeftSide: 1
+    text: "\u5E73\u6642\u90FD\u5F88\u6709\u6D3B\u529B\u7684\u6A23\u5B50\uFF0C\u662F\u4E0D\u662F\u751F\u75C5\u4E86?"
+    portrait: {fileID: 21300000, guid: b398f0d8e787ec7438089abdd112ad4a, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
+  - characterName: "\u771F\u767D"
+    isLeftSide: 0
+    text: "\u4E0D\u77E5\u9053\u4ECA\u5929\u53C8\u5728\u641E\u751A\u9EBC\u628A\u6232\uFF0C\u6211\u5011\u76F4\u63A5\u53BB\u627E\u4ED6\u5427!"
+    portrait: {fileID: 21300000, guid: 85a31e676969a4142bb6cf446291a7f8, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 36557bed0cb1c0e4282628e8c0514f04, type: 3}
+  - characterName: "\u7D05\u54B2"
+    isLeftSide: 1
+    text: "\u4E5F\u662F\uFF0C\u6211\u5011\u53BB\u627E\u5E97\u9577\u5427!"
+    portrait: {fileID: 21300000, guid: b398f0d8e787ec7438089abdd112ad4a, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
+  - characterName: "\u5E97\u9577"
+    isLeftSide: 0
+    text: "\u2026"
+    portrait: {fileID: 21300000, guid: 3acbb86728c1e3241b2046147c2d02dd, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 8c09a8a944a51e947b4c3d949b9f569f, type: 3}
+  - characterName: "\u7D05\u54B2"
+    isLeftSide: 1
+    text: "\u2026"
+    portrait: {fileID: 21300000, guid: b398f0d8e787ec7438089abdd112ad4a, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
+  - characterName: "\u771F\u767D"
+    isLeftSide: 0
+    text: "\u2026"
+    portrait: {fileID: 21300000, guid: 85a31e676969a4142bb6cf446291a7f8, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 36557bed0cb1c0e4282628e8c0514f04, type: 3}
+  - characterName: "\u7D05\u54B2"
+    isLeftSide: 1
+    text: "\u5E97\u2026\u5E97\u9577"
+    portrait: {fileID: 21300000, guid: b398f0d8e787ec7438089abdd112ad4a, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
+  - characterName: "\u5E97\u9577"
+    isLeftSide: 0
+    text: "\u2026"
+    portrait: {fileID: 21300000, guid: 3acbb86728c1e3241b2046147c2d02dd, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 8c09a8a944a51e947b4c3d949b9f569f, type: 3}
+  - characterName: "\u771F\u767D"
+    isLeftSide: 1
+    text: "(\u7DE9\u7DE9\u5C07\u53F3\u624B\u8209\u8D77\u4F86)"
+    portrait: {fileID: 21300000, guid: 85a31e676969a4142bb6cf446291a7f8, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 62e6767e9383a324d9e073572324a095, type: 3}
+  - characterName: "\u771F\u767D"
+    isLeftSide: 1
+    text: "(\u556A!)"
+    portrait: {fileID: 21300000, guid: 0ad79e36d38c7fb43b76daa558c549aa, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 62e6767e9383a324d9e073572324a095, type: 3}
+  - characterName: "\u7D05\u54B2"
+    isLeftSide: 1
+    text: '!!!'
+    portrait: {fileID: 21300000, guid: 9ae4c685858bdca41b8c812a5fa0e442, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
+  - characterName: "\u5E97\u9577"
+    isLeftSide: 0
+    text: "\u554A\u2026\u2026\u8166\u888B\u2026\u8166\u888B\u554A!"
+    portrait: {fileID: 21300000, guid: 9952a37c6024a8140bd6a8f97c0461f5, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 8c09a8a944a51e947b4c3d949b9f569f, type: 3}
+  - characterName: "\u7D05\u54B2"
+    isLeftSide: 1
+    text: "\u771F\u767D!\u592A\u7528\u529B\u4E86\u4F60\u770B\u5E97\u9577\u90FD\u75DB\u5230\u81C9\u767C\u7D05\u4E86"
+    portrait: {fileID: 21300000, guid: 9ae4c685858bdca41b8c812a5fa0e442, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
+  - characterName: "\u771F\u767D"
+    isLeftSide: 0
+    text: "\u4E0D\u662F\uFF0C\u4ED6\u672C\u8EAB\u5C31\u662F\u7D05\u7D05\u7684\u59B3\u662F\u600E\u9EBC\u770B\u51FA\u4ED6\u81C9\u7D05\u4E86"
+    portrait: {fileID: 21300000, guid: 85a31e676969a4142bb6cf446291a7f8, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 36557bed0cb1c0e4282628e8c0514f04, type: 3}
+  - characterName: "\u5E97\u9577"
+    isLeftSide: 1
+    text: "\u75DB\u6B7B\u6211\u4E86\uFF0C\u59B3\u5C31\u4E0D\u80FD\u6EAB\u67D4\u4E00\u9EDE\u55CE!"
+    portrait: {fileID: 21300000, guid: 3acbb86728c1e3241b2046147c2d02dd, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 0dc6b2601ecf86e4bad335449566050f, type: 3}
+  - characterName: "\u771F\u767D"
+    isLeftSide: 0
+    text: "\u6211\u5DF2\u7D93\u6536\u5F88\u591A\u529B\u4E86"
+    portrait: {fileID: 21300000, guid: 3b07d6bdb1f03934c80a0d47243ef38b, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 36557bed0cb1c0e4282628e8c0514f04, type: 3}
+  - characterName: "\u5E97\u9577"
+    isLeftSide: 1
+    text: "\u771F\u662F\u7684\u73FE\u5728\u7684\u5E74\u8F15\u4EBA\u9084\u771F\u4E0D\u9AD4\u8CBC"
+    portrait: {fileID: 21300000, guid: 3acbb86728c1e3241b2046147c2d02dd, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 0dc6b2601ecf86e4bad335449566050f, type: 3}
+  - characterName: "\u771F\u767D"
+    isLeftSide: 0
+    text: "(\u518D\u6B21\u7DE9\u7DE9\u7684\u8209\u8D77\u53F3\u624B)"
+    portrait: {fileID: 21300000, guid: 0ad79e36d38c7fb43b76daa558c549aa, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 36557bed0cb1c0e4282628e8c0514f04, type: 3}
+  - characterName: "\u5E97\u9577"
+    isLeftSide: 1
+    text: "(\u8FC5\u901F\u7684\u7528\u89F8\u624B\u4FDD\u5BCC\u8457\u81EA\u5DF1\u7684\u8166\u888B)"
+    portrait: {fileID: 21300000, guid: 40d44d3d041cf1641b28fa1543c03f55, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 0dc6b2601ecf86e4bad335449566050f, type: 3}
+  - characterName: "\u7D05\u54B2"
+    isLeftSide: 1
+    text: "\u4F60\u5011\u5169\u500B\u5225\u518D\u9B27\u4E86\uFF0C\u7B49\u7B49\u5C31\u8981\u71DF\u696D\u4E86\u6C92\u6642\u9593\u5435\u67B6\u4E86"
+    portrait: {fileID: 21300000, guid: b398f0d8e787ec7438089abdd112ad4a, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
+  - characterName: "\u771F\u767D"
+    isLeftSide: 1
+    text: "\u4E5F\u662F\uFF0C\u6C92\u6642\u9593\u8DDF \"\u81ED\u7AE0\u9B5A\" \u5435\u67B6"
+    portrait: {fileID: 21300000, guid: 85a31e676969a4142bb6cf446291a7f8, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 62e6767e9383a324d9e073572324a095, type: 3}
+  - characterName: "\u5E97\u9577"
+    isLeftSide: 0
+    text: "\u4F60\u8AAA\u8AB0 \"\u81ED\u7AE0\u9B5A\" \u554A!\u81ED\u5C0F\u9B3C"
+    portrait: {fileID: 21300000, guid: 40d44d3d041cf1641b28fa1543c03f55, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 8c09a8a944a51e947b4c3d949b9f569f, type: 3}
+  - characterName: "\u7D05\u54B2"
+    isLeftSide: 1
+    text: "\u5E97\u9577!"
+    portrait: {fileID: 21300000, guid: b61592ca625ed8444b494723b2715971, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
+  - characterName: "\u5E97\u9577"
+    isLeftSide: 0
+    text: "\u6211\u77E5\u9053\u4E86\uFF0C\u6211\u4E0D\u8DDF\u4ED6\u5435\u4E86"
+    portrait: {fileID: 21300000, guid: 9952a37c6024a8140bd6a8f97c0461f5, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 8c09a8a944a51e947b4c3d949b9f569f, type: 3}
+  - characterName: "\u771F\u767D"
+    isLeftSide: 0
+    text: "(\u5077\u7B11)"
+    portrait: {fileID: 21300000, guid: 85a31e676969a4142bb6cf446291a7f8, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 36557bed0cb1c0e4282628e8c0514f04, type: 3}
+  - characterName: "\u7D05\u54B2"
+    isLeftSide: 1
+    text: "\u771F\u767D..."
+    portrait: {fileID: 21300000, guid: a33c302229fa644438e69d5c482989d9, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
+  - characterName: "\u771F\u767D"
+    isLeftSide: 0
+    text: "\u62B1\u6B49"
+    portrait: {fileID: 21300000, guid: 3b07d6bdb1f03934c80a0d47243ef38b, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 36557bed0cb1c0e4282628e8c0514f04, type: 3}
+  - characterName: "\u7D05\u54B2"
+    isLeftSide: 1
+    text: "\u6240\u4EE5\u5E97\u9577\u4F60\u600E\u9EBC\u4E86\uFF0C\u4ECA\u5929\u4E00\u76F4\u5F85\u5728\u8FA6\u516C\u5BA4\u88E1\u4E0D\u51FA\u4F86"
+    portrait: {fileID: 21300000, guid: b398f0d8e787ec7438089abdd112ad4a, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
+  - characterName: "\u5E97\u9577"
+    isLeftSide: 0
+    text: "\u554A\u2026\u4E5F\u6C92\u4EC0\u9EBC\u5C31\u5728\u7169\u60F1\u4E00\u4E9B\u4E8B\u60C5\u3002"
+    portrait: {fileID: 21300000, guid: 9952a37c6024a8140bd6a8f97c0461f5, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 8c09a8a944a51e947b4c3d949b9f569f, type: 3}
+  - characterName: "\u771F\u767D"
+    isLeftSide: 1
+    text: "\u771F\u96E3\u5F97\u7AE0\u9B5A\u4E5F\u6703\u7169\u60F1\uFF0C\u770B\u4F86\u771F\u7684\u75C5\u4E86"
+    portrait: {fileID: 21300000, guid: 85a31e676969a4142bb6cf446291a7f8, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 62e6767e9383a324d9e073572324a095, type: 3}
+  - characterName: "\u5E97\u9577"
+    isLeftSide: 0
+    text: "\u8AAA\u7684\u6211\u597D\u50CF\u6C92\u7169\u60F1\u7684\u6A23\u5B50\uFF0C\\n\u5C0F\u5B69\u5B50\u600E\u9EBC\u6703\u660E\u767D\u5927\u4EBA\u7684\u7169\u60F1"
+    portrait: {fileID: 21300000, guid: 9952a37c6024a8140bd6a8f97c0461f5, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 8c09a8a944a51e947b4c3d949b9f569f, type: 3}
+  - characterName: "\u7D05\u54B2"
+    isLeftSide: 1
+    text: "\u7A76\u7ADF\u662F\u751A\u9EBC\u6A23\u7684\u5927\u4E8B\u8B93\u5E97\u9577\u5982\u6B64\u61CA\u60F1"
+    portrait: {fileID: 21300000, guid: 9ae4c685858bdca41b8c812a5fa0e442, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
+  - characterName: "\u5E97\u9577"
+    isLeftSide: 0
+    text: "\u4E5F\u6C92\u4EC0\u9EBC\uFF0C\u53EA\u662F\u4E4B\u524D\u60F3\u505A\u4F46\u6C92\u505A\u7684\u4E8B\u5DEE\u4E0D\u591A\u80FD\u57F7\u884C\u4E86"
+    portrait: {fileID: 21300000, guid: 9952a37c6024a8140bd6a8f97c0461f5, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 8c09a8a944a51e947b4c3d949b9f569f, type: 3}
+  - characterName: "\u771F\u767D"
+    isLeftSide: 1
+    text: "\u641E\u7684\u90A3\u9EBC\u795E\u79D8\uFF0C\u5230\u5E95\u662F\u751A\u9EBC\u4E8B\u60C5!"
+    portrait: {fileID: 21300000, guid: 0ad79e36d38c7fb43b76daa558c549aa, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 62e6767e9383a324d9e073572324a095, type: 3}
+  - characterName: "\u5E97\u9577"
+    isLeftSide: 0
+    text: "\u7B49\u4ECA\u5929\u71DF\u696D\u7D50\u675F\u4F60\u5011\u4F86\u8FA6\u516C\u5BA4\u518D\u8AAA"
+    portrait: {fileID: 21300000, guid: 9952a37c6024a8140bd6a8f97c0461f5, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 8c09a8a944a51e947b4c3d949b9f569f, type: 3}
+  - characterName: "\u771F\u767D"
+    isLeftSide: 0
+    text: "\u641E\u751A\u9EBC\u795E\u79D8\u554A!"
+    portrait: {fileID: 21300000, guid: 0ad79e36d38c7fb43b76daa558c549aa, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 36557bed0cb1c0e4282628e8c0514f04, type: 3}
+  - characterName: "\u7D05\u54B2"
+    isLeftSide: 1
+    text: "\u96D6\u7136\u4E0D\u77E5\u9053\u5E97\u9577\u60F3\u505A\u751A\u9EBC\uFF0C\\n\u4F46\u73FE\u5728\u6211\u5011\u53EA\u80FD\u7E7C\u7E8C\u53BB\u5FD9\u4E86"
+    portrait: {fileID: 21300000, guid: b398f0d8e787ec7438089abdd112ad4a, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
+  - characterName: "\u771F\u767D"
+    isLeftSide: 0
+    text: "\u4E5F\u662F\u73FE\u5728\u53EA\u80FD\u5148\u628A\u5B8C\u6210\u5DE5\u4F5C\uFF0C\\n\u5230\u6642\u518D\u770B\u770B\u4ED6\u60F3\u641E\u751A\u9EBC\u9B3C"
+    portrait: {fileID: 21300000, guid: 85a31e676969a4142bb6cf446291a7f8, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 36557bed0cb1c0e4282628e8c0514f04, type: 3}
+  - characterName: "\u7D05\u54B2"
+    isLeftSide: 1
+    text: "\u8A71\u8AAA\u59B3\u9084\u8A18\u5F97\u6240\u6709\u6D41\u7A0B\u53CA\u70F9\u98EA\u53F0\u7684\u4F7F\u7528\u55CE?"
+    portrait: {fileID: 21300000, guid: b398f0d8e787ec7438089abdd112ad4a, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
+  - characterName: "\u771F\u767D"
+    isLeftSide: 0
+    text: "\u6211\u4F86\u9019\u88E1\u5DE5\u4F5C\u7684\u6642\u9593\u6C92\u591A\u4E45\uFF0C\\n\u9084\u4E0D\u592A\u719F\u6089\u4E00\u4E9B\u6D41\u7A0B\u53CA\u64CD\u4F5C"
+    portrait: {fileID: 21300000, guid: 3b07d6bdb1f03934c80a0d47243ef38b, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 36557bed0cb1c0e4282628e8c0514f04, type: 3}
+  - characterName: "\u7D05\u54B2"
+    isLeftSide: 1
+    text: "\u9084\u6709\u9EDE\u6642\u9593\u8B93\u6211\u5011\u4F86\u8907\u7FD2\u4E00\u4E0B\u6D41\u7A0B\u64CD\u4F5C\u5427!"
+    portrait: {fileID: 21300000, guid: b398f0d8e787ec7438089abdd112ad4a, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
+  - characterName: "\u771F\u767D"
+    isLeftSide: 0
+    text: "\u9084\u8981\u518D\u9EBB\u7169\u59B3\u4E86"
+    portrait: {fileID: 21300000, guid: 85a31e676969a4142bb6cf446291a7f8, type: 3}
+    voiceClip: {fileID: 0}
+    dialogueBox: {fileID: 21300000, guid: 36557bed0cb1c0e4282628e8c0514f04, type: 3}
