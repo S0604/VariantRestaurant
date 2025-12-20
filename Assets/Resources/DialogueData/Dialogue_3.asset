@@ -22,7 +22,7 @@ MonoBehaviour:
   - characterName: "\u7D05\u54B2"
     isLeftSide: 1
     text: "\u4F46\u9019\u662F\u6559\u5B78\u6F14\u793A\u6240\u4EE5\u4E0D\u7528\u64D4\u5FC3"
-    portrait: {fileID: 21300000, guid: 9ae4c685858bdca41b8c812a5fa0e442, type: 3}
+    portrait: {fileID: 21300000, guid: b61592ca625ed8444b494723b2715971, type: 3}
     voiceClip: {fileID: 0}
     dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
   - characterName: "\u7D05\u54B2"

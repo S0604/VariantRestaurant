@@ -18,7 +18,7 @@ public class InstantCookSkill : ActiveSkill
         var stations = Object.FindObjectsOfType<CookingStation>();
         foreach (var station in stations)
         {
-            station.EnableInstantCook(duration);
+            //station.EnableInstantCook(duration);
         }
 
         Debug.Log($"✅ 所有烹飪台啟動自動完成模式（持續 {duration} 秒）");

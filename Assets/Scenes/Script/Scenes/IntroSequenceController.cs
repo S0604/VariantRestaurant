@@ -7,55 +7,57 @@ using TMPro;
 
 public class IntroSequenceController : MonoBehaviour
 {
-    [Header("影片剪輯設定")]
+    [Header("影片列表")]
     public List<VideoClip> clips = new List<VideoClip>();
-    // 要依序播放的影片列表
 
-    [Header("UI 介面")]
-    public RawImage videoTarget;            // 用來顯示影片的 RawImage（RenderTexture 會被指派到這裡）
-    public TMP_Text pressAnyKeyText;        // 「按任意鍵繼續」或「按任意鍵開始」提示文字
-    public Button skipAllButton;            // 「跳過全部」按鈕
-    public string skipButtonLabelWhenLoading = "Loading..."; // 當跳過後載入時顯示的文字
+    [Header("UI")]
+    public RawImage videoTarget;            // 用來顯示影片的 RawImage (需配合 RenderTexture)
+    public TMP_Text pressAnyKeyText;        // 提示玩家按任意鍵繼續
+    public Button skipAllButton;            // 跳過全部影片的按鈕
+    public string skipButtonLabelWhenLoading = "Loading..."; // 按下跳過後顯示的文字
 
-    [Header("場景切換設定")]
-    public string nextSceneName = "GameScene";  // 播放結束後要載入的場景名稱
-    public bool showOnlyOncePerRun = false;     // 是否只在這次遊戲運行中顯示一次（防止重播）
-    private static bool hasShownThisRun = false; // 記錄是否已顯示過
+    [Header("場景設定")]
+    public string nextSceneName = "GameScene";  // 播放完影片後要切換的場景名稱
+    public bool showOnlyOncePerRun = false;     // 是否每次遊戲啟動只播放一次
+    private static bool hasShownThisRun = false;
 
     private VideoPlayer vp;
     private AudioSource audioSource;
 
-    private int index = 0;             // 目前播放中的影片索引
-    private bool waitingForInput = false;   // 是否正在等待玩家按鍵繼續
-    private bool finishedAll = false;       // 是否所有影片都播完了
-    private bool isLoading = false;         // 是否正在載入下一場景
+    private int index = 0;                  // 目前播放到第幾支影片
+    private bool waitingForInput = false;   // 是否正在等待玩家按任意鍵
+    private bool finishedAll = false;       // 是否已播放完全部影片
+    private bool isLoading = false;         // 是否正在載入下一個場景
 
     void Awake()
     {
-        // 若設定成「這次遊戲只播放一次」，而且之前已經播過，就直接跳到主場景
+        // 如果設定只播放一次，且已經播放過，直接切換場景
         if (showOnlyOncePerRun && hasShownThisRun)
         {
             LoadNextScene();
             return;
         }
 
-        // 準備 VideoPlayer 與 AudioSource
+        // 初始化 VideoPlayer
         vp = GetComponent<VideoPlayer>();
         if (vp == null) vp = gameObject.AddComponent<VideoPlayer>();
 
+        // 初始化 AudioSource
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
 
-        // 設定 VideoPlayer 參數
+        // 設定 VideoPlayer 屬性
         vp.playOnAwake = false;
-        vp.renderMode = VideoRenderMode.RenderTexture; // 使用 RenderTexture 輸出
+        vp.renderMode = VideoRenderMode.RenderTexture; // 將影片輸出到 RenderTexture
         vp.audioOutputMode = VideoAudioOutputMode.AudioSource;
         vp.SetTargetAudioSource(0, audioSource);
         vp.isLooping = false;
-        vp.loopPointReached += OnClipFinished; // 當影片播放完畢時呼叫 OnClipFinished()
+        vp.loopPointReached += OnClipFinished;        // 影片播放完事件
 
+        // 隱藏按任意鍵提示
         if (pressAnyKeyText) pressAnyKeyText.gameObject.SetActive(false);
 
+        // 設定跳過按鈕事件
         if (skipAllButton)
         {
             skipAllButton.onClick.RemoveAllListeners();
@@ -67,7 +69,7 @@ public class IntroSequenceController : MonoBehaviour
     {
         if (showOnlyOncePerRun) hasShownThisRun = true;
 
-        // 沒有影片的話，直接進場景
+        // 如果影片列表為空，直接切換場景
         if (clips == null || clips.Count == 0)
         {
             LoadNextScene();
@@ -82,7 +84,7 @@ public class IntroSequenceController : MonoBehaviour
     {
         if (isLoading) return;
 
-        // 如果正在等待玩家按鍵
+        // 玩家按任意鍵時的行為
         if (waitingForInput && Input.anyKeyDown)
         {
             waitingForInput = false;
@@ -90,7 +92,7 @@ public class IntroSequenceController : MonoBehaviour
 
             if (finishedAll)
             {
-                // 所有影片播完 → 任何鍵開始遊戲
+                // 全部播放完，按鍵後切換場景
                 LoadNextScene();
                 return;
             }
@@ -103,7 +105,7 @@ public class IntroSequenceController : MonoBehaviour
             }
             else
             {
-                // 理論上不會進到這裡（最後一支會由 OnClipFinished 處理）
+                // 已到最後一支影片
                 finishedAll = true;
                 ShowPressAnyKeyToStart();
             }
@@ -114,7 +116,7 @@ public class IntroSequenceController : MonoBehaviour
     {
         if (i < 0 || i >= clips.Count)
         {
-            // 錯誤保護：若超出範圍，就直接結束
+            // 如果索引超出範圍，直接標記全部播放完
             finishedAll = true;
             ShowPressAnyKeyToStart();
             return;
@@ -132,17 +134,16 @@ public class IntroSequenceController : MonoBehaviour
 
     private System.Collections.IEnumerator PlayWhenPrepared()
     {
-        while (!vp.isPrepared) yield return null; // 等待影片準備好
-        vp.Play(); // 開始播放
+        while (!vp.isPrepared) yield return null;
+        vp.Play();
     }
 
+    // 影片播放完回調
     private void OnClipFinished(VideoPlayer _)
     {
-        // 當影片播完時：
-        // 若還有下一支 → 顯示「Press any key to continue」
-        // 若是最後一支 → 顯示「Press any key to start」
         if (index < clips.Count - 1)
         {
+            // 還有下一支影片，等待玩家按任意鍵
             waitingForInput = true;
             if (pressAnyKeyText)
             {
@@ -152,6 +153,7 @@ public class IntroSequenceController : MonoBehaviour
         }
         else
         {
+            // 最後一支影片播放完，顯示開始提示
             finishedAll = true;
             ShowPressAnyKeyToStart();
         }
@@ -167,11 +169,12 @@ public class IntroSequenceController : MonoBehaviour
         }
     }
 
+    // 跳過全部影片
     private void SkipAll()
     {
         if (isLoading) return;
 
-        // 點擊跳過按鈕時 → 停用按鈕、顯示 Loading... 並直接載入主場景
+        // 更新 UI
         if (skipAllButton)
         {
             skipAllButton.interactable = false;
@@ -182,6 +185,7 @@ public class IntroSequenceController : MonoBehaviour
         LoadNextScene();
     }
 
+    // 切換場景
     private void LoadNextScene()
     {
         if (isLoading) return;
@@ -190,17 +194,6 @@ public class IntroSequenceController : MonoBehaviour
         if (vp) vp.loopPointReached -= OnClipFinished;
 
         if (!string.IsNullOrEmpty(nextSceneName))
-        {
-            SceneManager.sceneLoaded += OnSceneLoaded; // 監聽載入完成
-            SceneManager.LoadScene(nextSceneName, LoadSceneMode.Single);
-        }
-    }
-
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-
-        // 銷毀自己（避免殘留）
-        Destroy(gameObject);
+            SceneManager.LoadScene(nextSceneName);
     }
 }

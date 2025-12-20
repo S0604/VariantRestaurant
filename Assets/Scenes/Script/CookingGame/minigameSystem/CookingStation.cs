@@ -16,10 +16,7 @@ public class CookingStation : MonoBehaviour
     public GameObject energyBarUI;
 
     public MenuItem energySupplyItem; // 指定補給箱 MenuItem
-
-    [Header("UI 引用")]
-    public Transform supplyContainer; // ← 取代 GameObject.Find
-
+    private static bool firstEnergyDepleted = false;
     void Start()
     {
         currentEnergy = maxEnergy;
@@ -28,12 +25,13 @@ public class CookingStation : MonoBehaviour
 
     void Update()
     {
-        if (playerInRange && Input.GetKeyDown(KeyCode.E))
-        {
-            TryInteract();
-        }
-    }
+        /* 1. 對話期間直接 return（Time.timeScale=0 仍會跑 Update）*/
+        if (Time.timeScale <= 0f) return;
 
+        /* 2. 原有邏輯 */
+        if (playerInRange && Input.GetKeyDown(KeyCode.E))
+            TryInteract();
+    }
     private void TryInteract()
     {
         var inventory = InventoryManager.Instance;
@@ -105,15 +103,31 @@ public class CookingStation : MonoBehaviour
 
     private void OnMinigameComplete(bool success, int rank)
     {
+        bool wasPositive = currentEnergy > 0;
+        currentEnergy = Mathf.Max(currentEnergy - 1, 0);
+
+        /* 第一次「從正變零」→ 播對話 1 + 解鎖 EnergyDepleted */
+        if (!firstEnergyDepleted && wasPositive && currentEnergy == 0)
+        {
+            firstEnergyDepleted = true;
+
+            // 1. 播對話
+            if (TutorialDialogueController.Instance != null)
+                TutorialDialogueController.Instance.PlayChapter("14");
+
+            // 2. 解鎖事件
+            if (TutorialProgressManager.Instance != null)
+                TutorialProgressManager.Instance.CompleteEvent("EnergyDepleted");
+        }
+
+        // 原有日誌 & UI
         if (success)
             Debug.Log(minigameType + " 製作成功，等級: " + rank);
         else
             Debug.Log(minigameType + " 製作失敗");
 
-        currentEnergy = Mathf.Max(currentEnergy - 1, 0);
         UpdateEnergyUI();
     }
-
     private void UpdateEnergyUI()
     {
         float ratio = (float)currentEnergy / maxEnergy;
@@ -133,17 +147,19 @@ public class CookingStation : MonoBehaviour
 
     private int GetSupplyAmount()
     {
-        return UpgradeManager.Instance != null
-            ? Mathf.Max(1, Mathf.RoundToInt(
-                UpgradeManager.Instance.GetValue(UpgradeType.SupplyPickupAmount)))
-            : 1;
+        return UpgradeManager.Instance != null ? UpgradeManager.Instance.supplyAmount : 3;
     }
 
     private void ClearSupplyUI()
     {
-        if (!supplyContainer) return;
-        for (int i = supplyContainer.childCount - 1; i >= 0; i--)
-            Destroy(supplyContainer.GetChild(i).gameObject);
+        GameObject container = GameObject.Find("SupplyContainer");
+        if (container != null)
+        {
+            foreach (Transform child in container.transform)
+            {
+                Destroy(child.gameObject);
+            }
+        }
     }
 
     private void OnTriggerEnter(Collider other)

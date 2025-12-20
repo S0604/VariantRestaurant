@@ -8,7 +8,10 @@ public class Player : MonoBehaviour
     private Vector3 lastDirection;
     private float moveSpeed = 8f;
     public bool isCooking = false;
-    public bool isLocked = false; // 外部（對話系統）用來鎖住玩家控制
+
+    [Header("對話鎖定")]
+    public bool isLocked = false;   // ← 新增這行
+
     void Start()
     {
         animator = GetComponent<Animator>();
@@ -16,8 +19,9 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        if (isLocked || isCooking)
-            return; // 🔒 被鎖住或正在烹飪就不能動
+        if (isLocked) return;
+        canMove = !isCooking;
+        if (!canMove) return; // 加入移動控制
 
         float inputX = Input.GetAxisRaw("Horizontal");
         float inputY = Input.GetAxisRaw("Vertical");
@@ -38,6 +42,7 @@ public class Player : MonoBehaviour
         animator.SetFloat("InputX", lastDirection.x);
         animator.SetFloat("InputY", lastDirection.z);
     }
+
     private void MovePlayer(Vector3 direction)
     {
         transform.position += direction.normalized * moveSpeed * Time.deltaTime;

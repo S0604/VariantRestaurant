@@ -5,10 +5,23 @@ using System.Collections;
 
 public class SimpleLoadingBar : MonoBehaviour
 {
+    [Header("拖入你的 Slider")]
     public Slider slider;
 
     void Start()
     {
+        if (slider == null)
+        {
+            Debug.LogError("Slider 尚未拖入！");
+            return;
+        }
+
+        if (string.IsNullOrEmpty(Globe.nextSceneName))
+        {
+            Debug.LogError("Globe.nextSceneName 尚未設定！");
+            return;
+        }
+
         StartCoroutine(LoadSceneAsync());
     }
 
@@ -27,6 +40,7 @@ public class SimpleLoadingBar : MonoBehaviour
                 slider.value = 1f;
                 operation.allowSceneActivation = true;
             }
+
             yield return null;
         }
     }
