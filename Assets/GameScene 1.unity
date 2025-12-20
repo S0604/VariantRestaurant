@@ -22509,10 +22509,18 @@ MonoBehaviour:
   spawnPoints:
   - {fileID: 2086619654}
   - {fileID: 266347823}
+<<<<<<< HEAD
   maxInterval: 9
   minInterval: 3
   specialCustomerChance: 0.2
   modeManager: {fileID: 1922551990}
+=======
+  - {fileID: 827851026}
+  maxInterval: 5
+  minInterval: 2
+  specialCustomerChance: 0
+  modeManager: {fileID: 1922551991}
+>>>>>>> parent of f14637aa (20251220)
 --- !u!4 &1467490831
 Transform:
   m_ObjectHideFlags: 0
@@ -25051,7 +25059,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stats:
+<<<<<<< HEAD
     money: 1000
+=======
+    money: 0
+>>>>>>> parent of f14637aa (20251220)
     popularity: 0
     customerFlow: 0
     experience: 0
@@ -27667,7 +27679,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1d38fd8fd476b24c9978de058a704ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+<<<<<<< HEAD
   businessDuration: 30
+=======
+  tutorialModeActive: 0
+  businessDuration: 60
+>>>>>>> parent of f14637aa (20251220)
   closingBufferTime: 10
   timeSystem: {fileID: 488485076}
   maxQueueLength: 4
