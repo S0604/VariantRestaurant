@@ -26810,6 +26810,9 @@ MonoBehaviour:
   minInterval: 2
   specialCustomerChance: 0
   modeManager: {fileID: 1922551991}
+  baseMaxCustomers: 5
+  maxCustomers: 5
+  maxIncreaseByPopularity: 13
 --- !u!4 &1467490831
 Transform:
   m_ObjectHideFlags: 0
@@ -30837,7 +30840,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stats:
     money: 0
-    popularity: 0
+    popularity: 200
     customerFlow: 0
     experience: 0
     level: 1
@@ -33905,7 +33908,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8cfc1819e8302642b8af555664652a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tutorialModeActive: 0
+  tutorialModeActive: 1
   businessDuration: 60
   closingBufferTime: 10
   timeSystem: {fileID: 488485076}
