@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 0.05
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.0063658743, g: 0.0067073787, b: 0.0060539353, a: 0.05}
+  m_IndirectSpecularColor: {r: 0.009014189, g: 0.011285706, b: 0.015346142, a: 0.05}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -4120,9 +4120,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minigameType: Burger
   maxEnergy: 6
+  currentEnergy: 0
   energyMask: {fileID: 120384700}
   energyBarUI: {fileID: 120384701}
   energySupplyItem: {fileID: 11400000, guid: 1077f2a4fa6bc164fb614c2de2e07b87, type: 2}
+  supplyContainer: {fileID: 0}
+  useUpgradeMaxEnergy: 1
+  refillEnergyWhenMaxEnergyChanges: 1
 --- !u!65 &223449911
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5743,7 +5747,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-      - m_Target: {fileID: 1922551991}
+      - m_Target: {fileID: 1000379413}
         m_TargetAssemblyTypeName: FreeModeToggleManager, Assembly-CSharp
         m_MethodName: ToggleMode
         m_Mode: 1
@@ -13099,37 +13103,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelIcon: {fileID: 2068051955}
   experienceSlider: {fileID: 608673076}
-  levels:
-  - level: 1
-    requiredExp: 900
-    levelSprite: {fileID: 21300000, guid: cde4d1ee4b613884fab30d6476ea8401, type: 3}
-  - level: 2
-    requiredExp: 1620
-    levelSprite: {fileID: 21300000, guid: 014a8be2271cb6d4786bb3bf125b170b, type: 3}
-  - level: 3
-    requiredExp: 9999
-    levelSprite: {fileID: 21300000, guid: e505f7440271dd641b4f6f6e1d53b210, type: 3}
-  - level: 4
-    requiredExp: 55
-    levelSprite: {fileID: 21300000, guid: e505f7440271dd641b4f6f6e1d53b210, type: 3}
-  - level: 5
-    requiredExp: 70
-    levelSprite: {fileID: 21300000, guid: e505f7440271dd641b4f6f6e1d53b210, type: 3}
-  - level: 6
-    requiredExp: 85
-    levelSprite: {fileID: 21300000, guid: e505f7440271dd641b4f6f6e1d53b210, type: 3}
-  - level: 7
-    requiredExp: 100
-    levelSprite: {fileID: 21300000, guid: e505f7440271dd641b4f6f6e1d53b210, type: 3}
-  - level: 8
-    requiredExp: 115
-    levelSprite: {fileID: 21300000, guid: e505f7440271dd641b4f6f6e1d53b210, type: 3}
-  - level: 9
-    requiredExp: 130
-    levelSprite: {fileID: 21300000, guid: e505f7440271dd641b4f6f6e1d53b210, type: 3}
-  - level: 10
-    requiredExp: 145
-    levelSprite: {fileID: 21300000, guid: e505f7440271dd641b4f6f6e1d53b210, type: 3}
 --- !u!114 &767102104
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16032,9 +16005,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minigameType: Fries
   maxEnergy: 6
+  currentEnergy: 0
   energyMask: {fileID: 373612789}
   energyBarUI: {fileID: 373612790}
   energySupplyItem: {fileID: 11400000, guid: 1077f2a4fa6bc164fb614c2de2e07b87, type: 2}
+  supplyContainer: {fileID: 0}
+  useUpgradeMaxEnergy: 1
+  refillEnergyWhenMaxEnergyChanges: 1
 --- !u!65 &960941629
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -17350,6 +17327,88 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 999007121}
   m_CullTransparentMesh: 1
+--- !u!1 &1000379412
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1000379415}
+  - component: {fileID: 1000379414}
+  - component: {fileID: 1000379413}
+  m_Layer: 0
+  m_Name: ModeToggleManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1000379413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000379412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8cfc1819e8302642b8af555664652a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tutorialModeActive: 0
+  businessDuration: 60
+  closingBufferTime: 10
+  timeSystem: {fileID: 488485076}
+  businessModeUIs:
+  - {fileID: 566806791}
+  businessModeScripts:
+  - {fileID: 223449910}
+  - {fileID: 960941628}
+  - {fileID: 1245938898}
+  - {fileID: 214549425}
+  - {fileID: 1467490832}
+  - {fileID: 172477628}
+  closedModeUIs:
+  - {fileID: 1587247544}
+  closedModeScripts: []
+  transitionImage: {fileID: 662831556}
+  transitionImageTransform: {fileID: 780997881}
+  transitionDuration: 1
+  resultUI: {fileID: 91129545}
+  resultConfirmButton: {fileID: 459965344}
+  gameResultUI: {fileID: 91129549}
+  businessMusicSource: {fileID: 923132076}
+  closedMusicSource: {fileID: 1339087914}
+  allowTimeFlow: 0
+--- !u!114 &1000379414
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000379412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 937c438402c31af48bf93be5e9180e63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1000379415
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000379412}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 6.112167, y: 7.94, z: -16.248333}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1000484663
 GameObject:
   m_ObjectHideFlags: 0
@@ -22013,9 +22072,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minigameType: Drink
   maxEnergy: 6
+  currentEnergy: 0
   energyMask: {fileID: 1409738661}
   energyBarUI: {fileID: 1409738659}
   energySupplyItem: {fileID: 11400000, guid: 1077f2a4fa6bc164fb614c2de2e07b87, type: 2}
+  supplyContainer: {fileID: 0}
+  useUpgradeMaxEnergy: 1
+  refillEnergyWhenMaxEnergyChanges: 1
 --- !u!65 &1245938899
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -26809,7 +26872,7 @@ MonoBehaviour:
   maxInterval: 5
   minInterval: 2
   specialCustomerChance: 0
-  modeManager: {fileID: 1922551991}
+  modeManager: {fileID: 0}
   baseMaxCustomers: 5
   maxCustomers: 5
   maxIncreaseByPopularity: 13
@@ -26865,7 +26928,7 @@ MonoBehaviour:
   - {fileID: 1520392972}
   - {fileID: 1857924877}
   - {fileID: 2086619654}
-  modeManager: {fileID: 1922551991}
+  modeManager: {fileID: 0}
 --- !u!1 &1467714411
 GameObject:
   m_ObjectHideFlags: 0
@@ -28414,6 +28477,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1524763190}
   - component: {fileID: 1524763189}
+  - component: {fileID: 1524763191}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -28498,6 +28562,26 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!114 &1524763191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1524763188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Version: 1
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_LightLayerMask: 1
+  m_CustomShadowLayers: 0
+  m_ShadowLayerMask: 1
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
 --- !u!1 &1528004475
 GameObject:
   m_ObjectHideFlags: 0
@@ -30844,6 +30928,8 @@ MonoBehaviour:
     customerFlow: 0
     experience: 0
     level: 1
+    stars: 0
+  levelTable: {fileID: 0}
 --- !u!114 &1683407090
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31202,7 +31288,6 @@ MonoBehaviour:
   supplyBoxItem: {fileID: 11400000, guid: 1077f2a4fa6bc164fb614c2de2e07b87, type: 2}
   iconSpawnPoint: {fileID: 67449980}
   iconPrefab: {fileID: 2032836799}
-  supplyAmount: 999
 --- !u!65 &1708144030
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -33851,88 +33936,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1919649572}
   m_CullTransparentMesh: 1
---- !u!1 &1922551986
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1922551988}
-  - component: {fileID: 1922551989}
-  - component: {fileID: 1922551991}
-  m_Layer: 0
-  m_Name: ModeToggleManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1922551988
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1922551986}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.112167, y: 7.94, z: -16.248333}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1922551989
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1922551986}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 937c438402c31af48bf93be5e9180e63, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1922551991
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1922551986}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8cfc1819e8302642b8af555664652a1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tutorialModeActive: 1
-  businessDuration: 60
-  closingBufferTime: 10
-  timeSystem: {fileID: 488485076}
-  businessModeUIs:
-  - {fileID: 566806791}
-  businessModeScripts:
-  - {fileID: 223449910}
-  - {fileID: 960941628}
-  - {fileID: 1245938898}
-  - {fileID: 214549425}
-  - {fileID: 1467490832}
-  - {fileID: 172477628}
-  closedModeUIs:
-  - {fileID: 1587247544}
-  closedModeScripts: []
-  transitionImage: {fileID: 662831556}
-  transitionImageTransform: {fileID: 780997881}
-  transitionDuration: 1
-  resultUI: {fileID: 91129545}
-  resultConfirmButton: {fileID: 459965344}
-  gameResultUI: {fileID: 91129549}
-  businessMusicSource: {fileID: 923132076}
-  closedMusicSource: {fileID: 1339087914}
-  allowTimeFlow: 0
 --- !u!1 &1926203669
 GameObject:
   m_ObjectHideFlags: 0
@@ -35540,7 +35543,7 @@ Transform:
   - {fileID: 1104583576}
   - {fileID: 1287969745}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2021648107
 GameObject:
