@@ -1,38 +1,31 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.Rendering;
 
 public class DetectWall : MonoBehaviour
 {
-    [Header("設定")]
-    public Transform player;            // 玩家
-    public LayerMask wallLayer;         // 遮擋物圖層
-    [Range(0f, 1f)]
-    public float transparentAlpha = 0.3f;  // 透明度
-
-    // 追蹤已透明化物件與原材質
-    private Dictionary<Renderer, Material[]> originalMaterials = new Dictionary<Renderer, Material[]>();
-    private List<Renderer> transparentRenderers = new List<Renderer>();
+    public Transform player;         // 玩家物件
+    public LayerMask wallLayer;     // 牆壁圖層（遮擋物）
+    private List<GameObject> transparentObjects = new List<GameObject>(); // 透明物件清單
 
     void Update()
     {
         Vector3 dir = player.position - transform.position;
         float distance = dir.magnitude;
 
-        // 射線檢測遮擋
+        // 射線檢測（偵測多層遮擋）
         RaycastHit[] hits = Physics.RaycastAll(transform.position, dir.normalized, distance, wallLayer);
         bool playerVisible = hits.Length == 0;
 
-        // 若玩家不可見，將遮擋物設為透明
+        // 若有遮擋物，將它們設為透明
         if (!playerVisible)
         {
-            foreach (RaycastHit hit in hits)
+            foreach (RaycastHit h in hits)
             {
-                Renderer rend = hit.collider.GetComponent<Renderer>();
-                if (rend != null && !transparentRenderers.Contains(rend))
+                GameObject obj = h.collider.gameObject;
+                if (!transparentObjects.Contains(obj))
                 {
-                    SetTransparent(rend);
-                    transparentRenderers.Add(rend);
+                    SetObjectTransparent(obj, true);
+                    transparentObjects.Add(obj);
                 }
             }
         }
@@ -40,56 +33,47 @@ public class DetectWall : MonoBehaviour
         // 若玩家可見，恢復所有透明物件
         if (playerVisible)
         {
-            foreach (Renderer rend in transparentRenderers)
+            foreach (GameObject obj in transparentObjects)
             {
-                RestoreOriginalMaterial(rend);
+                SetObjectTransparent(obj, false);
             }
-            transparentRenderers.Clear();
+            transparentObjects.Clear();
         }
     }
 
-    void SetTransparent(Renderer rend)
+    void SetObjectTransparent(GameObject obj, bool isTransparent)
     {
-        // 保存原材質
-        if (!originalMaterials.ContainsKey(rend))
+        Renderer renderer = obj.GetComponent<Renderer>();
+        if (renderer == null) return;
+
+        Material mat = new Material(renderer.material); // 產生新材質，避免共用材質影響其他物件
+        Color color = mat.color;
+        color.a = isTransparent ? 0.3f : 1f;
+        mat.color = color;
+
+        // 設定材質為透明模式
+        if (isTransparent)
         {
-            Material[] matsCopy = new Material[rend.materials.Length];
-            for (int i = 0; i < rend.materials.Length; i++)
-            {
-                matsCopy[i] = new Material(rend.materials[i]);
-            }
-            originalMaterials[rend] = matsCopy;
+            mat.SetFloat("_Mode", 3); // 3=Transparent
+            mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            mat.SetInt("_ZWrite", 0);
+            mat.DisableKeyword("_ALPHATEST_ON");
+            mat.EnableKeyword("_ALPHABLEND_ON");
+            mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+            mat.renderQueue = 3000;
         }
-
-        // 修改材質為透明
-        Material[] mats = new Material[rend.materials.Length];
-        for (int i = 0; i < rend.materials.Length; i++)
+        else
         {
-            mats[i] = new Material(originalMaterials[rend][i]); // 複製原材質
-            SetURPTransparent(mats[i]);
+            mat.SetFloat("_Mode", 0); // 0=Opaque
+            mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+            mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
+            mat.SetInt("_ZWrite", 1);
+            mat.DisableKeyword("_ALPHATEST_ON");
+            mat.DisableKeyword("_ALPHABLEND_ON");
+            mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+            mat.renderQueue = 2000;
         }
-        rend.materials = mats;
-    }
-
-    void RestoreOriginalMaterial(Renderer rend)
-    {
-        if (originalMaterials.ContainsKey(rend))
-        {
-            rend.materials = originalMaterials[rend];
-            originalMaterials.Remove(rend);
-        }
-    }
-
-    void SetURPTransparent(Material mat)
-    {
-        mat.SetFloat("_Surface", 1f); // Transparent
-        mat.SetFloat("_Blend", 0f);
-        mat.SetInt("_ZWrite", 0);
-        mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
-        mat.renderQueue = (int)RenderQueue.Transparent;
-
-        Color c = mat.color;
-        c.a = transparentAlpha;
-        mat.color = c;
+        renderer.material = mat;
     }
 }
