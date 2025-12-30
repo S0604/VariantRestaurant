@@ -6,16 +6,12 @@ using System.Collections.Generic;
 public class TutorialDialogueController : MonoBehaviour
 {
     public static TutorialDialogueController Instance;
-    private FreeModeToggleManager modeManager;
 
     private void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
-
-        modeManager = FreeModeToggleManager.Instance;
     }
- 
 
     [Header("References")]
     public DialogueManager dialogueManager;
@@ -53,13 +49,6 @@ public class TutorialDialogueController : MonoBehaviour
 
     IEnumerator StartTutorialSequence()
     {
-        // ▶ 先檢查教學模式是否啟用
-        if (modeManager != null && !modeManager.TutorialModeActive)
-        {
-            dialogueCanvas.gameObject.SetActive(false);
-            yield break; // 教學模式沒開啟就直接跳過
-        }
-
         dialogueCanvas.gameObject.SetActive(true);
 
         // ▶ 播放第一章
@@ -69,22 +58,12 @@ public class TutorialDialogueController : MonoBehaviour
         yield return PlaySingleChapter(chapter2Name);
 
         dialogueCanvas.gameObject.SetActive(false);
-
-        // 標記已播放過教學
         PlayerPrefs.SetInt("HasPlayedTutorial", 1);
         PlayerPrefs.Save();
-
-        // 如果有 FreeModeToggleManager，結束教學後啟用時間流逝
-        if (modeManager != null)
-            modeManager.DisableTutorialMode(); // 教學結束，自由營業開始
     }
 
     public IEnumerator PlaySingleChapter(string chapterName)
     {
-        // 如果教學模式沒開啟，直接跳過
-        if (modeManager != null && !modeManager.TutorialModeActive)
-            yield break;
-
         dialogueCanvas.gameObject.SetActive(true);
 
         string path = $"DialogueData/Dialogue_{chapterName}";
@@ -98,8 +77,10 @@ public class TutorialDialogueController : MonoBehaviour
         dialogueManager.dialogueData = data;
         yield return dialogueManager.StartCoroutine(dialogueManager.PlayDialogueCoroutine());
 
+        /* 等 UI 完全關閉後才觸發事件 */
         dialogueCanvas.gameObject.SetActive(false);
 
+        // ✅ 對話「完全結束」才觸發事件（世界已解凍、UI 已關）
         TriggerChapterEndEvent(chapterName);
     }
     public void PlayChapter(string chapterName)
