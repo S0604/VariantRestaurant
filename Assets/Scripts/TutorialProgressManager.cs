@@ -1,13 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.Events;
 
 [System.Serializable]
 public class TutorialEvent
 {
     public string eventID;
     public bool isCompleted = false;
-    public UnityEvent onEventCompleted = new UnityEvent(); // ⭐ 關鍵修正
+    public UnityEngine.Events.UnityEvent onEventCompleted;
 }
 
 public class TutorialProgressManager : MonoBehaviour
@@ -18,7 +17,13 @@ public class TutorialProgressManager : MonoBehaviour
         get
         {
             if (_instance == null)
+            {
                 _instance = FindObjectOfType<TutorialProgressManager>();
+                if (_instance == null)
+                {
+                    // Debug.LogError("場景中沒有 TutorialProgressManager！");
+                }
+            }
             return _instance;
         }
     }
@@ -30,10 +35,9 @@ public class TutorialProgressManager : MonoBehaviour
     {
         if (_instance != null && _instance != this)
         {
-            Destroy(gameObject);
+            Destroy(gameObject); // 保證場景裡只有一個
             return;
         }
-
         _instance = this;
         InitializeDictionary();
     }
@@ -43,61 +47,38 @@ public class TutorialProgressManager : MonoBehaviour
         eventDict.Clear();
         foreach (var ev in tutorialEvents)
         {
-            if (ev == null || string.IsNullOrEmpty(ev.eventID))
-                continue;
-
-            if (!eventDict.ContainsKey(ev.eventID))
+            if (!string.IsNullOrEmpty(ev.eventID) && !eventDict.ContainsKey(ev.eventID))
                 eventDict.Add(ev.eventID, ev);
         }
     }
 
-    /* ---------- 對外 API ---------- */
-
-    /// <summary>
-    /// 完成一個教學事件
-    /// </summary>
     public void CompleteEvent(string eventID)
     {
-        if (string.IsNullOrEmpty(eventID)) return;
-
-        var ev = GetOrCreateEvent(eventID);
-
-        if (ev.isCompleted) return;
-
-        ev.isCompleted = true;
-        ev.onEventCompleted.Invoke();
-
-        Debug.Log($"[Tutorial] 事件完成: {eventID}");
+        Debug.Log($"嘗試完成事件: {eventID}");
+        if (eventDict.TryGetValue(eventID, out TutorialEvent ev))
+        {
+            Debug.Log($"找到事件: {ev.eventID}, 已完成: {ev.isCompleted}");
+            if (!ev.isCompleted)
+            {
+                ev.isCompleted = true;
+                ev.onEventCompleted?.Invoke();
+                Debug.Log($"[Tutorial] 事件完成: {eventID}");
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"[Tutorial] 找不到事件ID: {eventID}");
+        }
     }
 
-    /// <summary>
-    /// 詢問事件是否已完成
-    /// </summary>
     public bool IsEventCompleted(string eventID)
     {
-        return GetOrCreateEvent(eventID).isCompleted;
+        return eventDict.TryGetValue(eventID, out TutorialEvent ev) && ev.isCompleted;
     }
 
-    /// <summary>
-    /// 取得事件（一定不為 null）
-    /// </summary>
     public TutorialEvent GetEvent(string eventID)
     {
-        return GetOrCreateEvent(eventID);
-    }
-
-    /* ---------- 核心 ---------- */
-
-    private TutorialEvent GetOrCreateEvent(string eventID)
-    {
-        if (eventDict.TryGetValue(eventID, out var ev))
-            return ev;
-
-        ev = new TutorialEvent { eventID = eventID };
-        tutorialEvents.Add(ev);
-        eventDict.Add(eventID, ev);
-
-        Debug.LogWarning($"[Tutorial] 自動建立事件: {eventID}");
+        eventDict.TryGetValue(eventID, out TutorialEvent ev);
         return ev;
     }
 }
