@@ -11,7 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/GameSceneWei.unity
     guid: b9e2f5dbb0e95884fba9ba84b38f0543
-  - enabled: 1
+  - enabled: 0
     path: Assets/GameScene 1.unity
     guid: 4ffa3dd532413e64c80a561426c78f97
   - enabled: 1

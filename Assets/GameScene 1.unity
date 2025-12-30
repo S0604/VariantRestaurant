@@ -4049,6 +4049,11 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 90b7589ac20f6db458a9f06a3387b089, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 13f393c1d8659f14a956c55ad2c83b73, type: 3}
+--- !u!4 &221148987 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 13f393c1d8659f14a956c55ad2c83b73, type: 3}
+  m_PrefabInstance: {fileID: 221148986}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &221971016 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -1765422318703210981, guid: 13f393c1d8659f14a956c55ad2c83b73, type: 3}
@@ -4120,9 +4125,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minigameType: Burger
   maxEnergy: 6
+  currentEnergy: 0
   energyMask: {fileID: 120384700}
   energyBarUI: {fileID: 120384701}
   energySupplyItem: {fileID: 11400000, guid: 1077f2a4fa6bc164fb614c2de2e07b87, type: 2}
+  supplyContainer: {fileID: 0}
+  useUpgradeMaxEnergy: 1
+  refillEnergyWhenMaxEnergyChanges: 1
 --- !u!65 &223449911
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -13099,37 +13108,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelIcon: {fileID: 2068051955}
   experienceSlider: {fileID: 608673076}
-  levels:
-  - level: 1
-    requiredExp: 900
-    levelSprite: {fileID: 21300000, guid: cde4d1ee4b613884fab30d6476ea8401, type: 3}
-  - level: 2
-    requiredExp: 1620
-    levelSprite: {fileID: 21300000, guid: 014a8be2271cb6d4786bb3bf125b170b, type: 3}
-  - level: 3
-    requiredExp: 9999
-    levelSprite: {fileID: 21300000, guid: e505f7440271dd641b4f6f6e1d53b210, type: 3}
-  - level: 4
-    requiredExp: 55
-    levelSprite: {fileID: 21300000, guid: e505f7440271dd641b4f6f6e1d53b210, type: 3}
-  - level: 5
-    requiredExp: 70
-    levelSprite: {fileID: 21300000, guid: e505f7440271dd641b4f6f6e1d53b210, type: 3}
-  - level: 6
-    requiredExp: 85
-    levelSprite: {fileID: 21300000, guid: e505f7440271dd641b4f6f6e1d53b210, type: 3}
-  - level: 7
-    requiredExp: 100
-    levelSprite: {fileID: 21300000, guid: e505f7440271dd641b4f6f6e1d53b210, type: 3}
-  - level: 8
-    requiredExp: 115
-    levelSprite: {fileID: 21300000, guid: e505f7440271dd641b4f6f6e1d53b210, type: 3}
-  - level: 9
-    requiredExp: 130
-    levelSprite: {fileID: 21300000, guid: e505f7440271dd641b4f6f6e1d53b210, type: 3}
-  - level: 10
-    requiredExp: 145
-    levelSprite: {fileID: 21300000, guid: e505f7440271dd641b4f6f6e1d53b210, type: 3}
 --- !u!114 &767102104
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16032,9 +16010,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minigameType: Fries
   maxEnergy: 6
+  currentEnergy: 0
   energyMask: {fileID: 373612789}
   energyBarUI: {fileID: 373612790}
   energySupplyItem: {fileID: 11400000, guid: 1077f2a4fa6bc164fb614c2de2e07b87, type: 2}
+  supplyContainer: {fileID: 0}
+  useUpgradeMaxEnergy: 1
+  refillEnergyWhenMaxEnergyChanges: 1
 --- !u!65 &960941629
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -22013,9 +21995,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minigameType: Drink
   maxEnergy: 6
+  currentEnergy: 0
   energyMask: {fileID: 1409738661}
   energyBarUI: {fileID: 1409738659}
   energySupplyItem: {fileID: 11400000, guid: 1077f2a4fa6bc164fb614c2de2e07b87, type: 2}
+  supplyContainer: {fileID: 0}
+  useUpgradeMaxEnergy: 1
+  refillEnergyWhenMaxEnergyChanges: 1
 --- !u!65 &1245938899
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -28414,6 +28400,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1524763190}
   - component: {fileID: 1524763189}
+  - component: {fileID: 1524763191}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -28498,6 +28485,26 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!114 &1524763191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1524763188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Version: 1
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_LightLayerMask: 1
+  m_CustomShadowLayers: 0
+  m_ShadowLayerMask: 1
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
 --- !u!1 &1528004475
 GameObject:
   m_ObjectHideFlags: 0
@@ -30844,6 +30851,8 @@ MonoBehaviour:
     customerFlow: 0
     experience: 0
     level: 1
+    stars: 0
+  levelTable: {fileID: 0}
 --- !u!114 &1683407090
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31202,7 +31211,6 @@ MonoBehaviour:
   supplyBoxItem: {fileID: 11400000, guid: 1077f2a4fa6bc164fb614c2de2e07b87, type: 2}
   iconSpawnPoint: {fileID: 67449980}
   iconPrefab: {fileID: 2032836799}
-  supplyAmount: 999
 --- !u!65 &1708144030
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -33908,7 +33916,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8cfc1819e8302642b8af555664652a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tutorialModeActive: 0
   businessDuration: 60
   closingBufferTime: 10
   timeSystem: {fileID: 488485076}
@@ -37621,3 +37628,60 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2145753935}
   m_CullTransparentMesh: 1
+--- !u!1001 &3328215360986603649
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 221148987}
+    m_Modifications:
+    - target: {fileID: 2490391224991941530, guid: 01737fa92d34a4044a01a1fc7b117750, type: 3}
+      propertyPath: m_RootOrder
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 2490391224991941530, guid: 01737fa92d34a4044a01a1fc7b117750, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2490391224991941530, guid: 01737fa92d34a4044a01a1fc7b117750, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.00999999
+      objectReference: {fileID: 0}
+    - target: {fileID: 2490391224991941530, guid: 01737fa92d34a4044a01a1fc7b117750, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 30.830002
+      objectReference: {fileID: 0}
+    - target: {fileID: 2490391224991941530, guid: 01737fa92d34a4044a01a1fc7b117750, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.70710677
+      objectReference: {fileID: 0}
+    - target: {fileID: 2490391224991941530, guid: 01737fa92d34a4044a01a1fc7b117750, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2490391224991941530, guid: 01737fa92d34a4044a01a1fc7b117750, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.00000004470348
+      objectReference: {fileID: 0}
+    - target: {fileID: 2490391224991941530, guid: 01737fa92d34a4044a01a1fc7b117750, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 2490391224991941530, guid: 01737fa92d34a4044a01a1fc7b117750, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2490391224991941530, guid: 01737fa92d34a4044a01a1fc7b117750, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2490391224991941530, guid: 01737fa92d34a4044a01a1fc7b117750, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5724646964809192105, guid: 01737fa92d34a4044a01a1fc7b117750, type: 3}
+      propertyPath: m_Name
+      value: "\u5206\u9694\u7246"
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 01737fa92d34a4044a01a1fc7b117750, type: 3}
