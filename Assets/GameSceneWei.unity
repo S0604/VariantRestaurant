@@ -3161,7 +3161,7 @@ AudioSource:
   m_GameObject: {fileID: 181767329}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: -6450880506586049378, guid: f470a89b704be014e864bf94f35eccfa, type: 2}
+  OutputAudioMixerGroup: {fileID: -7593811083730735694, guid: 972bc746f70f4594d8a7ef17aeafb9ab, type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
@@ -6250,7 +6250,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8cfc1819e8302642b8af555664652a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tutorialModeActive: 1
+  tutorialModeActive: 0
   businessDuration: 60
   closingBufferTime: 10
   timeSystem: {fileID: 994564257}
@@ -15872,7 +15872,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 993669367}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 1.0269885}
+  m_LocalPosition: {x: 0, y: 0, z: -0.25}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -15882,7 +15882,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0.11799729, y: 1.26}
+  m_AnchoredPosition: {x: -0.48, y: 1.26}
   m_SizeDelta: {x: 10, y: 10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &993669369
@@ -30022,7 +30022,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1881258695}
   m_LocalRotation: {x: -0, y: 0.119187966, z: -0, w: 0.99287176}
-  m_LocalPosition: {x: -1340.874, y: -579.69, z: -15.798}
+  m_LocalPosition: {x: -1343.18, y: -579.69, z: -18.22}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -30944,7 +30944,7 @@ AudioSource:
   m_GameObject: {fileID: 1950535532}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 6098811022647258433, guid: 972bc746f70f4594d8a7ef17aeafb9ab, type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
@@ -31472,6 +31472,7 @@ GameObject:
   - component: {fileID: 1957782255}
   - component: {fileID: 1957782254}
   - component: {fileID: 1957782253}
+  - component: {fileID: 1957782256}
   m_Layer: 0
   m_Name: UIAudioManager
   m_TagString: Untagged
@@ -31488,7 +31489,7 @@ AudioSource:
   m_GameObject: {fileID: 1957782252}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 24300002, guid: be9778667798ece4aa43fa592649d760, type: 2}
+  OutputAudioMixerGroup: {fileID: -5265618466368156785, guid: 972bc746f70f4594d8a7ef17aeafb9ab, type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
@@ -31605,6 +31606,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 22
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1957782256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1957782252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22710a89c998ddf42b0df26aea790c11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mixer: {fileID: 24100000, guid: 972bc746f70f4594d8a7ef17aeafb9ab, type: 2}
+  masterParam: MasterVol
+  bgmParam: BGMVol
+  sfxParam: SFXVol
 --- !u!1 &1958667193
 GameObject:
   m_ObjectHideFlags: 0

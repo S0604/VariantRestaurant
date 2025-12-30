@@ -383,7 +383,7 @@ MonoBehaviour:
   pressAnyKeyText: {fileID: 317992240}
   skipAllButton: {fileID: 452816700}
   skipButtonLabelWhenLoading: 
-  nextSceneName: GameScene 1
+  nextSceneName: GameSceneWei
   showOnlyOncePerRun: 1
 --- !u!4 &324167980
 Transform:
@@ -409,7 +409,7 @@ AudioSource:
   m_GameObject: {fileID: 324167978}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 4982474232551309159, guid: 972bc746f70f4594d8a7ef17aeafb9ab, type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
