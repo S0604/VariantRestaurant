@@ -129,7 +129,7 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _LightColor: {r: 0, g: 0, b: 0, a: 0}
-    - _LightDir: {r: 1, g: 1, b: 1, a: 0}
+    - _LightDir: {r: 1, g: 2.49, b: 1, a: 0}
     - _LightDir_1: {r: 0, g: 0, b: 0, a: 0}
     - _NormalWS: {r: 0, g: 0, b: 0, a: 0}
     - _ShadowColor1: {r: 0.9701258, g: 0.9103774, b: 1, a: 1}
