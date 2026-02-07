@@ -3,11 +3,11 @@
 [CreateAssetMenu(fileName = "RecoverPatienceSkill", menuName = "Skills/Active/RecoverPatience")]
 public class RecoverPatienceSkill : ActiveSkill
 {
-    [Header("回復量")] public float recoverAmount = 6f;   // 當前耐心 +6
+    public float extraSeconds = 5f; // 要回復的秒數
 
     public override void Activate(GameObject player)
     {
-        Debug.Log($"⚡ 使用主動技：{skillName} → 回復顧客耐心 +{recoverAmount}");
+        Debug.Log($"⚡ 使用主動技：{skillName} → 回復顧客耐心 +{extraSeconds}s");
 
         // 找出場景中所有 CustomerPatience
         var customers = FindObjectsOfType<CustomerPatience>();
@@ -15,7 +15,7 @@ public class RecoverPatienceSkill : ActiveSkill
         {
             if (cp != null)
             {
-                cp.AddPatience(recoverAmount);   // 直接加血，已內建 Clamp
+                cp.AddExtraPatience(extraSeconds);
             }
         }
     }
