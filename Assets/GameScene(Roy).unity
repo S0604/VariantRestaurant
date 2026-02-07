@@ -535,6 +535,7 @@ MonoBehaviour:
   inventoryUI: {fileID: 305220807}
   GarbageItem: {fileID: 11400000, guid: f4a0791f29141d74aa2252155ba1893a, type: 2}
 <<<<<<< HEAD
+<<<<<<< HEAD
 --- !u!1 &16940305
 GameObject:
   m_ObjectHideFlags: 0
@@ -637,6 +638,8 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 16940305}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+=======
+>>>>>>> parent of a559d4e8 (merge test)
 =======
 >>>>>>> parent of a559d4e8 (merge test)
 --- !u!1 &29062817
@@ -956,7 +959,11 @@ MonoBehaviour:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 53297779}
 <<<<<<< HEAD
+<<<<<<< HEAD
   m_Enabled: 1
+=======
+  m_Enabled: 0
+>>>>>>> parent of a559d4e8 (merge test)
 =======
   m_Enabled: 0
 >>>>>>> parent of a559d4e8 (merge test)
@@ -1081,7 +1088,11 @@ RectTransform:
   - {fileID: 286839670}
   m_Father: {fileID: 1539484322}
 <<<<<<< HEAD
+<<<<<<< HEAD
   m_RootOrder: 6
+=======
+  m_RootOrder: 4
+>>>>>>> parent of a559d4e8 (merge test)
 =======
   m_RootOrder: 4
 >>>>>>> parent of a559d4e8 (merge test)
@@ -1165,7 +1176,11 @@ RectTransform:
   - {fileID: 656877989}
   m_Father: {fileID: 1131141786}
 <<<<<<< HEAD
+<<<<<<< HEAD
   m_RootOrder: 7
+=======
+  m_RootOrder: 4
+>>>>>>> parent of a559d4e8 (merge test)
 =======
   m_RootOrder: 4
 >>>>>>> parent of a559d4e8 (merge test)
@@ -1442,7 +1457,11 @@ RectTransform:
   - {fileID: 1915006383}
   m_Father: {fileID: 1131141786}
 <<<<<<< HEAD
+<<<<<<< HEAD
   m_RootOrder: 6
+=======
+  m_RootOrder: 3
+>>>>>>> parent of a559d4e8 (merge test)
 =======
   m_RootOrder: 3
 >>>>>>> parent of a559d4e8 (merge test)
@@ -1549,6 +1568,7 @@ CanvasRenderer:
   m_GameObject: {fileID: 88630311}
   m_CullTransparentMesh: 1
 <<<<<<< HEAD
+<<<<<<< HEAD
 --- !u!1 &92897285 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -6326806613165666306, guid: 09f0cfa0454d1bf469d0a53d19783858, type: 3}
@@ -1576,6 +1596,8 @@ MonoBehaviour:
   normalOutlineMat: {fileID: 2100000, guid: 3cfbd13c377fedc4da85022d91f1f197, type: 2}
   highlightOutlineMat: {fileID: 2100000, guid: df3353b69554c8847b32bf7a777403b8, type: 2}
   outlineSlotIndex: 1
+=======
+>>>>>>> parent of a559d4e8 (merge test)
 =======
 >>>>>>> parent of a559d4e8 (merge test)
 --- !u!1 &98630663
@@ -2907,6 +2929,7 @@ CanvasRenderer:
   m_GameObject: {fileID: 184889015}
   m_CullTransparentMesh: 1
 <<<<<<< HEAD
+<<<<<<< HEAD
 --- !u!1 &187628290
 GameObject:
   m_ObjectHideFlags: 0
@@ -2983,6 +3006,8 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 187628290}
   m_CullTransparentMesh: 1
+=======
+>>>>>>> parent of a559d4e8 (merge test)
 =======
 >>>>>>> parent of a559d4e8 (merge test)
 --- !u!1 &212163182
@@ -3197,6 +3222,7 @@ CanvasRenderer:
   m_GameObject: {fileID: 217973636}
   m_CullTransparentMesh: 1
 <<<<<<< HEAD
+<<<<<<< HEAD
 --- !u!1 &227866924
 GameObject:
   m_ObjectHideFlags: 0
@@ -3280,6 +3306,8 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 227866924}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+=======
+>>>>>>> parent of a559d4e8 (merge test)
 =======
 >>>>>>> parent of a559d4e8 (merge test)
 --- !u!1 &227954459
@@ -3591,7 +3619,11 @@ RectTransform:
   - {fileID: 573431501}
   m_Father: {fileID: 1131141786}
 <<<<<<< HEAD
+<<<<<<< HEAD
   m_RootOrder: 8
+=======
+  m_RootOrder: 5
+>>>>>>> parent of a559d4e8 (merge test)
 =======
   m_RootOrder: 5
 >>>>>>> parent of a559d4e8 (merge test)
@@ -5301,6 +5333,7 @@ Transform:
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 <<<<<<< HEAD
+<<<<<<< HEAD
 --- !u!1 &343929690 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -5296338130864350232, guid: 09f0cfa0454d1bf469d0a53d19783858, type: 3}
@@ -5328,6 +5361,8 @@ MonoBehaviour:
   normalOutlineMat: {fileID: 2100000, guid: 3cfbd13c377fedc4da85022d91f1f197, type: 2}
   highlightOutlineMat: {fileID: 2100000, guid: df3353b69554c8847b32bf7a777403b8, type: 2}
   outlineSlotIndex: 1
+=======
+>>>>>>> parent of a559d4e8 (merge test)
 =======
 >>>>>>> parent of a559d4e8 (merge test)
 --- !u!1 &365064363
@@ -5496,6 +5531,7 @@ AudioSource:
     m_PostInfinity: 2
     m_RotationOrder: 4
 <<<<<<< HEAD
+<<<<<<< HEAD
 --- !u!1 &398505298
 GameObject:
   m_ObjectHideFlags: 0
@@ -5574,6 +5610,8 @@ MonoBehaviour:
     localPosition: {x: -5, y: -10, z: 0}
     localEulerAngles: {x: -10, y: 45, z: -10}
     uniformScale: 18
+=======
+>>>>>>> parent of a559d4e8 (merge test)
 =======
 >>>>>>> parent of a559d4e8 (merge test)
 --- !u!1 &402523209
@@ -5711,7 +5749,11 @@ RectTransform:
   - {fileID: 1667342209}
   m_Father: {fileID: 1539484322}
 <<<<<<< HEAD
+<<<<<<< HEAD
   m_RootOrder: 4
+=======
+  m_RootOrder: 2
+>>>>>>> parent of a559d4e8 (merge test)
 =======
   m_RootOrder: 2
 >>>>>>> parent of a559d4e8 (merge test)
@@ -6433,7 +6475,11 @@ PrefabInstance:
     - target: {fileID: 886679895410656634, guid: b3d9cb82b50892d448fe244925f74cb8, type: 3}
       propertyPath: m_SizeDelta.y
 <<<<<<< HEAD
+<<<<<<< HEAD
       value: 20
+=======
+      value: 100
+>>>>>>> parent of a559d4e8 (merge test)
 =======
       value: 100
 >>>>>>> parent of a559d4e8 (merge test)
@@ -6885,7 +6931,11 @@ RectTransform:
   - {fileID: 1584910814}
   m_Father: {fileID: 1131141786}
 <<<<<<< HEAD
+<<<<<<< HEAD
   m_RootOrder: 4
+=======
+  m_RootOrder: 1
+>>>>>>> parent of a559d4e8 (merge test)
 =======
   m_RootOrder: 1
 >>>>>>> parent of a559d4e8 (merge test)
@@ -7128,6 +7178,7 @@ CanvasRenderer:
   m_GameObject: {fileID: 529770913}
   m_CullTransparentMesh: 1
 <<<<<<< HEAD
+<<<<<<< HEAD
 --- !u!1 &545498578
 GameObject:
   m_ObjectHideFlags: 0
@@ -7204,6 +7255,8 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 545498578}
   m_CullTransparentMesh: 1
+=======
+>>>>>>> parent of a559d4e8 (merge test)
 =======
 >>>>>>> parent of a559d4e8 (merge test)
 --- !u!1 &548769635
@@ -8645,6 +8698,7 @@ MonoBehaviour:
   sfxVolume: 1
   sharedSource: {fileID: 1508933431}
 <<<<<<< HEAD
+<<<<<<< HEAD
 --- !u!1 &625266337
 GameObject:
   m_ObjectHideFlags: 0
@@ -8721,6 +8775,8 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 625266337}
   m_CullTransparentMesh: 1
+=======
+>>>>>>> parent of a559d4e8 (merge test)
 =======
 >>>>>>> parent of a559d4e8 (merge test)
 --- !u!1 &626714118
@@ -10299,7 +10355,11 @@ PrefabInstance:
     - target: {fileID: 886679895410656634, guid: b3d9cb82b50892d448fe244925f74cb8, type: 3}
       propertyPath: m_SizeDelta.y
 <<<<<<< HEAD
+<<<<<<< HEAD
       value: 20
+=======
+      value: 100
+>>>>>>> parent of a559d4e8 (merge test)
 =======
       value: 100
 >>>>>>> parent of a559d4e8 (merge test)
@@ -11507,7 +11567,10 @@ MonoBehaviour:
   minigameType: Burger
   maxEnergy: 5
 <<<<<<< HEAD
+<<<<<<< HEAD
   highlighter: {fileID: 1478670325}
+=======
+>>>>>>> parent of a559d4e8 (merge test)
 =======
 >>>>>>> parent of a559d4e8 (merge test)
   currentEnergy: 0
@@ -11653,6 +11716,7 @@ CanvasRenderer:
   m_GameObject: {fileID: 837737693}
   m_CullTransparentMesh: 1
 <<<<<<< HEAD
+<<<<<<< HEAD
 --- !u!1 &841829835
 GameObject:
   m_ObjectHideFlags: 0
@@ -11767,6 +11831,8 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+=======
+>>>>>>> parent of a559d4e8 (merge test)
 =======
 >>>>>>> parent of a559d4e8 (merge test)
 --- !u!1 &855324449
@@ -13237,7 +13303,10 @@ MonoBehaviour:
   minigameType: Drink
   maxEnergy: 5
 <<<<<<< HEAD
+<<<<<<< HEAD
   highlighter: {fileID: 343929694}
+=======
+>>>>>>> parent of a559d4e8 (merge test)
 =======
 >>>>>>> parent of a559d4e8 (merge test)
   currentEnergy: 0
@@ -14340,7 +14409,11 @@ RectTransform:
   - {fileID: 940037546}
   m_Father: {fileID: 1539484322}
 <<<<<<< HEAD
+<<<<<<< HEAD
   m_RootOrder: 7
+=======
+  m_RootOrder: 5
+>>>>>>> parent of a559d4e8 (merge test)
 =======
   m_RootOrder: 5
 >>>>>>> parent of a559d4e8 (merge test)
@@ -15666,7 +15739,11 @@ MonoBehaviour:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1131141783}
 <<<<<<< HEAD
+<<<<<<< HEAD
   m_Enabled: 0
+=======
+  m_Enabled: 1
+>>>>>>> parent of a559d4e8 (merge test)
 =======
   m_Enabled: 1
 >>>>>>> parent of a559d4e8 (merge test)
@@ -15713,10 +15790,14 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
 <<<<<<< HEAD
+<<<<<<< HEAD
   - {fileID: 1132500595}
   - {fileID: 187628291}
   - {fileID: 1861783606}
   - {fileID: 398505299}
+=======
+  - {fileID: 1861783606}
+>>>>>>> parent of a559d4e8 (merge test)
 =======
   - {fileID: 1861783606}
 >>>>>>> parent of a559d4e8 (merge test)
@@ -15733,6 +15814,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
+<<<<<<< HEAD
 <<<<<<< HEAD
 --- !u!1 &1132500594
 GameObject:
@@ -15810,6 +15892,8 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1132500594}
   m_CullTransparentMesh: 1
+=======
+>>>>>>> parent of a559d4e8 (merge test)
 =======
 >>>>>>> parent of a559d4e8 (merge test)
 --- !u!1 &1140322394
@@ -16442,7 +16526,11 @@ RectTransform:
   - {fileID: 1408741891}
   m_Father: {fileID: 1539484322}
 <<<<<<< HEAD
+<<<<<<< HEAD
   m_RootOrder: 5
+=======
+  m_RootOrder: 3
+>>>>>>> parent of a559d4e8 (merge test)
 =======
   m_RootOrder: 3
 >>>>>>> parent of a559d4e8 (merge test)
@@ -17151,7 +17239,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1539484322}
 <<<<<<< HEAD
+<<<<<<< HEAD
   m_RootOrder: 2
+=======
+  m_RootOrder: 0
+>>>>>>> parent of a559d4e8 (merge test)
 =======
   m_RootOrder: 0
 >>>>>>> parent of a559d4e8 (merge test)
@@ -18410,6 +18502,7 @@ MonoBehaviour:
   queueManager: {fileID: 561398429}
   playerTransform: {fileID: 1872968722}
 <<<<<<< HEAD
+<<<<<<< HEAD
   baseReward: 10
   goodMultiplier: 1
   perfectMultiplier: 2
@@ -18420,6 +18513,8 @@ MonoBehaviour:
   applyProfitToExp: 1
   profitFallback: 1
   debugLog: 0
+=======
+>>>>>>> parent of a559d4e8 (merge test)
 =======
 >>>>>>> parent of a559d4e8 (merge test)
 --- !u!65 &1289302293
@@ -18898,11 +18993,15 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[1]
       value: 
 <<<<<<< HEAD
+<<<<<<< HEAD
       objectReference: {fileID: 2100000, guid: 3cfbd13c377fedc4da85022d91f1f197, type: 2}
     - target: {fileID: 2726377274205512825, guid: 09f0cfa0454d1bf469d0a53d19783858, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+=======
+      objectReference: {fileID: 2100000, guid: df3353b69554c8847b32bf7a777403b8, type: 2}
+>>>>>>> parent of a559d4e8 (merge test)
 =======
       objectReference: {fileID: 2100000, guid: df3353b69554c8847b32bf7a777403b8, type: 2}
 >>>>>>> parent of a559d4e8 (merge test)
@@ -20105,7 +20204,11 @@ GameObject:
   - component: {fileID: 1366755846}
   m_Layer: 5
 <<<<<<< HEAD
+<<<<<<< HEAD
   m_Name: "\u714E\u53F0"
+=======
+  m_Name: Button
+>>>>>>> parent of a559d4e8 (merge test)
 =======
   m_Name: Button
 >>>>>>> parent of a559d4e8 (merge test)
@@ -20221,6 +20324,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
 <<<<<<< HEAD
+<<<<<<< HEAD
       - m_Target: {fileID: 398505300}
         m_TargetAssemblyTypeName: UpgradeModelPreviewController, Assembly-CSharp
         m_MethodName: ShowById
@@ -20233,6 +20337,8 @@ MonoBehaviour:
           m_StringArgument: A
           m_BoolArgument: 0
         m_CallState: 2
+=======
+>>>>>>> parent of a559d4e8 (merge test)
 =======
 >>>>>>> parent of a559d4e8 (merge test)
 --- !u!114 &1366755849
@@ -21373,7 +21479,11 @@ RectTransform:
   - {fileID: 920984880}
   m_Father: {fileID: 1539484322}
 <<<<<<< HEAD
+<<<<<<< HEAD
   m_RootOrder: 3
+=======
+  m_RootOrder: 1
+>>>>>>> parent of a559d4e8 (merge test)
 =======
   m_RootOrder: 1
 >>>>>>> parent of a559d4e8 (merge test)
@@ -22095,6 +22205,7 @@ RectTransform:
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 <<<<<<< HEAD
+<<<<<<< HEAD
 --- !u!1 &1478670320 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5561383791887129644, guid: 09f0cfa0454d1bf469d0a53d19783858, type: 3}
@@ -22122,6 +22233,8 @@ MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 1713957546220471288, guid: 09f0cfa0454d1bf469d0a53d19783858, type: 3}
   m_PrefabInstance: {fileID: 1297424990}
   m_PrefabAsset: {fileID: 0}
+=======
+>>>>>>> parent of a559d4e8 (merge test)
 =======
 >>>>>>> parent of a559d4e8 (merge test)
 --- !u!1 &1479055835
@@ -22260,6 +22373,7 @@ CanvasRenderer:
   m_GameObject: {fileID: 1479055835}
   m_CullTransparentMesh: 1
 <<<<<<< HEAD
+<<<<<<< HEAD
 --- !u!1 &1484737603
 GameObject:
   m_ObjectHideFlags: 0
@@ -22296,6 +22410,8 @@ RectTransform:
   m_AnchoredPosition: {x: -2495.9, y: -42.4}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+=======
+>>>>>>> parent of a559d4e8 (merge test)
 =======
 >>>>>>> parent of a559d4e8 (merge test)
 --- !u!1 &1496849838
@@ -23112,7 +23228,11 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
 <<<<<<< HEAD
+<<<<<<< HEAD
   m_IsActive: 0
+=======
+  m_IsActive: 1
+>>>>>>> parent of a559d4e8 (merge test)
 =======
   m_IsActive: 1
 >>>>>>> parent of a559d4e8 (merge test)
@@ -23129,8 +23249,11 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
 <<<<<<< HEAD
+<<<<<<< HEAD
   - {fileID: 545498579}
   - {fileID: 625266338}
+=======
+>>>>>>> parent of a559d4e8 (merge test)
 =======
 >>>>>>> parent of a559d4e8 (merge test)
   - {fileID: 1218402492}
@@ -23181,7 +23304,11 @@ MonoBehaviour:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1539484321}
 <<<<<<< HEAD
+<<<<<<< HEAD
   m_Enabled: 0
+=======
+  m_Enabled: 1
+>>>>>>> parent of a559d4e8 (merge test)
 =======
   m_Enabled: 1
 >>>>>>> parent of a559d4e8 (merge test)
@@ -23500,7 +23627,11 @@ GameObject:
   - component: {fileID: 1584910815}
   m_Layer: 5
 <<<<<<< HEAD
+<<<<<<< HEAD
   m_Name: "\u98F2\u6599\u6A5F"
+=======
+  m_Name: Button (2)
+>>>>>>> parent of a559d4e8 (merge test)
 =======
   m_Name: Button (2)
 >>>>>>> parent of a559d4e8 (merge test)
@@ -23616,6 +23747,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
 <<<<<<< HEAD
+<<<<<<< HEAD
       - m_Target: {fileID: 398505300}
         m_TargetAssemblyTypeName: UpgradeModelPreviewController, Assembly-CSharp
         m_MethodName: ShowById
@@ -23628,6 +23760,8 @@ MonoBehaviour:
           m_StringArgument: C
           m_BoolArgument: 0
         m_CallState: 2
+=======
+>>>>>>> parent of a559d4e8 (merge test)
 =======
 >>>>>>> parent of a559d4e8 (merge test)
 --- !u!114 &1584910818
@@ -27038,6 +27172,7 @@ CanvasRenderer:
   m_GameObject: {fileID: 1816689811}
   m_CullTransparentMesh: 1
 <<<<<<< HEAD
+<<<<<<< HEAD
 --- !u!1 &1817166399
 GameObject:
   m_ObjectHideFlags: 0
@@ -27112,6 +27247,8 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1817166399}
   m_CullTransparentMesh: 1
+=======
+>>>>>>> parent of a559d4e8 (merge test)
 =======
 >>>>>>> parent of a559d4e8 (merge test)
 --- !u!1 &1817231431
@@ -27251,12 +27388,18 @@ MonoBehaviour:
   minInterval: 3
   specialCustomerChance: 0.2
 <<<<<<< HEAD
+<<<<<<< HEAD
   modeManager: {fileID: 53297780}
 =======
+=======
+>>>>>>> parent of a559d4e8 (merge test)
   modeManager: {fileID: 0}
   baseMaxCustomers: 5
   maxCustomers: 5
   maxIncreaseByPopularity: 13
+<<<<<<< HEAD
+>>>>>>> parent of a559d4e8 (merge test)
+=======
 >>>>>>> parent of a559d4e8 (merge test)
 --- !u!4 &1818951296
 Transform:
@@ -27387,7 +27530,10 @@ MonoBehaviour:
   minigameType: Fries
   maxEnergy: 5
 <<<<<<< HEAD
+<<<<<<< HEAD
   highlighter: {fileID: 92897289}
+=======
+>>>>>>> parent of a559d4e8 (merge test)
 =======
 >>>>>>> parent of a559d4e8 (merge test)
   currentEnergy: 0
@@ -27843,7 +27989,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1131141786}
 <<<<<<< HEAD
+<<<<<<< HEAD
   m_RootOrder: 5
+=======
+  m_RootOrder: 2
+>>>>>>> parent of a559d4e8 (merge test)
 =======
   m_RootOrder: 2
 >>>>>>> parent of a559d4e8 (merge test)
@@ -28049,7 +28199,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1131141786}
 <<<<<<< HEAD
+<<<<<<< HEAD
   m_RootOrder: 2
+=======
+  m_RootOrder: 0
+>>>>>>> parent of a559d4e8 (merge test)
 =======
   m_RootOrder: 0
 >>>>>>> parent of a559d4e8 (merge test)
@@ -28270,7 +28424,10 @@ Transform:
   m_Children:
   - {fileID: 1950661133}
 <<<<<<< HEAD
+<<<<<<< HEAD
   - {fileID: 227866925}
+=======
+>>>>>>> parent of a559d4e8 (merge test)
 =======
 >>>>>>> parent of a559d4e8 (merge test)
   m_Father: {fileID: 0}
@@ -28291,6 +28448,10 @@ MonoBehaviour:
   canMove: 1
   isCooking: 0
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+  isLocked: 0
+>>>>>>> parent of a559d4e8 (merge test)
 =======
   isLocked: 0
 >>>>>>> parent of a559d4e8 (merge test)
@@ -28850,6 +29011,7 @@ CanvasRenderer:
   m_GameObject: {fileID: 1894880337}
   m_CullTransparentMesh: 1
 <<<<<<< HEAD
+<<<<<<< HEAD
 --- !u!1 &1900522801
 GameObject:
   m_ObjectHideFlags: 0
@@ -28938,6 +29100,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding: {x: 0, y: 0, z: 0, w: 0}
   m_Softness: {x: 0, y: 0}
+=======
+>>>>>>> parent of a559d4e8 (merge test)
 =======
 >>>>>>> parent of a559d4e8 (merge test)
 --- !u!1 &1912617559
@@ -29236,7 +29400,11 @@ GameObject:
   - component: {fileID: 1927304016}
   m_Layer: 5
 <<<<<<< HEAD
+<<<<<<< HEAD
   m_Name: "\u6CB9\u70B8\u934B"
+=======
+  m_Name: Button (1)
+>>>>>>> parent of a559d4e8 (merge test)
 =======
   m_Name: Button (1)
 >>>>>>> parent of a559d4e8 (merge test)
@@ -29352,6 +29520,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
 <<<<<<< HEAD
+<<<<<<< HEAD
       - m_Target: {fileID: 398505300}
         m_TargetAssemblyTypeName: UpgradeModelPreviewController, Assembly-CSharp
         m_MethodName: ShowById
@@ -29364,6 +29533,8 @@ MonoBehaviour:
           m_StringArgument: B
           m_BoolArgument: 0
         m_CallState: 2
+=======
+>>>>>>> parent of a559d4e8 (merge test)
 =======
 >>>>>>> parent of a559d4e8 (merge test)
 --- !u!114 &1927304019
@@ -29834,7 +30005,11 @@ PrefabInstance:
     - target: {fileID: 886679895410656634, guid: b3d9cb82b50892d448fe244925f74cb8, type: 3}
       propertyPath: m_SizeDelta.y
 <<<<<<< HEAD
+<<<<<<< HEAD
       value: 20
+=======
+      value: 100
+>>>>>>> parent of a559d4e8 (merge test)
 =======
       value: 100
 >>>>>>> parent of a559d4e8 (merge test)
@@ -31017,6 +31192,7 @@ CanvasRenderer:
   m_GameObject: {fileID: 2042351754}
   m_CullTransparentMesh: 1
 <<<<<<< HEAD
+<<<<<<< HEAD
 --- !u!1 &2046163743
 GameObject:
   m_ObjectHideFlags: 0
@@ -31069,6 +31245,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding: {x: -345, y: -85, z: -325, w: -160}
   m_Softness: {x: 0, y: 0}
+=======
+>>>>>>> parent of a559d4e8 (merge test)
 =======
 >>>>>>> parent of a559d4e8 (merge test)
 --- !u!1 &2047796581
