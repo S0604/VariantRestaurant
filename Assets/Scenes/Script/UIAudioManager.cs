@@ -39,10 +39,10 @@ public class UIAudioManager : MonoBehaviour
     private void Update()
     {
         // 動態更新音量（可依需求刪除）
-        if (audioSource != null)
-        {
-            audioSource.volume = volume;
-        }
+        //if (audioSource != null)
+        //{
+          //  audioSource.volume = volume;
+       // }
     }
 
     public void PlayHoverSound()
