@@ -9,16 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5192bc02f0bc02a4e9694f735170d875, type: 3}
-  m_Name: LevelTable
+  m_Script: {fileID: 11500000, guid: 8e6292b2c06870d4495f009f912b9600, type: 3}
+  m_Name: Camera Profile 2
   m_EditorClassIdentifier: 
-  levels:
-  - level: 0
-    requiredExp: 0
-    levelSprite: {fileID: 0}
-  - level: 1
-    requiredExp: 0
-    levelSprite: {fileID: 0}
-  - level: 2
-    requiredExp: 0
-    levelSprite: {fileID: 0}
+  settings: []

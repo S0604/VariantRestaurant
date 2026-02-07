@@ -12,8 +12,9 @@ public class UpgradeRowUI_TMP : MonoBehaviour
     [SerializeField] private TMP_Text valueNextText;
     [SerializeField] private TMP_Text costText;
 
-    [Header("Button")]
+    [Header("Buttons")]
     [SerializeField] private Button upgradeButton;
+    [SerializeField] private Button resetButton;   // ★ 新增：單項重置（3A）
 
     private UpgradeDefinition def;
     private UpgradeManager upgMgr;
@@ -32,6 +33,12 @@ public class UpgradeRowUI_TMP : MonoBehaviour
         {
             upgradeButton.onClick.RemoveAllListeners();
             upgradeButton.onClick.AddListener(OnClickUpgrade);
+        }
+
+        if (resetButton) // ★ 綁定重置
+        {
+            resetButton.onClick.RemoveAllListeners();
+            resetButton.onClick.AddListener(OnClickReset);
         }
 
         RefreshTexts();
@@ -69,16 +76,30 @@ public class UpgradeRowUI_TMP : MonoBehaviour
 
     public void RefreshInteractable()
     {
-        if (!def || !upgMgr || upgradeButton == null) return;
+        if (!def || !upgMgr) return;
 
         int lv = upgMgr.GetLevel(def.type);
-        if (lv >= def.maxLevel) { upgradeButton.interactable = false; return; }
 
-        int cost = CalcCost(lv + 1);
-        var pd = PlayerData.Instance;
-        bool can = (pd == null) ? false : pd.CanAfford(cost);
+        if (upgradeButton)
+        {
+            if (lv >= def.maxLevel)
+            {
+                upgradeButton.interactable = false;
+            }
+            else
+            {
+                int cost = CalcCost(lv + 1);
+                var pd = PlayerData.Instance;
+                bool can = (pd != null && pd.CanAfford(cost));
+                upgradeButton.interactable = can;
+            }
+        }
 
-        upgradeButton.interactable = can;
+        if (resetButton)
+        {
+            // 重置鍵在 Lv>0 時可按
+            resetButton.interactable = (lv > 0);
+        }
     }
 
     void OnClickUpgrade()
@@ -95,9 +116,21 @@ public class UpgradeRowUI_TMP : MonoBehaviour
         // 真的升級
         upgMgr.SetLevel(def.type, lv + 1);
 
-        // 顯示立即更新
+        // 即時更新
         RefreshTexts();
         RefreshInteractable();
+    }
+
+    void OnClickReset()   // ★ 單列重置（3A）
+    {
+        if (!def || !upgMgr) return;
+
+        upgMgr.ResetUpgrade(def.type);
+        RefreshTexts();
+        RefreshInteractable();
+
+        // （可選）若你想刷新整個頁面排版，可呼叫：
+        // menu?.RebuildCurrentPage();
     }
 
     int CalcCost(int targetLevel)
@@ -105,8 +138,8 @@ public class UpgradeRowUI_TMP : MonoBehaviour
         // 成本： (base + add*(Lv-1)) * mul^(Lv-1)
         int steps = Mathf.Max(0, targetLevel - 1);
         float baseC = Mathf.Max(0, def.baseCost);
-        float add = Mathf.Max(0, def.perLevelAdd);
-        float mul = (def.perLevelMul <= 0f) ? 1f : def.perLevelMul;
+        float add = Mathf.Max(0, def.costPerLevelAdd);   // ← 注意這裡用的是 Cost 欄位
+        float mul = (def.costPerLevelMul <= 0f) ? 1f : def.costPerLevelMul;
 
         float v = (baseC + add * steps) * Mathf.Pow(mul, steps);
         return Mathf.CeilToInt(v);

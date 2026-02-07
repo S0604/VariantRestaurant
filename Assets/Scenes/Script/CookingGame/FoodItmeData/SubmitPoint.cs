@@ -10,20 +10,43 @@ public class SubmitPoint : MonoBehaviour
     public CustomerQueueManager queueManager;
     public Transform playerTransform;
 
+    [Header("Reward Settings")]
+    public int baseReward = 10;
+
+    [Header("Grade Multiplier")]
+    public int goodMultiplier = 1;
+    public int perfectMultiplier = 2;
+    public int mutatedMultiplier = 3;
+    public int badMultiplier = 1;
+    public int failMultiplier = 0;
+
+    [Header("Profit Multiplier (Upgrade)")]
+    public bool applyProfitToMoney = true;
+    public bool applyProfitToExp = true;
+    public float profitFallback = 1f;
+    public bool debugLog = false;
+
+    private float cachedProfitMult = 1f;
+
     void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
         RefreshReferences();
+
+        UpgradeManager.OnAnyLevelChanged += HandleAnyUpgradeChanged;
+        RefreshProfitMultiplierCache();
     }
 
     void OnDisable()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
+        UpgradeManager.OnAnyLevelChanged -= HandleAnyUpgradeChanged;
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         RefreshReferences();
+        RefreshProfitMultiplierCache();
     }
 
     void RefreshReferences()
@@ -56,12 +79,13 @@ public class SubmitPoint : MonoBehaviour
             TrySubmitOrder();
         }
     }
+
     void TrySubmitOrder()
     {
         var queue = queueManager.GetCurrentQueue();
         if (queue.Count == 0)
         {
-            Debug.Log("目前沒有顧客等待訂單");
+            if (debugLog) Debug.Log("目前沒有顧客等待訂單");
             return;
         }
 
@@ -69,13 +93,13 @@ public class SubmitPoint : MonoBehaviour
         var order = firstCustomer.GetComponent<CustomerOrder>();
         if (order == null || !order.IsOrderReady)
         {
-            Debug.Log("第一位顧客尚未準備好訂單");
+            if (debugLog) Debug.Log("第一位顧客尚未準備好訂單");
             return;
         }
 
         if (order.IsOrderComplete())
         {
-            Debug.Log("訂單已完成，顧客即將離開");
+            if (debugLog) Debug.Log("訂單已完成，顧客即將離開");
             return;
         }
 
@@ -84,86 +108,116 @@ public class SubmitPoint : MonoBehaviour
 
         foreach (var item in inventoryItems)
         {
-            if (order.selectedItems.Any(orderItem =>
-                orderItem.menuItem.itemTag == item.itemTag && !orderItem.isCompleted))
-            {
-                possibleItems.Add(item);
-            }
+            if (item == null) continue;
+
+            bool needed = order.selectedItems.Any(orderItem =>
+                orderItem != null &&
+                orderItem.menuItem != null &&
+                orderItem.menuItem.itemTag == item.itemTag &&
+                !orderItem.isCompleted);
+
+            if (needed) possibleItems.Add(item);
         }
 
         if (possibleItems.Count == 0)
         {
-            Debug.Log("物品欄中沒有顧客需要的餐點，無法提交");
+            if (debugLog) Debug.Log("物品欄中沒有顧客需要的餐點，無法提交");
             return;
         }
 
         int submittedCount = 0;
-        foreach (var item in possibleItems)
+
+        foreach (var item in possibleItems.ToList())
         {
-            foreach (var orderItem in order.selectedItems)
+            if (order.SubmitItem(item))
             {
-                if (orderItem.menuItem.itemTag == item.itemTag && !orderItem.isCompleted)
-                {
-                    orderItem.isCompleted = true;
-                    submittedCount++;
-                    InventoryManager.Instance.RemoveItem(item);
-                    break;
-                }
+                submittedCount++;
+                InventoryManager.Instance.RemoveItem(item);
             }
         }
 
-        Debug.Log($"提交了 {submittedCount} 份餐點給顧客");
-        OrderDisplayManager.Instance.UpdateOrderDisplayImagesForCustomer(firstCustomer);
+        if (debugLog) Debug.Log($"提交了 {submittedCount} 份餐點給顧客");
+        OrderDisplayManager.Instance?.UpdateOrderDisplayImagesForCustomer(firstCustomer);
 
         if (order.IsOrderComplete())
         {
-            Debug.Log("顧客訂單完成，顧客即將離開");
-
-            // ✅ 獎勵計算區
-            int baseReward = 10;
             int totalExp = 0;
             int totalPopularity = 0;
             int totalMoney = 0;
 
             foreach (var orderItem in order.selectedItems)
             {
-                int multiplier = 1;
-                switch (orderItem.menuItem.grade)
-                {
-                    case BaseMinigame.DishGrade.Perfect:
-                        multiplier = 2;
-                        break;
-                    case BaseMinigame.DishGrade.Good:
-                        multiplier = 1;
-                        break;
-                    case BaseMinigame.DishGrade.Mutated:
-                        multiplier = 3;
-                        break;
-                }
+                if (orderItem == null) continue;
 
-                int exp = baseReward * multiplier;
-                int pop = baseReward * multiplier;
-                int money = baseReward * multiplier;
+                int mult = GetMultiplierByGrade(orderItem.deliveredGrade);
+                int reward = baseReward * mult;
 
-                totalExp += exp;
-                totalPopularity += pop;
-                totalMoney += money;
-
-                // ✅ 新增 Debug
-                Debug.Log($"評級: {orderItem.menuItem.grade} 經驗: {exp} 人氣: {pop} 金錢: {money}");
+                totalExp += reward;
+                totalPopularity += reward;
+                totalMoney += reward;
             }
 
-            SessionRewardTracker.Instance.AddRewards(totalExp, totalPopularity, totalMoney);
-            SessionRewardTracker.Instance.AddCustomer(); // 增加客流量
+            float profitMult = cachedProfitMult;
+
+            if (applyProfitToExp)
+                totalExp = Mathf.RoundToInt(totalExp * profitMult);
+
+            if (applyProfitToMoney)
+                totalMoney = Mathf.RoundToInt(totalMoney * profitMult);
+
+            if (debugLog)
+            {
+                Debug.Log($"[SubmitReward] profitMult={profitMult}, applyExp={applyProfitToExp}, applyMoney={applyProfitToMoney}, exp={totalExp}, pop={totalPopularity}, money={totalMoney}");
+            }
+
+            SessionRewardTracker.Instance?.AddRewards(totalExp, totalPopularity, totalMoney);
+            SessionRewardTracker.Instance?.AddCustomer();
 
             StartCoroutine(DelayCustomerLeave(firstCustomer));
         }
+    }
 
-        IEnumerator DelayCustomerLeave(Customer customer)
+    int GetMultiplierByGrade(BaseMinigame.DishGrade grade)
+    {
+        switch (grade)
         {
-            yield return new WaitForSeconds(0.5f);
-            customer.ReceiveOrder();
-            queueManager.LeaveQueue(customer);
+            case BaseMinigame.DishGrade.Perfect: return Mathf.Max(0, perfectMultiplier);
+            case BaseMinigame.DishGrade.Good: return Mathf.Max(0, goodMultiplier);
+            case BaseMinigame.DishGrade.Bad: return Mathf.Max(0, badMultiplier);
+            case BaseMinigame.DishGrade.Mutated: return Mathf.Max(0, mutatedMultiplier);
+            default: return Mathf.Max(0, failMultiplier);
         }
+    }
+
+    void HandleAnyUpgradeChanged(UpgradeType type, int newLevel)
+    {
+        if (type != UpgradeType.ProfitMultiplier) return;
+        RefreshProfitMultiplierCache();
+    }
+
+    void RefreshProfitMultiplierCache()
+    {
+        float m = profitFallback;
+
+        var upg = UpgradeManager.Instance;
+        if (upg != null)
+        {
+            float v = upg.GetValue(UpgradeType.ProfitMultiplier);
+            if (v > 0f) m = v;
+        }
+
+        if (m <= 0f) m = 1f;
+        cachedProfitMult = m;
+
+        if (debugLog) Debug.Log($"[SubmitPoint] ProfitMultiplier cache updated: {cachedProfitMult}");
+    }
+
+    IEnumerator DelayCustomerLeave(Customer customer)
+    {
+        yield return new WaitForSeconds(0.5f);
+        if (customer == null) yield break;
+
+        customer.ReceiveOrder();
+        queueManager.LeaveQueue(customer);
     }
 }

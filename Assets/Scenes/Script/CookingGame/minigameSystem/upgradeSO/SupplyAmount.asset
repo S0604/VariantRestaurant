@@ -18,3 +18,10 @@ MonoBehaviour:
   baseValue: 4
   perLevelAdd: 1
   perLevelMul: 0
+  displayName: Supply Pickup Amount
+  description: "\u63D0\u5347\u6BCF\u6B21\u88DC\u7D66\u53EF\u88DC\u5145\u7684\u6578\u91CF\u3002"
+  valueUnit: 
+  category: 0
+  baseCost: 100
+  costPerLevelAdd: 100
+  costPerLevelMul: 1.5

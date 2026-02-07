@@ -9,6 +9,9 @@ public class PlayerStats
     public int customerFlow = 0;
     public int experience = 0;
     public int level = 1;
+
+    // ★ 新增：星級
+    public int stars = 0;
 }
 
 public class PlayerData : MonoBehaviour
@@ -20,7 +23,8 @@ public class PlayerData : MonoBehaviour
     public LevelTableSO levelTable; // ← 在 Inspector 指定
 
     public event Action OnStatsChanged;
-    public event Action<int> OnLevelUp; // 給音效/演出/UI
+    public event Action<int> OnLevelUp;   // 給音效/演出/UI
+    public event Action<int> OnStarsChanged; // ★ 新增：星級變更事件（可選）
 
     void Awake()
     {
@@ -43,11 +47,13 @@ public class PlayerData : MonoBehaviour
         if (!levelTable) return;
 
         int maxLv = levelTable.MaxLevel;
+
         // 連跳等
         while (stats.level < maxLv)
         {
             int need = levelTable.GetRequiredExp(stats.level);
             if (need <= 0 || stats.experience < need) break;
+
             stats.experience -= need;
             stats.level++;
             OnLevelUp?.Invoke(stats.level);
@@ -64,6 +70,7 @@ public class PlayerData : MonoBehaviour
 
     // 金錢與屬性 --------------------
     public bool CanAfford(int cost) => cost <= stats.money;
+
     public bool SpendMoney(int cost)
     {
         if (!CanAfford(cost)) return false;
@@ -71,9 +78,30 @@ public class PlayerData : MonoBehaviour
         NotifyStatsChanged();
         return true;
     }
+
     public void AddMoney(int amount) { stats.money += Mathf.Max(0, amount); NotifyStatsChanged(); }
     public void AddPopularity(int amount) { stats.popularity += amount; NotifyStatsChanged(); }
     public void AddCustomerFlow(int amount) { stats.customerFlow += amount; NotifyStatsChanged(); }
+
+    // ★ 星級（Stars）----------------
+    public int GetStars() => stats.stars;
+
+    public void AddStars(int amount)
+    {
+        if (amount == 0) return;
+        stats.stars = Mathf.Max(0, stats.stars + amount);
+        OnStarsChanged?.Invoke(stats.stars);
+        NotifyStatsChanged();
+    }
+
+    public void SetStars(int value)
+    {
+        value = Mathf.Max(0, value);
+        if (stats.stars == value) return;
+        stats.stars = value;
+        OnStarsChanged?.Invoke(stats.stars);
+        NotifyStatsChanged();
+    }
 
     // 事件 --------------------------
     private void NotifyStatsChanged() => OnStatsChanged?.Invoke();
