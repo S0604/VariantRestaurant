@@ -12,9 +12,6 @@ public class CookingStation : MonoBehaviour
     [Tooltip("Inspector 預設值；若有 WorkbenchMaxEnergy 定義，會以升級值覆蓋")]
     public int maxEnergy = 3;
 
-    [Header("Highlight")]
-    [SerializeField] private StationHighlighter_SwapOutlineMat highlighter;
-
     [SerializeField] private int currentEnergy;
 
     public Image energyMask;
@@ -30,13 +27,6 @@ public class CookingStation : MonoBehaviour
 
     [Tooltip("WorkbenchMaxEnergy 變更時是否回滿能量")]
     public bool refillEnergyWhenMaxEnergyChanges = true;
-
-    private void Awake()
-    {
-        if (!highlighter)
-            highlighter = GetComponentInChildren<StationHighlighter_SwapOutlineMat>(true);
-    }
-
 
     private void OnEnable()
     {
@@ -210,19 +200,12 @@ public class CookingStation : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
-        {
             playerInRange = true;
-            if (highlighter) highlighter.SetHighlight(true);
-        }
     }
 
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player"))
-        {
             playerInRange = false;
-            if (highlighter) highlighter.SetHighlight(false);
-        }
     }
-
 }

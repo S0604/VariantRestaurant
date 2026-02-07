@@ -107,11 +107,6 @@ public class CustomerOrder : MonoBehaviour
 
         // ★ 更安全：不要依賴 BaseMinigame.CurrentInstance（可能為 null）
         if (submittedItem.grade == BaseMinigame.DishGrade.Fail) return false;
-        if (InventoryManager.Instance != null && InventoryManager.Instance.GarbageItem != null
-            && submittedItem == InventoryManager.Instance.GarbageItem)
-        {
-            return false;
-        }
 
         foreach (var orderItem in selectedItems)
         {
