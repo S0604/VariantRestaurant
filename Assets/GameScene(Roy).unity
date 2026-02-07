@@ -952,7 +952,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 53297779}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e1d38fd8fd476b24c9978de058a704ca, type: 3}
   m_Name: 
@@ -18317,16 +18317,6 @@ MonoBehaviour:
   interactRange: 3
   queueManager: {fileID: 561398429}
   playerTransform: {fileID: 1872968722}
-  baseReward: 10
-  goodMultiplier: 1
-  perfectMultiplier: 2
-  mutatedMultiplier: 3
-  badMultiplier: 1
-  failMultiplier: 0
-  applyProfitToMoney: 1
-  applyProfitToExp: 1
-  profitFallback: 1
-  debugLog: 0
 --- !u!65 &1289302293
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -27113,7 +27103,10 @@ MonoBehaviour:
   maxInterval: 9
   minInterval: 3
   specialCustomerChance: 0.2
-  modeManager: {fileID: 53297780}
+  modeManager: {fileID: 0}
+  baseMaxCustomers: 5
+  maxCustomers: 5
+  maxIncreaseByPopularity: 13
 --- !u!4 &1818951296
 Transform:
   m_ObjectHideFlags: 0
@@ -28132,6 +28125,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canMove: 1
   isCooking: 0
+  isLocked: 0
 --- !u!114 &1872968724
 MonoBehaviour:
   m_ObjectHideFlags: 0
