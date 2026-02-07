@@ -15,13 +15,13 @@ MonoBehaviour:
   lines:
   - characterName: "\u7D05\u54B2"
     isLeftSide: 1
-    text: "\u554A\u555E\u555E!\u9019\u9053\u6599\u7406\u771F\u7CDF\u7CD5\u53EA\u80FD\u4E1F\u6389\u4E86"
-    portrait: {fileID: 21300000, guid: b398f0d8e787ec7438089abdd112ad4a, type: 3}
+    text: "\u554A\u555E\u555E!\u6599\u7406\u88FD\u4F5C\u5931\u6557\uFF0C\u53EA\u80FD\u628A\u5979\u8655\u7406\u6389\u4E86\u5462!"
+    portrait: {fileID: 21300000, guid: 099afeae3aef64846a3474bd18f189d7, type: 3}
     voiceClip: {fileID: 0}
     dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}
   - characterName: "\u7D05\u54B2"
     isLeftSide: 1
-    text: "\u5230\u5783\u573E\u6876\u524D\u5C07\u5B83\u8655\u7406\u597D\u5427!"
-    portrait: {fileID: 21300000, guid: b398f0d8e787ec7438089abdd112ad4a, type: 3}
+    text: "\u5230\u5783\u573E\u6876\u524D\u5C07\u5B83\u8655\u7406\u6389\u5427!"
+    portrait: {fileID: 21300000, guid: 099afeae3aef64846a3474bd18f189d7, type: 3}
     voiceClip: {fileID: 0}
     dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}

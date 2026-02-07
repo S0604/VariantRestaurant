@@ -27,7 +27,7 @@ public class Customer : MonoBehaviour
         if (targetCamera == null)
             targetCamera = Camera.main;
 
-        // ✅ 通知 ModeToggleManager 有新顧客
+        // 通知 ModeToggleManager 有新顧客
         ModeToggleManager.Instance?.RegisterCustomer(this);
     }
 
@@ -63,7 +63,6 @@ public class Customer : MonoBehaviour
             else if (!hasGeneratedOrder && !isLeaving)
             {
                 idleTimer += Time.deltaTime;
-
                 if (idleTimer >= 0.5f && customerOrder != null && menuDatabase != null)
                 {
                     customerOrder.GenerateOrder(menuDatabase, IsSpecialCustomer);
@@ -85,7 +84,7 @@ public class Customer : MonoBehaviour
     {
         if (ModeToggleManager.Instance != null && ModeToggleManager.Instance.IsClosingPhase)
         {
-            LeaveAndDespawn();
+            LeaveImmediately();
             return;
         }
 
@@ -107,70 +106,36 @@ public class Customer : MonoBehaviour
         idleTimer = 0f;
     }
 
-    public void LeaveAndDespawn()
-    {
-        if (isLeaving) return;
-
-        isLeaving = true;
-        CustomerQueueManager.Instance?.LeaveQueue(this);
-
-        if (agent != null && spawnPoint != null)
-        {
-            agent.SetDestination(spawnPoint.position);
-        }
-
-        StartCoroutine(WaitUntilOutOfViewOrReachedSpawnPointAndDestroy());
-    }
-
-    private IEnumerator WaitUntilOutOfViewOrReachedSpawnPointAndDestroy()
-    {
-        Renderer rend = GetComponentInChildren<Renderer>();
-        if (rend == null)
-        {
-            ModeToggleManager.Instance?.UnregisterCustomer(this);
-            Destroy(gameObject);
-            yield break;
-        }
-
-        while (true)
-        {
-            if (agent != null && !agent.pathPending && agent.remainingDistance <= agent.stoppingDistance && !agent.hasPath)
-            {
-                ModeToggleManager.Instance?.UnregisterCustomer(this);
-                Destroy(gameObject);
-                yield break;
-            }
-
-            Plane[] planes = GeometryUtility.CalculateFrustumPlanes(targetCamera);
-            Bounds bounds = rend.bounds;
-
-            if (!GeometryUtility.TestPlanesAABB(planes, bounds))
-            {
-                ModeToggleManager.Instance?.UnregisterCustomer(this);
-                Destroy(gameObject);
-                yield break;
-            }
-
-            yield return null;
-        }
-    }
     public void ReceiveOrder()
     {
         Debug.Log($"{gameObject.name} 收到餐點，立即離開");
-        LeaveAndDespawn();
+        LeaveImmediately();
     }
 
-    private IEnumerator LeaveAfterDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        LeaveAndDespawn();
-    }
+    // 強制離開並銷毀
     public void LeaveImmediately()
     {
-        CustomerQueueManager.Instance.LeaveQueue(this);
-        ModeToggleManager.Instance.UnregisterCustomer(this);
+        if (isLeaving) return;
+        isLeaving = true;
+
+        CustomerQueueManager.Instance?.LeaveQueue(this);
+        ModeToggleManager.Instance?.UnregisterCustomer(this);
+
+        if (agent != null && spawnPoint != null)
+            agent.SetDestination(spawnPoint.position);
+
         Destroy(gameObject);
     }
 
+    // 給 CustomerQueueManager 呼叫
+    public void ForceLeaveAndDespawn()
+    {
+        LeaveImmediately();
+    }
+    public void LeaveAndDespawn()
+    {
+        LeaveImmediately(); // 呼叫已有的強制離開方法
+    }
 
+    // 如果你之前有 ForceLeaveAndDespawn，也可以加一個
 }

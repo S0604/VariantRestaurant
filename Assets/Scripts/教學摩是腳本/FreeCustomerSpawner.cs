@@ -15,10 +15,21 @@ public class FreeCustomerSpawner : MonoBehaviour
             modeManager = FreeModeToggleManager.Instance;
     }
 
-    /// <summary>
-    /// 生成一位顧客（由外部手動呼叫）
-    /// </summary>
-    public void SpawnCustomer()
+    public static FreeCustomerSpawner Instance { get; private set; }
+
+    void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+    }    
+    // 需要跨場景就開啟
+    /// <summary>生成一位顧客（由外部呼叫）</summary>
+    public void SpawnCustomer(int index = -1)
     {
         if (modeManager == null || !modeManager.IsBusinessMode)
         {
@@ -32,18 +43,40 @@ public class FreeCustomerSpawner : MonoBehaviour
             return;
         }
 
-        // 隨機選擇生成點與顧客預置物
-        Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
-        GameObject prefab = customerPrefabs[Random.Range(0, customerPrefabs.Length)];
-
-        GameObject newCustomer = Instantiate(prefab, spawnPoint.position, Quaternion.identity);
-        Customer customerScript = newCustomer.GetComponent<Customer>();
-
-        if (customerScript != null)
+        /* 1. 依列表順序（index ≥ 0）→ 照順序 0→1→2→... */
+        if (index >= 0 && index < customerPrefabs.Length && index < spawnPoints.Length)
         {
-            customerScript.spawnPoint = spawnPoint;
+            Transform spawnPoint = spawnPoints[index];
+            GameObject prefab = customerPrefabs[index];
+            GameObject newCustomer = Instantiate(prefab, spawnPoint.position, Quaternion.identity);
+            Customer customerScript = newCustomer.GetComponent<Customer>();
+            if (customerScript != null)
+                customerScript.spawnPoint = spawnPoint;
+
+            Debug.Log($"✅ 依序生成顧客（序號 {index}）：{newCustomer.name} 於 {spawnPoint.name}");
+            return;
         }
 
-        Debug.Log($"✅ 已生成顧客：{newCustomer.name} 於 {spawnPoint.name}");
+        /* 2. 沒給 index → 隨機 */
+        int prefabIndex = Random.Range(0, customerPrefabs.Length);
+        int spawnIndex = Random.Range(0, spawnPoints.Length);
+        Transform randomSpawn = spawnPoints[spawnIndex];
+        GameObject randomPrefab = customerPrefabs[prefabIndex];
+        GameObject randomCustomer = Instantiate(randomPrefab, randomSpawn.position, Quaternion.identity);
+        Customer randomScript = randomCustomer.GetComponent<Customer>();
+        if (randomScript != null)
+            randomScript.spawnPoint = randomSpawn;
+
+        Debug.Log($"✅ 隨機生成顧客：{randomCustomer.name} 於 {randomSpawn.name}");
+    }
+
+    /// <summary>依列表順序生成多名顧客</summary>
+    public void SpawnCustomersInOrder(int count)
+    {
+        count = Mathf.Min(count, customerPrefabs.Length, spawnPoints.Length);
+        for (int i = 0; i < count; i++)
+        {
+            SpawnCustomer(i);   // 強制依序 0→1→2→...
+        }
     }
 }

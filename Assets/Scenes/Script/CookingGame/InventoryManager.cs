@@ -1,23 +1,29 @@
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System.IO;
 
 public class InventoryManager : MonoBehaviour
 {
     public static InventoryManager Instance { get; private set; }
 
+    [Header("èƒŒåŒ…è¨­å®š")]
     [SerializeField] private int maxSlots = 2;
     [SerializeField] private InventoryUI inventoryUI;
+    [SerializeField] private MenuItem GarbageItem; // Inspector æ‹–å…¥åƒåœ¾æ¨¡æ¿
 
     private List<MenuItem> items = new List<MenuItem>();
     public IReadOnlyList<MenuItem> Items => items;
 
     public static event System.Action<List<MenuItem>> OnInventoryChanged;
     public static event System.Action<MenuItem> OnItemAdded;
-    private List<MenuItem> inventoryItems = new List<MenuItem>();
 
-    public MenuItem GarbageItem; // ³]©w©U§£ MenuItem
+    /* ===== é¦–æ¬¡æ¨™è¨˜ ===== */
+    private static bool firstItemEverGot = false;
+    private static bool firstDishGot = false;
+    private static bool firstGarbageGot = false;
+    private static bool firstFries002Got = false;
+    /* ==================== */
 
     private void Awake()
     {
@@ -29,58 +35,49 @@ public class InventoryManager : MonoBehaviour
         Instance = this;
     }
 
-    // === ®Ö¤ß¥\¯à ===
-
+    /* ===== æ–°å¢ç‰©å“ ===== */
     public bool AddItem(MenuItem newItem)
     {
         if (items.Count >= maxSlots)
         {
-            Debug.Log("­I¥]¤wº¡¡AµLªk¥[¤J·sª««~");
+            Debug.Log("èƒŒåŒ…å·²æ»¿ï¼Œç„¡æ³•æ”¾å…¥æ–°é“å…·");
             return false;
         }
 
         items.Add(newItem);
         NotifyInventoryChanged();
-
-        // ¡¹ Ä²µo³æµ§·s¼W¨Æ¥ó
         OnItemAdded?.Invoke(newItem);
+        Debug.Log($"æ”¾å…¥æ–°é“å…·ï¼š{newItem.name}");
 
-        Debug.Log($"¥[¤J·sª««~¡G{newItem.name}");
+        CheckFirstItems(newItem);
         return true;
     }
 
-
-    // ¡¹ ·s¼W¡Gª½±µ¥Î Sprite «Ø¥ß¤@­ÓÁ{®É MenuItem ¥[¤J¡]µ¹ Burger Â^¨ú¡^
     public void AddItemFromSprite(Sprite sprite, string itemName, string itemTag, BaseMinigame.DishGrade grade)
     {
         if (items.Count >= maxSlots)
         {
-            Debug.Log("­I¥]¤wº¡¡AµLªk¥[¤J·sª««~¡]Sprite¡^");
+            Debug.Log("èƒŒåŒ…å·²æ»¿ï¼Œç„¡æ³•æ”¾å…¥æ–°æ‹ç…§é“å…·");
             return;
         }
 
-        var newItem = ScriptableObject.CreateInstance<MenuItem>();
-        newItem.itemName = itemName;
-        newItem.itemTag = itemTag;
+        MenuItem newItem = ScriptableObject.CreateInstance<MenuItem>();
+        newItem.itemName = string.IsNullOrEmpty(itemName) ? "Burger" : itemName;
+        newItem.itemTag = string.IsNullOrEmpty(itemTag) ? "Burger" : itemTag;
         newItem.grade = grade;
         newItem.itemImage = sprite;
 
         items.Add(newItem);
         NotifyInventoryChanged();
-
-        // ¡¹ Ä²µo³æµ§·s¼W¨Æ¥ó
         OnItemAdded?.Invoke(newItem);
+        Debug.Log("æ”¾å…¥æ‹ç…§é“å…·ï¼š" + newItem.itemName);
 
-        Debug.Log($"¥[¤Jª««~¡]Sprite¡^¡G{itemName}");
+        CheckFirstItems(newItem);
     }
 
     public void AddItemFromTexture(Texture2D texture, string itemName)
     {
-        if (items.Count >= maxSlots)
-        {
-            Debug.Log("­I¥]¤wº¡¡AµLªk¥[¤J·s¹Ï¤ùª««~");
-            return;
-        }
+        if (items.Count >= maxSlots) return;
 
         MenuItem newItem = ScriptableObject.CreateInstance<MenuItem>();
         newItem.itemName = itemName;
@@ -88,24 +85,52 @@ public class InventoryManager : MonoBehaviour
         newItem.grade = BaseMinigame.DishGrade.Perfect;
 
         Rect rect = new Rect(0, 0, texture.width, texture.height);
-        Vector2 pivot = new Vector2(0.5f, 0.5f);
-        Sprite sprite = Sprite.Create(texture, rect, pivot);
+        Sprite sprite = Sprite.Create(texture, rect, new Vector2(0.5f, 0.5f));
         newItem.itemImage = sprite;
 
         items.Add(newItem);
         NotifyInventoryChanged();
-
-        // ¡¹ Ä²µo³æµ§·s¼W¨Æ¥ó
         OnItemAdded?.Invoke(newItem);
 
-        Debug.Log("¥[¤JºI¹Ïª««~¡G" + itemName);
+        CheckFirstItems(newItem);
     }
 
-    public bool HasItemByTag(string tag)
+    /* ===== æª¢æŸ¥é¦–æ¬¡ç‰©å“äº‹ä»¶ ===== */
+    private void CheckFirstItems(MenuItem newItem)
     {
-        return items.Exists(item => item.itemTag == tag);
+        bool isGarbage = newItem.grade == BaseMinigame.DishGrade.Fail || newItem == GarbageItem;
+
+        // ç¬¬ä¸€æ¬¡ç²å¾—ä»»ä½•ç‰©å“ â†’ è§£é– Get garbage
+        if (!firstItemEverGot)
+        {
+            firstItemEverGot = true;
+            TutorialProgressManager.Instance?.CompleteEvent("Get garbage");
+        }
+
+        // ç¬¬ä¸€æ¬¡æ‹¿ Fries 002 â†’ å°è©±8 + ç”Ÿæˆ4é¡§å®¢
+        if (!firstFries002Got && newItem.itemName == "Fries" && newItem.itemTag == "002")
+        {
+            firstFries002Got = true;
+            StartCoroutine(Spawn4CustomersAfterDialogue());
+        }
+
+        // ç¬¬ä¸€æ¬¡æ‹¿éåƒåœ¾æ–™ç† â†’ å°è©±6 + Unlock French Fries
+        if (!firstDishGot && !isGarbage)
+        {
+            firstDishGot = true;
+            TutorialDialogueController.Instance?.PlayChapter("6");
+            TutorialProgressManager.Instance?.CompleteEvent("Unlock French Fries");
+        }
+
+        // ç¬¬ä¸€æ¬¡æ‹¿åƒåœ¾ â†’ æ’­ 6_1
+        if (!firstGarbageGot && newItem.itemName == "Garbage" && newItem.itemTag == "004")
+        {
+            firstGarbageGot = true;
+            TutorialDialogueController.Instance?.PlayChapter("6_1");
+        }
     }
 
+    /* ===== ç§»é™¤ç‰©å“ ===== */
     public bool RemoveItemByTag(string tag)
     {
         var item = items.Find(i => i.itemTag == tag);
@@ -133,32 +158,30 @@ public class InventoryManager : MonoBehaviour
     public void ClearItems()
     {
         items.Clear();
-        Debug.Log("ª±®a­I¥]¤w²MªÅ");
+        Debug.Log("èƒŒåŒ…å·²æ¸…ç©º");
         NotifyInventoryChanged();
     }
 
-    public bool HasGarbage()
-    {
-        return items.Exists(item => item == GarbageItem || item.grade == BaseMinigame.DishGrade.Fail);
-    }
-
-    public bool HasItem(MenuItem item)
-    {
-        return items.Contains(item);
-    }
-
-    private void NotifyInventoryChanged()
-    {
-        OnInventoryChanged?.Invoke(new List<MenuItem>(items));
-    }
-
-    // === ¬°¤F¬Û®eÂÂµ{¦¡½X·s¼Wªº API ===
-
+    /* ===== æŸ¥è©¢ ===== */
+    public bool HasItem(MenuItem item) => items.Contains(item);
+    public bool HasItemByTag(string tag) => items.Exists(i => i.itemTag == tag);
+    public bool HasGarbage() => items.Exists(i => i == GarbageItem || i.grade == BaseMinigame.DishGrade.Fail);
+    public List<MenuItem> GetItems() => new List<MenuItem>(items);
+    public int GetItemCount() => items.Count;
     public void ClearInventory() => ClearItems();
 
-    public List<MenuItem> GetItems() => new List<MenuItem>(items);
+    private void NotifyInventoryChanged() => OnInventoryChanged?.Invoke(new List<MenuItem>(items));
 
-    public List<MenuItem> GetAllItems() => GetItems();
+    /* ===== å°è©±8çµæŸå¾Œç”Ÿæˆ4é¡§å®¢ ===== */
+    private IEnumerator Spawn4CustomersAfterDialogue()
+    {
+        if (TutorialDialogueController.Instance != null)
+            yield return TutorialDialogueController.Instance.PlaySingleChapter("8");
 
-    public int GetItemCount() => items.Count;
+        var spawner = FreeCustomerSpawner.Instance;
+        if (spawner == null) yield break;
+
+        for (int i = 0; i < 4; i++)
+            spawner.SpawnCustomer(i);
+    }
 }

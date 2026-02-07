@@ -21,7 +21,7 @@ public class TutorialProgressManager : MonoBehaviour
                 _instance = FindObjectOfType<TutorialProgressManager>();
                 if (_instance == null)
                 {
-                   // Debug.LogError("場景中沒有 TutorialProgressManager！");
+                    // Debug.LogError("場景中沒有 TutorialProgressManager！");
                 }
             }
             return _instance;

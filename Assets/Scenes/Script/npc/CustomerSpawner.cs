@@ -14,7 +14,7 @@ public class CustomerSpawner : MonoBehaviour
     public float specialCustomerChance = 0.1f; // ✅ 特殊顧客出現機率
 
     [Header("營業時間來源")]
-    public ModeToggleManager modeManager;
+    public FreeModeToggleManager modeManager;
 
     private float timer;
     private float totalGameDuration;
@@ -32,7 +32,7 @@ public class CustomerSpawner : MonoBehaviour
         else
         {
             totalGameDuration = 180f;
-            Debug.LogWarning("未指定 ModeToggleManager，使用預設時間");
+            Debug.LogWarning("未指定 FreeModeToggleManager，使用預設時間");
         }
     }
 
@@ -40,18 +40,22 @@ public class CustomerSpawner : MonoBehaviour
     {
         if (modeManager == null) return;
 
-        // 🛑 關店準備階段不再生成顧客
-        if (modeManager.RemainingBusinessTime > 10f)
-        {
-            timer += Time.deltaTime;
-            gameTime += Time.deltaTime;
+        // 🛑 時間禁止時不生成顧客
+        if (!modeManager.AllowTimeFlow || !modeManager.IsBusinessMode)
+            return;
 
-            float currentInterval = GetCurrentSpawnInterval();
-            if (timer >= currentInterval)
-            {
-                SpawnCustomer();
-                timer = 0f;
-            }
+        // 🛑 關店準備階段不再生成顧客
+        if (modeManager.RemainingBusinessTime <= modeManager.closingBufferTime)
+            return;
+
+        timer += Time.deltaTime;
+        gameTime += Time.deltaTime;
+
+        float currentInterval = GetCurrentSpawnInterval();
+        if (timer >= currentInterval)
+        {
+            SpawnCustomer();
+            timer = 0f;
         }
     }
 
@@ -59,9 +63,7 @@ public class CustomerSpawner : MonoBehaviour
     {
         float t = Mathf.Clamp01(gameTime / totalGameDuration);
         float peakCurve = -4 * Mathf.Pow(t - 0.5f, 2) + 1;
-        float baseInterval = Mathf.Lerp(maxInterval, minInterval, peakCurve);
         return Mathf.Lerp(maxInterval, minInterval, peakCurve);
-
     }
 
     void SpawnCustomer()
@@ -75,7 +77,6 @@ public class CustomerSpawner : MonoBehaviour
         Transform chosenSpawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
 
         bool specialCustomerExists = GameObject.FindWithTag("SpecialCustomer") != null;
-
         GameObject prefabToSpawn;
 
         if (!specialCustomerExists && specialCustomerPrefabs.Length > 0 && Random.value < specialCustomerChance)
@@ -96,13 +97,10 @@ public class CustomerSpawner : MonoBehaviour
         }
 
         GameObject customer = Instantiate(prefabToSpawn, chosenSpawnPoint.position, Quaternion.identity);
-
         Customer customerScript = customer.GetComponent<Customer>();
         if (customerScript != null)
         {
             customerScript.spawnPoint = chosenSpawnPoint;
         }
-
-        // ❌ 不再觸發特殊顧客效果，交由觸發區域判斷
     }
 }
