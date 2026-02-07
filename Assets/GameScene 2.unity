@@ -33908,7 +33908,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8cfc1819e8302642b8af555664652a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tutorialModeActive: 0
+  tutorialModeActive: 1
   businessDuration: 60
   closingBufferTime: 10
   timeSystem: {fileID: 488485076}
