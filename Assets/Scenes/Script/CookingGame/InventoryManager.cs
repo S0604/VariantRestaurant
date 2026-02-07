@@ -1,27 +1,28 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System.IO;
-using System.Collections;
 
 public class InventoryManager : MonoBehaviour
 {
     public static InventoryManager Instance { get; private set; }
 
+    [Header("背包設定")]
     [SerializeField] private int maxSlots = 2;
     [SerializeField] private InventoryUI inventoryUI;
-    [SerializeField] private MenuItem GarbageItem;        // 在 Inspector 拖入垃圾模板
+    [SerializeField] private MenuItem GarbageItem; // Inspector 拖入垃圾模板
 
     private List<MenuItem> items = new List<MenuItem>();
     public IReadOnlyList<MenuItem> Items => items;
 
     public static event System.Action<List<MenuItem>> OnInventoryChanged;
+    public static event System.Action<MenuItem> OnItemAdded;
 
     /* ===== 首次標記 ===== */
-    private static bool firstItemEverGot = false;   // 第一次獲得「任何」物品
-    private static bool firstDishGot = false;   // 第一次非垃圾料理（保留原功能）
-    private static bool firstGarbageGot = false;   // 第一次拿垃圾
-    private static bool firstFries002Got = false;   // 第一次拿 Fries 002
+    private static bool firstItemEverGot = false;
+    private static bool firstDishGot = false;
+    private static bool firstGarbageGot = false;
+    private static bool firstFries002Got = false;
     /* ==================== */
 
     private void Awake()
@@ -34,50 +35,7 @@ public class InventoryManager : MonoBehaviour
         Instance = this;
     }
 
-    /* 通用首次檢查 */
-    private void CheckFirstItems(MenuItem newItem)
-    {
-        bool isGarbage = newItem.grade == BaseMinigame.DishGrade.Fail || newItem == GarbageItem;
-
-        /* 1. 第一次獲得「任何物品」→ 只解鎖 Get garbage（不播對話）*/
-        if (!firstItemEverGot)
-        {
-            firstItemEverGot = true;
-            TutorialProgressManager.Instance?.CompleteEvent("Get garbage");
-            // 不播對話，只解鎖
-        }
-
-        /* 2. 第一次拿「Fries & 002」→ 對話8 + 依序生成4顧客（只一次）*/
-        if (!firstFries002Got && newItem.itemName == "Fries" && newItem.itemTag == "002")
-        {
-            firstFries002Got = true;
-            /* ===== 對話8 結束瞬間 → 依序生成4顧客（只一次）===== */
-            StartCoroutine(Spawn4CustomersAfterDialogue());
-        }
-
-        /* 3. 第一次拿「非垃圾料理」→ 保留對話6 + 解鎖 Successfully prepared the dish」*/
-        if (!firstDishGot && !isGarbage)
-        {
-            firstDishGot = true;
-            if (TutorialDialogueController.Instance != null)
-                TutorialDialogueController.Instance.PlayChapter("6");
-            if (TutorialProgressManager.Instance != null)
-                TutorialProgressManager.Instance.CompleteEvent("Unlock French Fries");
-        }
-
-        /* 4. 第一次拿「垃圾」→ 只播 6_1（不解鎖，避免重複）*/
-        if (!firstGarbageGot && newItem.itemName == "Garbage" && newItem.itemTag == "004")
-        {
-            firstGarbageGot = true;
-            TutorialDialogueController.Instance?.PlayChapter("6_1");
-            // 不再解鎖 Get garbage
-        }
-        /* 5. 背包滿 → 不再觸發任何事件或對話 */
-        // 留空，什麼都不做
-    }
-
-    /* --------------- 對外 API --------------- */
-
+    /* ===== 新增物品 ===== */
     public bool AddItem(MenuItem newItem)
     {
         if (items.Count >= maxSlots)
@@ -88,6 +46,7 @@ public class InventoryManager : MonoBehaviour
 
         items.Add(newItem);
         NotifyInventoryChanged();
+        OnItemAdded?.Invoke(newItem);
         Debug.Log($"放入新道具：{newItem.name}");
 
         CheckFirstItems(newItem);
@@ -110,6 +69,7 @@ public class InventoryManager : MonoBehaviour
 
         items.Add(newItem);
         NotifyInventoryChanged();
+        OnItemAdded?.Invoke(newItem);
         Debug.Log("放入拍照道具：" + newItem.itemName);
 
         CheckFirstItems(newItem);
@@ -130,12 +90,47 @@ public class InventoryManager : MonoBehaviour
 
         items.Add(newItem);
         NotifyInventoryChanged();
+        OnItemAdded?.Invoke(newItem);
 
         CheckFirstItems(newItem);
     }
 
-    public bool HasItemByTag(string tag) => items.Exists(item => item.itemTag == tag);
+    /* ===== 檢查首次物品事件 ===== */
+    private void CheckFirstItems(MenuItem newItem)
+    {
+        bool isGarbage = newItem.grade == BaseMinigame.DishGrade.Fail || newItem == GarbageItem;
 
+        // 第一次獲得任何物品 → 解鎖 Get garbage
+        if (!firstItemEverGot)
+        {
+            firstItemEverGot = true;
+            TutorialProgressManager.Instance?.CompleteEvent("Get garbage");
+        }
+
+        // 第一次拿 Fries 002 → 對話8 + 生成4顧客
+        if (!firstFries002Got && newItem.itemName == "Fries" && newItem.itemTag == "002")
+        {
+            firstFries002Got = true;
+            StartCoroutine(Spawn4CustomersAfterDialogue());
+        }
+
+        // 第一次拿非垃圾料理 → 對話6 + Unlock French Fries
+        if (!firstDishGot && !isGarbage)
+        {
+            firstDishGot = true;
+            TutorialDialogueController.Instance?.PlayChapter("6");
+            TutorialProgressManager.Instance?.CompleteEvent("Unlock French Fries");
+        }
+
+        // 第一次拿垃圾 → 播 6_1
+        if (!firstGarbageGot && newItem.itemName == "Garbage" && newItem.itemTag == "004")
+        {
+            firstGarbageGot = true;
+            TutorialDialogueController.Instance?.PlayChapter("6_1");
+        }
+    }
+
+    /* ===== 移除物品 ===== */
     public bool RemoveItemByTag(string tag)
     {
         var item = items.Find(i => i.itemTag == tag);
@@ -167,30 +162,26 @@ public class InventoryManager : MonoBehaviour
         NotifyInventoryChanged();
     }
 
-    public bool HasGarbage() => items.Exists(item => item == GarbageItem || item.grade == BaseMinigame.DishGrade.Fail);
-
+    /* ===== 查詢 ===== */
     public bool HasItem(MenuItem item) => items.Contains(item);
-
+    public bool HasItemByTag(string tag) => items.Exists(i => i.itemTag == tag);
+    public bool HasGarbage() => items.Exists(i => i == GarbageItem || i.grade == BaseMinigame.DishGrade.Fail);
     public List<MenuItem> GetItems() => new List<MenuItem>(items);
-
     public int GetItemCount() => items.Count;
-
     public void ClearInventory() => ClearItems();
 
     private void NotifyInventoryChanged() => OnInventoryChanged?.Invoke(new List<MenuItem>(items));
 
-    /* ===== 對話8 結束 → 依序生成4顧客（只一次）===== */
+    /* ===== 對話8結束後生成4顧客 ===== */
     private IEnumerator Spawn4CustomersAfterDialogue()
     {
-        // 等對話跑完（用 RealTime 版，不受 timeScale 影響）
         if (TutorialDialogueController.Instance != null)
             yield return TutorialDialogueController.Instance.PlaySingleChapter("8");
 
-        // 依序生成4名（0→1→2→3）
         var spawner = FreeCustomerSpawner.Instance;
         if (spawner == null) yield break;
 
         for (int i = 0; i < 4; i++)
-            spawner.SpawnCustomer(i);   // 強制依序 0→1→2→3
+            spawner.SpawnCustomer(i);
     }
 }

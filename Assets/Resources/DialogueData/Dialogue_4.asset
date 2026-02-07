@@ -17,6 +17,6 @@ MonoBehaviour:
     isLeftSide: 1
     text: "\u8981\u4F7F\u7528\u70F9\u98EA\u53F0\u6307\u9700\u8981\u5C0D\u4ED6\u6309\u4E0B\"
       E \" \u5C31\u80FD\u4F7F\u7528"
-    portrait: {fileID: 21300000, guid: b398f0d8e787ec7438089abdd112ad4a, type: 3}
+    portrait: {fileID: 21300000, guid: 099afeae3aef64846a3474bd18f189d7, type: 3}
     voiceClip: {fileID: 0}
     dialogueBox: {fileID: 21300000, guid: 91b195eab1b28e641a6cdc25f3d69bfa, type: 3}

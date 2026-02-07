@@ -17,7 +17,7 @@ public class MaxEnergyBonusSkill : PassiveSkill
         var stations = Object.FindObjectsByType<CookingStation>(FindObjectsSortMode.None);
         foreach (var station in stations)
         {
-            station.UpgradeEnergy(bonusEnergy);
+            //station.UpgradeEnergy(bonusEnergy);
         }
     }
 }

@@ -46,6 +46,7 @@ public class MinigameManager : MonoBehaviour
             return;
         }
 
+        // 第一次啟動小遊戲時，先播放特殊對話
         if (!hasSpawnedGame5Dialogue)
         {
             hasSpawnedGame5Dialogue = true;
@@ -54,12 +55,13 @@ public class MinigameManager : MonoBehaviour
             return;
         }
 
+        // 之後直接啟動小遊戲
         isSpawning = true;
         ProceedToStartMinigame(type, onComplete);
     }
 
     /* =====================================================
-       第一次特殊流程： 生成 → 對話（凍結遊戲但不凍結對話）→ 開始小遊戲
+       第一次特殊流程： 生成 → 對話 → 開始小遊戲
        ===================================================== */
     private IEnumerator SpawnThenDialogue(string type, System.Action<bool, int> onComplete)
     {
@@ -71,7 +73,7 @@ public class MinigameManager : MonoBehaviour
         GameObject prefab = Resources.Load<GameObject>(entry.resourcePath);
         if (prefab == null) { isSpawning = false; yield break; }
 
-        /* 1️⃣ 生成 */
+        /* 1️⃣ 生成小遊戲 */
         GameObject instance = Instantiate(prefab, minigameContainer);
         currentMinigame = instance.GetComponent<BaseMinigame>();
         if (currentMinigame == null)
@@ -81,17 +83,17 @@ public class MinigameManager : MonoBehaviour
             yield break;
         }
 
-        /* 2️⃣ 凍結世界，但 UI+對話不凍結 */
+        /* 2️⃣ 凍結世界（TimeScale=0），UI和對話不受影響 */
         Time.timeScale = 0f;
 
-        /* 🔥 改為 realtime，不會因為 TimeScale=0 而卡死 */
+        /* 🔥 播放對話章節（Realtime 不受 TimeScale 影響） */
         if (TutorialDialogueController.Instance != null)
             yield return TutorialDialogueController.Instance.PlaySingleChapter("5");
 
         /* 3️⃣ 恢復世界 */
         Time.timeScale = 1f;
 
-        /* 4️⃣ 啟動小遊戲（正常時間流動） */
+        /* 4️⃣ 啟動小遊戲 */
         currentMinigame.StartMinigame((success, rank) =>
         {
             onComplete?.Invoke(success, rank);
@@ -101,7 +103,6 @@ public class MinigameManager : MonoBehaviour
 
         isSpawning = false;
     }
-
 
     /* =====================================================
        非第一次的小遊戲啟動（不需要對話）
@@ -134,7 +135,7 @@ public class MinigameManager : MonoBehaviour
     }
 
     /* =====================================================
-       延遲銷毀（改用 unscaled）
+       延遲銷毀（使用 unscaledDeltaTime）
        ===================================================== */
     private IEnumerator DestroyAfterDelay(GameObject obj, float delay)
     {
