@@ -23,6 +23,10 @@ public class DialogueManager : MonoBehaviour
     [Header("Canvas 控制")]
     public Canvas dialogueCanvas;
 
+    [Header("打字機設定")]
+    public float normalTypeSpeed = 0.02f;
+    public float fastTypeSpeed = 0.005f;
+
     private Player player;
     private bool isTyping = false;
     public bool DialogueFinished { get; private set; } = false;
@@ -74,8 +78,18 @@ public class DialogueManager : MonoBehaviour
             yield return StartCoroutine(TypeText(line.text, line.isLeftSide));
 
             // 🔥 改成 Unscaled Input
-            while (!Input.GetMouseButtonDown(0))
+            while (true)
+            {
+                // 滑鼠點擊
+                if (Input.GetMouseButtonDown(0))
+                    break;
+
+                // 按住空白鍵自動前進
+                if (Input.GetKey(KeyCode.Space))
+                    break;
+
                 yield return null;
+            }
 
             currentIndex++;
         }
@@ -102,7 +116,9 @@ public class DialogueManager : MonoBehaviour
         foreach (char c in text)
         {
             activeText.text += c;
-            yield return new WaitForSecondsRealtime(0.02f); // 🔥 不受 timeScale 影響
+
+            float speed = Input.GetKey(KeyCode.Space) ? fastTypeSpeed : normalTypeSpeed;
+            yield return new WaitForSecondsRealtime(speed);
         }
 
         isTyping = false;
