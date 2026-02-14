@@ -43,6 +43,10 @@ public class ModeToggleManager : MonoBehaviour
     public AudioSource businessMusicSource;
     public AudioSource closedMusicSource;
 
+    [Header("變異事件機率")]
+    [SerializeField, Range(0f, 1f)]
+    private float randomEventChance = 0.5f;
+
     private float remainingTime;
     private bool isBusinessMode = false;
     private bool isClosingPhase = false;
@@ -120,16 +124,17 @@ public class ModeToggleManager : MonoBehaviour
         Debug.Log("✅ 進入營業模式");
     }
 
+
     private IEnumerator TriggerRandomEventAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
 
-        // 目前為測試用途，100% 觸發
-        if (RandomEventManager.Instance != null)
+        if (RandomEventManager.Instance != null && Random.value < randomEventChance)
         {
             RandomEventManager.Instance.StartEvent();
         }
     }
+
 
 
     private void EnterClosedMode()

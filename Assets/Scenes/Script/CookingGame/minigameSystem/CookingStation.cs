@@ -4,27 +4,39 @@ using UnityEngine.UI;
 public class CookingStation : MonoBehaviour
 {
     private bool playerInRange = false;
-    private static bool firstEnergyDepleted = false;
 
     [Tooltip("這個站點的小遊戲類型，如 Burger、Fries、Drink")]
     public string minigameType = "Burger";
 
     [Header("能量條設定")]
-    [Tooltip("Inspector 預設值；若有 WorkbenchMaxEnergy 升級會覆蓋")]
+    [Tooltip("Inspector 預設值；若有 WorkbenchMaxEnergy 定義，會以升級值覆蓋")]
     public int maxEnergy = 3;
+
+    [Header("Highlight")]
+    [SerializeField] private StationHighlighter_SwapOutlineMat highlighter;
 
     [SerializeField] private int currentEnergy;
 
     public Image energyMask;
     public GameObject energyBarUI;
 
-    [Header("補給箱")]
     public MenuItem energySupplyItem;
+
+    [Header("UI 引用")]
     public Transform supplyContainer;
 
     [Header("升級套用")]
     public bool useUpgradeMaxEnergy = true;
+
+    [Tooltip("WorkbenchMaxEnergy 變更時是否回滿能量")]
     public bool refillEnergyWhenMaxEnergyChanges = true;
+
+    private void Awake()
+    {
+        if (!highlighter)
+            highlighter = GetComponentInChildren<StationHighlighter_SwapOutlineMat>(true);
+    }
+
 
     private void OnEnable()
     {
@@ -45,11 +57,10 @@ public class CookingStation : MonoBehaviour
 
     private void Update()
     {
-        // Time.timeScale = 0（對話、暫停）時禁止互動
-        if (Time.timeScale <= 0f) return;
-
         if (playerInRange && Input.GetKeyDown(KeyCode.E))
+        {
             TryInteract();
+        }
     }
 
     private void TryInteract()
@@ -57,20 +68,18 @@ public class CookingStation : MonoBehaviour
         var inventory = InventoryManager.Instance;
         if (inventory == null) return;
 
-        bool hasSupply = HasSupplyItem(inventory);
-
-        // ===== 補給箱優先 =====
-        if (hasSupply)
+        if (HasSupplyItem(inventory))
         {
             if (currentEnergy < maxEnergy)
             {
                 RemoveSupplyItem(inventory);
+
                 int add = GetSupplyAmount();
                 currentEnergy = Mathf.Min(currentEnergy + add, maxEnergy);
 
                 UpdateEnergyUI();
                 ClearSupplyUI();
-                Debug.Log($"成功補充能量 +{add}");
+                Debug.Log($"成功補充能量 +{add}（{currentEnergy}/{maxEnergy}）");
             }
             else
             {
@@ -79,7 +88,6 @@ public class CookingStation : MonoBehaviour
             return;
         }
 
-        // ===== 無法開始條件 =====
         if (currentEnergy <= 0)
         {
             Debug.Log("能量不足，無法開始小遊戲");
@@ -92,62 +100,21 @@ public class CookingStation : MonoBehaviour
             return;
         }
 
-        // ===== 啟動小遊戲 =====
         Debug.Log("開始小遊戲: " + minigameType);
         MinigameManager.Instance.StartMinigame(minigameType, OnMinigameComplete);
     }
 
-    private void OnMinigameComplete(bool success, int rank)
-    {
-        bool wasPositive = currentEnergy > 0;
-        currentEnergy = Mathf.Max(currentEnergy - 1, 0);
-
-        // 第一次能量從 >0 → 0
-        if (!firstEnergyDepleted && wasPositive && currentEnergy == 0)
-        {
-            firstEnergyDepleted = true;
-
-            if (TutorialDialogueController.Instance != null)
-                TutorialDialogueController.Instance.PlayChapter("14");
-
-            if (TutorialProgressManager.Instance != null)
-                TutorialProgressManager.Instance.CompleteEvent("EnergyDepleted");
-        }
-
-        Debug.Log(success
-            ? $"{minigameType} 製作成功，等級: {rank}"
-            : $"{minigameType} 製作失敗");
-
-        UpdateEnergyUI();
-    }
-
-    // =======================
-    // 能量 / UI
-    // =======================
-
-    private void UpdateEnergyUI()
-    {
-        if (maxEnergy <= 0) maxEnergy = 1;
-        currentEnergy = Mathf.Clamp(currentEnergy, 0, maxEnergy);
-
-        if (energyMask != null)
-            energyMask.fillAmount = (float)currentEnergy / maxEnergy;
-
-        if (energyBarUI != null)
-            energyBarUI.SetActive(true);
-    }
-
-    // =======================
-    // 補給箱
-    // =======================
-
     private bool HasSupplyItem(InventoryManager inventory)
     {
+        if (inventory == null) return false;
         if (energySupplyItem == null) return false;
+
+        string supplyTag = energySupplyItem.itemTag;
+        if (string.IsNullOrEmpty(supplyTag)) return false;
 
         foreach (var item in inventory.GetItems())
         {
-            if (item != null && item.itemTag == energySupplyItem.itemTag)
+            if (item != null && item.itemTag == supplyTag)
                 return true;
         }
         return false;
@@ -155,10 +122,14 @@ public class CookingStation : MonoBehaviour
 
     private void RemoveSupplyItem(InventoryManager inventory)
     {
+        if (inventory == null || energySupplyItem == null) return;
+
+        string supplyTag = energySupplyItem.itemTag;
         var items = inventory.GetItems();
+
         for (int i = 0; i < items.Count; i++)
         {
-            if (items[i] != null && items[i].itemTag == energySupplyItem.itemTag)
+            if (items[i] != null && items[i].itemTag == supplyTag)
             {
                 inventory.RemoveItem(items[i]);
                 break;
@@ -166,41 +137,59 @@ public class CookingStation : MonoBehaviour
         }
     }
 
+    private void OnMinigameComplete(bool success, int rank)
+    {
+        currentEnergy = Mathf.Max(currentEnergy - 1, 0);
+        UpdateEnergyUI();
+    }
+
+    private void UpdateEnergyUI()
+    {
+        if (maxEnergy <= 0) maxEnergy = 1;
+        currentEnergy = Mathf.Clamp(currentEnergy, 0, maxEnergy);
+
+        float ratio = (float)currentEnergy / maxEnergy;
+        if (energyMask != null)
+            energyMask.fillAmount = ratio;
+
+        if (energyBarUI != null)
+            energyBarUI.SetActive(true);
+    }
+
     private int GetSupplyAmount()
     {
         var upg = UpgradeManager.Instance;
         if (upg == null) return 1;
 
-        int v = Mathf.RoundToInt(upg.GetValue(UpgradeType.SupplyPickupAmount));
-        return Mathf.Max(1, v);
+        float v = upg.GetValue(UpgradeType.SupplyPickupAmount);
+        int n = Mathf.RoundToInt(v);
+        return Mathf.Max(1, n);
     }
-
-    private void ClearSupplyUI()
-    {
-        if (!supplyContainer) return;
-
-        for (int i = supplyContainer.childCount - 1; i >= 0; i--)
-            Destroy(supplyContainer.GetChild(i).gameObject);
-    }
-
-    // =======================
-    // 升級
-    // =======================
 
     private void ApplyMaxEnergyFromUpgrade(bool refillToFull)
     {
         if (!useUpgradeMaxEnergy) return;
 
-        var upg = UpgradeManager.Instance;
-        if (upg == null) return;
+        int oldMax = Mathf.Max(1, maxEnergy);
 
-        int newMax = Mathf.RoundToInt(upg.GetValue(UpgradeType.WorkbenchMaxEnergy));
-        if (newMax <= 0) return;
+        var upg = UpgradeManager.Instance;
+        if (upg == null)
+        {
+            maxEnergy = oldMax;
+            currentEnergy = Mathf.Clamp(currentEnergy, 0, maxEnergy);
+            return;
+        }
+
+        float v = upg.GetValue(UpgradeType.WorkbenchMaxEnergy);
+        int newMax = Mathf.RoundToInt(v);
+        if (newMax <= 0) newMax = oldMax;
 
         maxEnergy = Mathf.Max(1, newMax);
-        currentEnergy = refillToFull
-            ? maxEnergy
-            : Mathf.Clamp(currentEnergy, 0, maxEnergy);
+
+        if (refillToFull)
+            currentEnergy = maxEnergy;
+        else
+            currentEnergy = Mathf.Clamp(currentEnergy, 0, maxEnergy);
     }
 
     private void HandleAnyUpgradeChanged(UpgradeType type, int newLevel)
@@ -211,19 +200,29 @@ public class CookingStation : MonoBehaviour
         UpdateEnergyUI();
     }
 
-    // =======================
-    // Trigger
-    // =======================
+    private void ClearSupplyUI()
+    {
+        if (!supplyContainer) return;
+        for (int i = supplyContainer.childCount - 1; i >= 0; i--)
+            Destroy(supplyContainer.GetChild(i).gameObject);
+    }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
+        {
             playerInRange = true;
+            if (highlighter) highlighter.SetHighlight(true);
+        }
     }
 
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player"))
+        {
             playerInRange = false;
+            if (highlighter) highlighter.SetHighlight(false);
+        }
     }
+
 }

@@ -266,3 +266,7 @@ MonoBehaviour:
   pixelsPerUnit: 100
   renderTexture: {fileID: 8400000, guid: 8e707aa84a3903249a849be141318d9f, type: 2}
   captureLayerName: BurgerCapture
+  trimTransparentBorder: 1
+  resampleToFixedSize: 1
+  finalOutputSize: {x: 128, y: 128}
+  finalScaleMode: 0
