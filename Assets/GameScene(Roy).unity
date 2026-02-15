@@ -981,6 +981,7 @@ MonoBehaviour:
   gameResultUI: {fileID: 1412971467}
   businessMusicSource: {fileID: 1174580469}
   closedMusicSource: {fileID: 1849243937}
+  randomEventChance: 0.5
 --- !u!114 &53297781
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18393,16 +18394,6 @@ MonoBehaviour:
   interactRange: 3
   queueManager: {fileID: 561398429}
   playerTransform: {fileID: 1872968722}
-  baseReward: 10
-  goodMultiplier: 1
-  perfectMultiplier: 2
-  mutatedMultiplier: 3
-  badMultiplier: 1
-  failMultiplier: 0
-  applyProfitToMoney: 1
-  applyProfitToExp: 1
-  profitFallback: 1
-  debugLog: 0
 --- !u!65 &1289302293
 BoxCollider:
   m_ObjectHideFlags: 0
