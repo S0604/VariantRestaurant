@@ -12,6 +12,10 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 196354227489465898, guid: 605b9ed90bb4eb3459c129ca5313084e, type: 3}
+      propertyPath: selectedItems.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 196354227489465898, guid: 605b9ed90bb4eb3459c129ca5313084e, type: 3}
       propertyPath: fixedOrder.Array.data[0].menuItem
       value: 
       objectReference: {fileID: 11400000, guid: 956de55f422cee943ae716a622d4a314, type: 2}
@@ -27,6 +31,14 @@ PrefabInstance:
       propertyPath: fixedOrder.Array.data[1].quantity
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 196354227489465898, guid: 605b9ed90bb4eb3459c129ca5313084e, type: 3}
+      propertyPath: selectedItems.Array.data[0].menuItem
+      value: 
+      objectReference: {fileID: 11400000, guid: 956de55f422cee943ae716a622d4a314, type: 2}
+    - target: {fileID: 196354227489465898, guid: 605b9ed90bb4eb3459c129ca5313084e, type: 3}
+      propertyPath: selectedItems.Array.data[1].menuItem
+      value: 
+      objectReference: {fileID: 11400000, guid: c5c702970a98ee54c8131b552af558a4, type: 2}
     - target: {fileID: 1972943304902563048, guid: 605b9ed90bb4eb3459c129ca5313084e, type: 3}
       propertyPath: m_Name
       value: "\u85E4\u4E95\u91D1 Variant"
