@@ -23122,16 +23122,16 @@ MonoBehaviour:
   popularityReqText: {fileID: 914694942}
   costText: {fileID: 1709059623}
   buttonLabel: {fileID: 940037547}
-  levelReqIcon: {fileID: 0}
-  popularityReqIcon: {fileID: 0}
-  moneyReqIcon: {fileID: 0}
+  levelReqIcon: {fileID: 1408741892}
+  popularityReqIcon: {fileID: 1667342210}
+  moneyReqIcon: {fileID: 286839671}
   maxReqIcon: {fileID: 0}
-  levelNotMetSprite: {fileID: 0}
-  levelMetSprite: {fileID: 0}
-  popularityNotMetSprite: {fileID: 0}
-  popularityMetSprite: {fileID: 0}
-  moneyNotMetSprite: {fileID: 0}
-  moneyMetSprite: {fileID: 0}
+  levelNotMetSprite: {fileID: 21300000, guid: 563bc57b504c168498de81df45c54ba3, type: 3}
+  levelMetSprite: {fileID: 21300000, guid: 47abcd7f80e85534aba7fc7f10b27136, type: 3}
+  popularityNotMetSprite: {fileID: 21300000, guid: 563bc57b504c168498de81df45c54ba3, type: 3}
+  popularityMetSprite: {fileID: 21300000, guid: 47abcd7f80e85534aba7fc7f10b27136, type: 3}
+  moneyNotMetSprite: {fileID: 21300000, guid: 563bc57b504c168498de81df45c54ba3, type: 3}
+  moneyMetSprite: {fileID: 21300000, guid: 47abcd7f80e85534aba7fc7f10b27136, type: 3}
   notMaxSprite: {fileID: 0}
   isMaxSprite: {fileID: 0}
 --- !u!114 &1539484324
