@@ -23522,13 +23522,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stats:
-    money: 0
-    popularity: 0
-    customerFlow: 0
-    experience: 865
+    money: 1000
+    popularity: 1000
+    customerFlow: 1000
+    experience: 799
     level: 1
     stars: 0
-  levelTable: {fileID: 0}
+  levelTable: {fileID: 11400000, guid: c49eab2a1b78ed348beba1991cdc68e3, type: 2}
 --- !u!114 &1683407090
 MonoBehaviour:
   m_ObjectHideFlags: 0
