@@ -147,7 +147,7 @@ public class IntroSequenceController : MonoBehaviour
             waitingForInput = true;
             if (pressAnyKeyText)
             {
-                pressAnyKeyText.text = "Press any key to continue.";
+                pressAnyKeyText.text = "按下任意按鈕繼續.";
                 pressAnyKeyText.gameObject.SetActive(true);
             }
         }
@@ -164,7 +164,7 @@ public class IntroSequenceController : MonoBehaviour
         waitingForInput = true;
         if (pressAnyKeyText)
         {
-            pressAnyKeyText.text = "Press any key to start.";
+            pressAnyKeyText.text = "按下任意按鈕繼續.";
             pressAnyKeyText.gameObject.SetActive(true);
         }
     }

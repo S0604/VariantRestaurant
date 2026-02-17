@@ -13,7 +13,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 196354227489465898, guid: 1445d65a397d22b44a55972db6af2547, type: 3}
       propertyPath: selectedItems.Array.size
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 196354227489465898, guid: 1445d65a397d22b44a55972db6af2547, type: 3}
       propertyPath: fixedOrder.Array.data[0].menuItem

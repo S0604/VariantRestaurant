@@ -40,6 +40,13 @@ public class FreeModeToggleManager : MonoBehaviour
     [SerializeField] private bool allowTimeFlow = false;
     public bool AllowTimeFlow { get => allowTimeFlow; set => allowTimeFlow = value; }
 
+    [Header("變異事件設定")]
+    [SerializeField] private float randomEventDelay = 20f;
+    [SerializeField, Range(0f, 1f)] private float randomEventChance = 0.5f;
+
+    private Coroutine randomEventCoroutine;
+    private bool hasTriggeredRandomEvent = false;
+
     private bool isBusinessMode = false;
     public bool IsBusinessMode => isBusinessMode;
 
@@ -104,10 +111,19 @@ public class FreeModeToggleManager : MonoBehaviour
         businessMusicSource?.Play();
         closedMusicSource?.Stop();
 
-        Debug.Log("✅ 進入自由營業模式");
+        Debug.Log("Enter Free Business Mode");
 
         // 轉場後延遲播放 Chapter3
         StartCoroutine(PlayChapterAfterDelay("3", 1.6f));
+
+        // Random Event: 每次進入營業模式只排程一次
+        hasTriggeredRandomEvent = false;
+        if (randomEventCoroutine != null)
+        {
+            StopCoroutine(randomEventCoroutine);
+            randomEventCoroutine = null;
+        }
+        randomEventCoroutine = StartCoroutine(TriggerRandomEventAfterDelay(randomEventDelay));
     }
 
     private void EnterClosedMode()
@@ -125,7 +141,34 @@ public class FreeModeToggleManager : MonoBehaviour
         businessMusicSource?.Stop();
         closedMusicSource?.Play();
 
-        Debug.Log("🛑 進入歇業模式");
+        // 切回歇業時停止事件排程，避免歇業後還觸發
+        if (randomEventCoroutine != null)
+        {
+            StopCoroutine(randomEventCoroutine);
+            randomEventCoroutine = null;
+        }
+        hasTriggeredRandomEvent = false;
+
+        Debug.Log("Enter Closed Mode");
+    }
+
+    #endregion
+
+    #region Random Event
+
+    private IEnumerator TriggerRandomEventAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        // 確保還在營業模式，且只觸發一次
+        if (!isBusinessMode || hasTriggeredRandomEvent) yield break;
+
+        hasTriggeredRandomEvent = true;
+
+        if (RandomEventManager.Instance != null && UnityEngine.Random.value < randomEventChance)
+        {
+            RandomEventManager.Instance.StartEvent();
+        }
     }
 
     #endregion
@@ -157,7 +200,7 @@ public class FreeModeToggleManager : MonoBehaviour
     private IEnumerator HandleClosingPhase()
     {
         isClosingPhase = true;
-        Debug.Log("🔔 營業即將結束，開始關店準備");
+        Debug.Log("Business ending soon. Start closing phase.");
 
         // 強制顧客離開隊伍
         ForceRemoveAllCustomers();
@@ -168,7 +211,7 @@ public class FreeModeToggleManager : MonoBehaviour
             yield return null;
         }
 
-        Debug.Log("✅ 顧客離場完畢，播放結算轉場");
+        Debug.Log("All customers left. Show result UI.");
 
         // 播放轉場動畫並顯示結算 UI
         yield return PlayTransitionFillOnly(() =>
@@ -282,7 +325,7 @@ public class FreeModeToggleManager : MonoBehaviour
         if (chapterID == "13")
         {
             AllowTimeFlow = true;
-            Debug.Log("對話13結束，自由營業開始計時");
+            Debug.Log("Chapter 13 finished. Free business timer starts.");
         }
     }
 
