@@ -9724,7 +9724,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &691515652
 RectTransform:
   m_ObjectHideFlags: 0
@@ -28243,11 +28243,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stats:
-    money: 1000
-    popularity: 0
-    customerFlow: 0
+    money: 120000
+    popularity: 120000
+    customerFlow: 120000
     experience: 0
-    level: 1
+    level: 10
     stars: 0
   levelTable: {fileID: 11400000, guid: c49eab2a1b78ed348beba1991cdc68e3, type: 2}
 --- !u!136 &1872968727
