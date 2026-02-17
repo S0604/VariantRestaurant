@@ -5816,6 +5816,8 @@ MonoBehaviour:
   businessMusicSource: {fileID: 37733637}
   closedMusicSource: {fileID: 2112253523}
   allowTimeFlow: 0
+  randomEventDelay: 20
+  randomEventChance: 0.5
 --- !u!114 &363529645
 MonoBehaviour:
   m_ObjectHideFlags: 0
