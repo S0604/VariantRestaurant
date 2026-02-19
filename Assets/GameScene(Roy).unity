@@ -653,7 +653,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &29062818
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -866,7 +866,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &40210272
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5677,7 +5677,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -204.1, y: 56.3}
+  m_AnchoredPosition: {x: -204.1, y: -43.7}
   m_SizeDelta: {x: 43, y: 43}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &418604063
@@ -10003,7 +10003,7 @@ GameObject:
   - component: {fileID: 705259594}
   - component: {fileID: 705259593}
   m_Layer: 5
-  m_Name: "\u4EBA\u6C23\u503C"
+  m_Name: "\u7B49\u7D1A"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10049,7 +10049,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u4EBA\u6C23\u503C"
+  m_text: "\u9910\u5EF3\u7B49\u7D1A"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 297f0cdbcc1e00649983d7841c33a3bf, type: 2}
   m_sharedMaterial: {fileID: 1884138798141676304, guid: 297f0cdbcc1e00649983d7841c33a3bf, type: 2}
@@ -10112,7 +10112,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 67.51483, y: 0, z: 64.715515, w: 0}
+  m_margin: {x: 67.51483, y: 0, z: 42.84552, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -12010,7 +12010,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 230, y: -3}
+  m_AnchoredPosition: {x: 231.9, y: 4.2}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &878711627
@@ -15661,7 +15661,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1131141784
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16438,7 +16438,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -204.09995, y: -39}
+  m_AnchoredPosition: {x: -204.09995, y: 56.7}
   m_SizeDelta: {x: 43, y: 43}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1149282472
@@ -21498,6 +21498,11 @@ MonoBehaviour:
   - {fileID: 21300000, guid: ee32a86f654d2b243b4eac71d2f1c40b, type: 3}
   - {fileID: 21300000, guid: 4c7940dc4042ed74c84646c20252a94a, type: 3}
   - {fileID: 21300000, guid: c0d87028431d219459a9c0b309e8bc92, type: 3}
+  spawnOrderSfx: {fileID: 0}
+  despawnOrderSfx: {fileID: 0}
+  spawnSfxSource: {fileID: 0}
+  despawnSfxSource: {fileID: 0}
+  sfxVolume: 1
 --- !u!114 &1465306110
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23062,7 +23067,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1539484322
 RectTransform:
   m_ObjectHideFlags: 0
@@ -23117,6 +23122,18 @@ MonoBehaviour:
   popularityReqText: {fileID: 914694942}
   costText: {fileID: 1709059623}
   buttonLabel: {fileID: 940037547}
+  levelReqIcon: {fileID: 1408741892}
+  popularityReqIcon: {fileID: 1667342210}
+  moneyReqIcon: {fileID: 286839671}
+  maxReqIcon: {fileID: 0}
+  levelNotMetSprite: {fileID: 21300000, guid: 563bc57b504c168498de81df45c54ba3, type: 3}
+  levelMetSprite: {fileID: 21300000, guid: 47abcd7f80e85534aba7fc7f10b27136, type: 3}
+  popularityNotMetSprite: {fileID: 21300000, guid: 563bc57b504c168498de81df45c54ba3, type: 3}
+  popularityMetSprite: {fileID: 21300000, guid: 47abcd7f80e85534aba7fc7f10b27136, type: 3}
+  moneyNotMetSprite: {fileID: 21300000, guid: 563bc57b504c168498de81df45c54ba3, type: 3}
+  moneyMetSprite: {fileID: 21300000, guid: 47abcd7f80e85534aba7fc7f10b27136, type: 3}
+  notMaxSprite: {fileID: 0}
+  isMaxSprite: {fileID: 0}
 --- !u!114 &1539484324
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23248,7 +23265,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1574488204
 RectTransform:
   m_ObjectHideFlags: 0

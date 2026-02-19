@@ -30,6 +30,37 @@ public class StarUpgradeControllerTMP : MonoBehaviour
     [SerializeField] private TMP_Text costText;             // Cost text
     [SerializeField] private TMP_Text buttonLabel;          // Button label (optional)
 
+    [Header("Requirement Icons (optional)")]
+    [Tooltip("等級條件圖示 Image")]
+    [SerializeField] private Image levelReqIcon;
+    [Tooltip("人氣條件圖示 Image")]
+    [SerializeField] private Image popularityReqIcon;
+    [Tooltip("金錢條件圖示 Image")]
+    [SerializeField] private Image moneyReqIcon;
+    [Tooltip("已達最大星等（或可升級）圖示 Image")]
+    [SerializeField] private Image maxReqIcon;
+
+    [Header("Requirement Icon Sprites")]
+    [Tooltip("未達成等級條件時顯示")]
+    [SerializeField] private Sprite levelNotMetSprite;
+    [Tooltip("達成等級條件時顯示")]
+    [SerializeField] private Sprite levelMetSprite;
+
+    [Tooltip("未達成人氣條件時顯示")]
+    [SerializeField] private Sprite popularityNotMetSprite;
+    [Tooltip("達成人氣條件時顯示")]
+    [SerializeField] private Sprite popularityMetSprite;
+
+    [Tooltip("未達成金錢條件時顯示")]
+    [SerializeField] private Sprite moneyNotMetSprite;
+    [Tooltip("達成金錢條件時顯示")]
+    [SerializeField] private Sprite moneyMetSprite;
+
+    [Tooltip("未達最大星等（仍可升級）時顯示")]
+    [SerializeField] private Sprite notMaxSprite;
+    [Tooltip("已達最大星等時顯示")]
+    [SerializeField] private Sprite isMaxSprite;
+
     private void OnEnable()
     {
         if (PlayerData.Instance != null)
@@ -78,23 +109,38 @@ public class StarUpgradeControllerTMP : MonoBehaviour
 
         // Level requirement text (independent)
         if (levelReqText)
-        {
-            levelReqText.text =
-                $"等級需求"+$" {pd.stats.level}" + $"/{requiredLevel}";
-        }
+            levelReqText.text = $"等級需求 {pd.stats.level}/{requiredLevel}";
 
         // Popularity requirement text (independent)
         if (popularityReqText)
-        {
-            popularityReqText.text =
-                $"人氣需求" +
-                $" {pd.stats.popularity}" +
-                $"/ {needPopularity}";
-        }
+            popularityReqText.text = $"人氣需求 {pd.stats.popularity}/{needPopularity}";
 
         // Cost text
         if (costText)
             costText.text = isMax ? "" : $"{needCost}";
+
+        // Icons: update per condition
+        SetReqIcon(levelReqIcon, levelOk, levelMetSprite, levelNotMetSprite);
+        SetReqIcon(popularityReqIcon, popularityOk, popularityMetSprite, popularityNotMetSprite);
+
+        // 金錢條件：如果已達 max，通常不需要再顯示缺錢/達成，但你可選擇仍顯示「達成」
+        // 這裡採用：isMax 時也顯示 moneyMetSprite（若有），避免看起來像缺錢卡住
+        bool moneyState = isMax ? true : moneyOk;
+        SetReqIcon(moneyReqIcon, moneyState, moneyMetSprite, moneyNotMetSprite);
+
+        // Max icon：isMax true/false
+        if (maxReqIcon != null)
+        {
+            if (isMaxSprite == null && notMaxSprite == null)
+            {
+                // 若沒設定 sprite，不做事
+            }
+            else
+            {
+                maxReqIcon.sprite = isMax ? isMaxSprite : notMaxSprite;
+                maxReqIcon.enabled = maxReqIcon.sprite != null;
+            }
+        }
 
         // Button interactable
         if (upgradeButton)
@@ -111,6 +157,24 @@ public class StarUpgradeControllerTMP : MonoBehaviour
         }
     }
 
+    private void SetReqIcon(Image icon, bool met, Sprite metSprite, Sprite notMetSprite)
+    {
+        if (icon == null) return;
+
+        Sprite s = met ? metSprite : notMetSprite;
+
+        // 若沒有提供對應 sprite，就不改變現有 sprite（避免被清空）
+        if (s != null)
+        {
+            icon.sprite = s;
+            icon.enabled = true;
+        }
+        else
+        {
+            // 如果你希望「沒設定 sprite 就隱藏」，把這行打開：
+            // icon.enabled = false;
+        }
+    }
 
     private void TryUpgradeStar()
     {
