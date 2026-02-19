@@ -711,7 +711,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &524881280808206087
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1010,7 +1010,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: c7b40c9a7347a994f97e7065ba9c39fc, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7339f10b4d345104da1cb76e4724512b, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -1055,7 +1055,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -36, y: 8}
+  m_AnchoredPosition: {x: -9.9, y: -0.5}
   m_SizeDelta: {x: 461, y: 466}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1211029755081942100
@@ -1371,7 +1371,7 @@ MonoBehaviour:
   cookingUI: {fileID: 8748786187908010752}
   timerBar: {fileID: 524881280955122807}
   backgroundImage: {fileID: 524881280995700864}
-  defaultBackground: {fileID: 21300000, guid: c7b40c9a7347a994f97e7065ba9c39fc, type: 3}
+  defaultBackground: {fileID: 21300000, guid: 4a0cd984c032f904ba95a30039a23ecc, type: 3}
   timeLimit: 10
   endDelay: 0.5
   sequenceContainer: {fileID: 524881279382497283}
@@ -1401,10 +1401,10 @@ MonoBehaviour:
   downWrongIcon: {fileID: 21300000, guid: 43645ad715845744bae1e6147247c887, type: 3}
   leftWrongIcon: {fileID: 21300000, guid: f67fee2a156d1da45a53ee7c2010c9c0, type: 3}
   rightWrongIcon: {fileID: 21300000, guid: b651e0061415c224ea3366ea4a33b2e2, type: 3}
-  normalBackground: {fileID: 21300000, guid: c7b40c9a7347a994f97e7065ba9c39fc, type: 3}
-  mutationBackground: {fileID: 21300000, guid: cdb479b4f554c2b498aa19253ee61797, type: 3}
-  reversalBackground: {fileID: 21300000, guid: cdb479b4f554c2b498aa19253ee61797, type: 3}
-  extensionBackground: {fileID: 21300000, guid: cdb479b4f554c2b498aa19253ee61797, type: 3}
+  normalBackground: {fileID: 21300000, guid: 7339f10b4d345104da1cb76e4724512b, type: 3}
+  mutationBackground: {fileID: 21300000, guid: ce3e0757d31eb894c89d1090d18ecd66, type: 3}
+  reversalBackground: {fileID: 21300000, guid: ce3e0757d31eb894c89d1090d18ecd66, type: 3}
+  extensionBackground: {fileID: 21300000, guid: ce3e0757d31eb894c89d1090d18ecd66, type: 3}
   normalVideoBasePath: DrinkAssets
   eventVideoBasePath: DrinkAssets_Event
   stageContainer: {fileID: 3638817974093315374}
