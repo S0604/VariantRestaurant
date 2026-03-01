@@ -7,21 +7,57 @@ public class Fridge : MonoBehaviour
     public Transform iconSpawnPoint;
     public GameObject iconPrefab;
 
+    [Header("Highlight")]
+    [SerializeField] private StationHighlighter_SwapOutlineMat highlighter;
+
     private bool playerInRange = false;
+    private bool highlightState = false;
+
+    private void Awake()
+    {
+        if (!highlighter)
+            highlighter = GetComponentInChildren<StationHighlighter_SwapOutlineMat>(true);
+    }
 
     private void Update()
     {
-        if (playerInRange && Input.GetKeyDown(KeyCode.E))
+        if (!playerInRange)
+            return;
+
+        RefreshHighlight();
+
+        if (Input.GetKeyDown(KeyCode.E))
         {
             TrySupplyBox();
+            // 互動後背包會變不空，立即刷新一次高亮狀態
+            RefreshHighlight();
+        }
+    }
+
+    private void RefreshHighlight()
+    {
+        bool shouldHighlight = false;
+
+        var inv = InventoryManager.Instance;
+        if (playerInRange && inv != null)
+        {
+            // 背包為空才亮
+            shouldHighlight = inv.GetItemCount() == 0;
+        }
+
+        if (highlighter != null && highlightState != shouldHighlight)
+        {
+            highlightState = shouldHighlight;
+            highlighter.SetHighlight(shouldHighlight);
         }
     }
 
     private void TrySupplyBox()
     {
-        if (InventoryManager.Instance == null) return;
+        var inv = InventoryManager.Instance;
+        if (inv == null) return;
 
-        if (InventoryManager.Instance.GetItemCount() > 0)
+        if (inv.GetItemCount() > 0)
         {
             Debug.Log("背包必須為空才能領取補給箱！");
             return;
@@ -34,8 +70,8 @@ public class Fridge : MonoBehaviour
         }
 
         MenuItem itemInstance = Instantiate(supplyBoxItem);
-        InventoryManager.Instance.ClearInventory();
-        InventoryManager.Instance.AddItem(itemInstance);
+        inv.ClearInventory();
+        inv.AddItem(itemInstance);
 
         Debug.Log("已領取補給箱，佔據整個背包");
         SpawnSupplyIcon(itemInstance);
@@ -60,13 +96,23 @@ public class Fridge : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
-            playerInRange = true;
+        if (!other.CompareTag("Player")) return;
+
+        playerInRange = true;
+        RefreshHighlight();
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player"))
-            playerInRange = false;
+        if (!other.CompareTag("Player")) return;
+
+        playerInRange = false;
+
+        // 離開範圍一定不亮
+        if (highlighter != null && highlightState)
+        {
+            highlightState = false;
+            highlighter.SetHighlight(false);
+        }
     }
 }
