@@ -314,7 +314,7 @@ public class FreeModeToggleManager : MonoBehaviour
 
     #region 教學對話
 
-    private IEnumerator PlayChapterAfterDelay(string chapterID, float delay)
+    public IEnumerator PlayChapterAfterDelay(string chapterID, float delay)
     {
         yield return new WaitForSeconds(delay);
 

@@ -1,18 +1,18 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class TutorialEndOnDestroy : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private void OnDestroy()
     {
-        
-    }
+        // 確保 FreeModeToggleManager 存在
+        if (FreeModeToggleManager.Instance != null)
+        {
+            // 啟動協程播放 Chapter 13（延遲 0 秒）
+            FreeModeToggleManager.Instance.StartCoroutine(
+                FreeModeToggleManager.Instance.PlayChapterAfterDelay("13", 0f)
+            );
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+            Debug.Log("Chapter 13 將播放，結束教學後時間流動將啟用。");
+        }
     }
 }
