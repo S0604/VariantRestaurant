@@ -10,6 +10,11 @@ public class Fridge : MonoBehaviour
     [Header("Highlight")]
     [SerializeField] private StationHighlighter_SwapOutlineMat highlighter;
 
+    [Header("SFX (Success)")]
+    [SerializeField] private AudioSource sfxSource;
+    [SerializeField] private AudioClip successClip;
+    [SerializeField, Range(0f, 1f)] private float successVolume = 1f;
+
     private bool playerInRange = false;
     private bool highlightState = false;
 
@@ -28,10 +33,18 @@ public class Fridge : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.E))
         {
-            TrySupplyBox();
+            bool success = TrySupplyBox();
+            if (success) PlaySuccessSfx();
+
             // 互動後背包會變不空，立即刷新一次高亮狀態
             RefreshHighlight();
         }
+    }
+
+    private void PlaySuccessSfx()
+    {
+        if (sfxSource == null || successClip == null) return;
+        sfxSource.PlayOneShot(successClip, successVolume);
     }
 
     private void RefreshHighlight()
@@ -52,21 +65,22 @@ public class Fridge : MonoBehaviour
         }
     }
 
-    private void TrySupplyBox()
+    // 回傳是否互動成功（成功領取補給箱）
+    private bool TrySupplyBox()
     {
         var inv = InventoryManager.Instance;
-        if (inv == null) return;
+        if (inv == null) return false;
 
         if (inv.GetItemCount() > 0)
         {
             Debug.Log("背包必須為空才能領取補給箱！");
-            return;
+            return false;
         }
 
         if (supplyBoxItem == null)
         {
             Debug.LogWarning("[Fridge] supplyBoxItem 未設定。");
-            return;
+            return false;
         }
 
         MenuItem itemInstance = Instantiate(supplyBoxItem);
@@ -75,6 +89,8 @@ public class Fridge : MonoBehaviour
 
         Debug.Log("已領取補給箱，佔據整個背包");
         SpawnSupplyIcon(itemInstance);
+
+        return true;
     }
 
     private void SpawnSupplyIcon(MenuItem item)
