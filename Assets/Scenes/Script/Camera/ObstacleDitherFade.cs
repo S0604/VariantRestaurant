@@ -12,8 +12,19 @@ public class ObstacleDitherFade : MonoBehaviour
     public float fadeSpeed = 10f;
     public float sphereRadius = 0.5f;
 
+    // shader property id（避免字串開銷）
+    private static readonly int FadeID = Shader.PropertyToID("_Fade");
+
     private Dictionary<Renderer, float> fadeDict = new Dictionary<Renderer, float>();
     private HashSet<Renderer> hitThisFrame = new HashSet<Renderer>();
+
+    // 共用 MPB（避免 GC）
+    private MaterialPropertyBlock mpb;
+
+    void Awake()
+    {
+        mpb = new MaterialPropertyBlock();
+    }
 
     void Update()
     {
@@ -33,12 +44,10 @@ public class ObstacleDitherFade : MonoBehaviour
 
         Ray ray = new Ray(origin, dir.normalized);
 
-        // 🔥 改用 SphereCast（解決漏判）
         RaycastHit[] hits = Physics.SphereCastAll(ray, sphereRadius, dist);
 
         foreach (var hit in hits)
         {
-            // 手動過濾 Layer（更穩）
             if (((1 << hit.collider.gameObject.layer) & obstacleLayer) == 0)
                 continue;
 
@@ -54,30 +63,34 @@ public class ObstacleDitherFade : MonoBehaviour
 
     void UpdateFade()
     {
+        List<Renderer> keys = new List<Renderer>(fadeDict.Keys);
         List<Renderer> toRemove = new List<Renderer>();
 
-        foreach (var kvp in fadeDict)
+        foreach (var r in keys)
         {
-            Renderer r = kvp.Key;
-            float current = kvp.Value;
-
             if (r == null)
             {
                 toRemove.Add(r);
                 continue;
             }
 
-            float target = hitThisFrame.Contains(r) ? targetFade : 0f;
+            float current = fadeDict[r];
+            float target = hitThisFrame.Contains(r) ? targetFade : 1f;
 
             float newFade = Mathf.Lerp(current, target, Time.deltaTime * fadeSpeed);
 
-            r.material.SetFloat("_Fade", newFade);
+            r.GetPropertyBlock(mpb);
+            mpb.SetFloat(FadeID, newFade);
+            r.SetPropertyBlock(mpb);
+
             fadeDict[r] = newFade;
 
-            // 🔥 保證會恢復
-            if (!hitThisFrame.Contains(r) && newFade < 0.01f)
+            if (!hitThisFrame.Contains(r) && newFade > 0.99f)
             {
-                r.material.SetFloat("_Fade", 0f);
+                r.GetPropertyBlock(mpb);
+                mpb.SetFloat(FadeID, 1f);
+                r.SetPropertyBlock(mpb);
+
                 toRemove.Add(r);
             }
         }

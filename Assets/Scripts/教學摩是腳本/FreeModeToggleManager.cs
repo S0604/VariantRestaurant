@@ -44,6 +44,9 @@ public class FreeModeToggleManager : MonoBehaviour
     [SerializeField] private float randomEventDelay = 20f;
     [SerializeField, Range(0f, 1f)] private float randomEventChance = 0.5f;
 
+    private bool hasPlayedChapter3 = false;
+    private bool hasPlayedChapter13 = false;
+
     private Coroutine randomEventCoroutine;
     private bool hasTriggeredRandomEvent = false;
 
@@ -316,18 +319,25 @@ public class FreeModeToggleManager : MonoBehaviour
 
     public IEnumerator PlayChapterAfterDelay(string chapterID, float delay)
     {
+        // 防止同一場重複播放
+        if (chapterID == "3" && hasPlayedChapter3) yield break;
+        if (chapterID == "13" && hasPlayedChapter13) yield break;
+
         yield return new WaitForSeconds(delay);
 
         if (TutorialDialogueController.Instance != null)
             yield return TutorialDialogueController.Instance.PlaySingleChapter(chapterID);
 
-        // 對話13結束，自由營業開始
+        // 標記已播放
+        if (chapterID == "3") hasPlayedChapter3 = true;
+        if (chapterID == "13") hasPlayedChapter13 = true;
+
+        // Chapter 13 結束後開放時間
         if (chapterID == "13")
         {
             AllowTimeFlow = true;
             Debug.Log("Chapter 13 finished. Free business timer starts.");
         }
     }
-
     #endregion
 }

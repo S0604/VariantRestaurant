@@ -27,7 +27,6 @@ public class Customer : MonoBehaviour
         if (targetCamera == null)
             targetCamera = Camera.main;
 
-        // 通知 ModeToggleManager 有新顧客
         ModeToggleManager.Instance?.RegisterCustomer(this);
     }
 
@@ -35,6 +34,7 @@ public class Customer : MonoBehaviour
     {
         if (agent == null || animator == null) return;
 
+        // 排隊階段
         if (waitingToJoinQueue)
         {
             TryJoinQueue();
@@ -44,23 +44,29 @@ public class Customer : MonoBehaviour
         float speed = agent.velocity.magnitude;
         animator.SetFloat("Speed", speed);
 
+        // ===== 到達目的地 =====
         if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance && !agent.hasPath)
         {
-            if (isLeaving && Vector3.Distance(transform.position, spawnPoint.position) < 0.5f)
+            // ✅ 離開流程：到達 spawnPoint 才銷毀
+            if (isLeaving)
             {
-                ModeToggleManager.Instance?.UnregisterCustomer(this);
-                Destroy(gameObject);
+                if (Vector3.Distance(transform.position, spawnPoint.position) < 0.5f)
+                {
+                    ModeToggleManager.Instance?.UnregisterCustomer(this);
+                    Destroy(gameObject);
+                }
                 return;
             }
 
-            if (!isIdle && !isLeaving)
+            // ===== 一般站立 =====
+            if (!isIdle)
             {
                 animator.SetFloat("BlendX", faceDirection.x);
                 animator.SetFloat("BlendY", faceDirection.z);
                 isIdle = true;
                 idleTimer = 0f;
             }
-            else if (!hasGeneratedOrder && !isLeaving)
+            else if (!hasGeneratedOrder)
             {
                 idleTimer += Time.deltaTime;
                 if (idleTimer >= 0.5f && customerOrder != null && menuDatabase != null)
@@ -72,6 +78,7 @@ public class Customer : MonoBehaviour
         }
         else
         {
+            // 移動中
             Vector3 dir = agent.velocity.normalized;
             animator.SetFloat("BlendX", dir.x);
             animator.SetFloat("BlendY", dir.z);
@@ -108,34 +115,31 @@ public class Customer : MonoBehaviour
 
     public void ReceiveOrder()
     {
-        Debug.Log($"{gameObject.name} 收到餐點，立即離開");
         LeaveImmediately();
     }
 
-    // 強制離開並銷毀
+    // ✅ 修改重點
     public void LeaveImmediately()
     {
         if (isLeaving) return;
         isLeaving = true;
 
         CustomerQueueManager.Instance?.LeaveQueue(this);
-        ModeToggleManager.Instance?.UnregisterCustomer(this);
 
         if (agent != null && spawnPoint != null)
+        {
+            agent.isStopped = false;
             agent.SetDestination(spawnPoint.position);
-
-        Destroy(gameObject);
+        }
     }
 
-    // 給 CustomerQueueManager 呼叫
     public void ForceLeaveAndDespawn()
     {
         LeaveImmediately();
     }
+
     public void LeaveAndDespawn()
     {
-        LeaveImmediately(); // 呼叫已有的強制離開方法
+        LeaveImmediately();
     }
-
-    // 如果你之前有 ForceLeaveAndDespawn，也可以加一個
 }
