@@ -62,6 +62,8 @@ public class FreeModeToggleManager : MonoBehaviour
     // 登記現場顧客
     private HashSet<Customer> aliveCustomers = new HashSet<Customer>();
 
+    private int leavingCustomerCount = 0;
+
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -187,7 +189,6 @@ public class FreeModeToggleManager : MonoBehaviour
     {
         aliveCustomers.Remove(customer);
     }
-
     private void ForceRemoveAllCustomers()
     {
         foreach (var c in new List<Customer>(aliveCustomers))
@@ -203,27 +204,34 @@ public class FreeModeToggleManager : MonoBehaviour
     private IEnumerator HandleClosingPhase()
     {
         isClosingPhase = true;
+
         Debug.Log("Business ending soon. Start closing phase.");
 
-        // 強制顧客離開隊伍
-        ForceRemoveAllCustomers();
+        // 設定離場數量
+        leavingCustomerCount = aliveCustomers.Count;
 
-        // 等待顧客完全消失
-        while (aliveCustomers.Count > 0)
+        // 讓所有顧客開始離場
+        foreach (var c in new List<Customer>(aliveCustomers))
+        {
+            if (c != null)
+                c.LeaveImmediately();
+        }
+
+        // 等待全部離開
+        while (leavingCustomerCount > 0)
         {
             yield return null;
         }
 
         Debug.Log("All customers left. Show result UI.");
 
-        // 播放轉場動畫並顯示結算 UI
+        // 轉場 + 結算
         yield return PlayTransitionFillOnly(() =>
         {
             resultUI.SetActive(true);
             gameResultUI?.Show();
         });
 
-        // 按鈕事件：按下後還原轉場，關閉結算 UI，回歇業模式
         resultConfirmButton.onClick.RemoveAllListeners();
         resultConfirmButton.onClick.AddListener(() =>
         {
@@ -234,7 +242,6 @@ public class FreeModeToggleManager : MonoBehaviour
             }));
         });
     }
-
     #endregion
 
     #region 背包清空
@@ -340,4 +347,19 @@ public class FreeModeToggleManager : MonoBehaviour
         }
     }
     #endregion
+
+    #region 顧客離場回報
+
+    public void OnCustomerDespawn(Customer customer)
+    {
+        if (aliveCustomers.Contains(customer))
+            aliveCustomers.Remove(customer);
+
+        leavingCustomerCount--;
+
+        if (leavingCustomerCount < 0)
+            leavingCustomerCount = 0;
+    }
+    #endregion
+
 }

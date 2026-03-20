@@ -27,14 +27,13 @@ public class Customer : MonoBehaviour
         if (targetCamera == null)
             targetCamera = Camera.main;
 
-        ModeToggleManager.Instance?.RegisterCustomer(this);
+        FreeModeToggleManager.Instance?.RegisterCustomer(this);
     }
 
     private void Update()
     {
         if (agent == null || animator == null) return;
 
-        // 排隊階段
         if (waitingToJoinQueue)
         {
             TryJoinQueue();
@@ -44,21 +43,19 @@ public class Customer : MonoBehaviour
         float speed = agent.velocity.magnitude;
         animator.SetFloat("Speed", speed);
 
-        // ===== 到達目的地 =====
         if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance && !agent.hasPath)
         {
-            // ✅ 離開流程：到達 spawnPoint 才銷毀
+            // ===== 離場完成 =====
             if (isLeaving)
             {
                 if (Vector3.Distance(transform.position, spawnPoint.position) < 0.5f)
                 {
-                    ModeToggleManager.Instance?.UnregisterCustomer(this);
-                    Destroy(gameObject);
+                    Despawn();
                 }
                 return;
             }
 
-            // ===== 一般站立 =====
+            // ===== Idle =====
             if (!isIdle)
             {
                 animator.SetFloat("BlendX", faceDirection.x);
@@ -78,7 +75,6 @@ public class Customer : MonoBehaviour
         }
         else
         {
-            // 移動中
             Vector3 dir = agent.velocity.normalized;
             animator.SetFloat("BlendX", dir.x);
             animator.SetFloat("BlendY", dir.z);
@@ -89,7 +85,7 @@ public class Customer : MonoBehaviour
 
     private void TryJoinQueue()
     {
-        if (ModeToggleManager.Instance != null && ModeToggleManager.Instance.IsClosingPhase)
+        if (FreeModeToggleManager.Instance != null && FreeModeToggleManager.Instance.IsClosingPhase)
         {
             LeaveImmediately();
             return;
@@ -118,7 +114,7 @@ public class Customer : MonoBehaviour
         LeaveImmediately();
     }
 
-    // ✅ 修改重點
+    // ===== 離場開始 =====
     public void LeaveImmediately()
     {
         if (isLeaving) return;
@@ -131,6 +127,27 @@ public class Customer : MonoBehaviour
             agent.isStopped = false;
             agent.SetDestination(spawnPoint.position);
         }
+
+        // 保險：5秒後強制消失
+        StartCoroutine(AutoDespawnFallback(5f));
+    }
+
+    private IEnumerator AutoDespawnFallback(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        if (isLeaving)
+        {
+            Debug.LogWarning($"Fallback Despawn: {name}");
+            Despawn();
+        }
+    }
+
+    // ===== 統一銷毀出口 =====
+    private void Despawn()
+    {
+        FreeModeToggleManager.Instance?.OnCustomerDespawn(this);
+        Destroy(gameObject);
     }
 
     public void ForceLeaveAndDespawn()
