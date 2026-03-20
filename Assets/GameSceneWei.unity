@@ -6094,12 +6094,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8cfc1819e8302642b8af555664652a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  businessDuration: 3
+  businessDuration: 30
   closingBufferTime: 0.1
   timeSystem: {fileID: 994564257}
   businessModeUIs:
   - {fileID: 2014266427}
   - {fileID: 1149839019}
+  - {fileID: 700211828}
   businessModeScripts:
   - {fileID: 166965594}
   - {fileID: 659830101}
@@ -6113,6 +6114,7 @@ MonoBehaviour:
   transitionImage: {fileID: 1850945615}
   transitionImageTransform: {fileID: 1777446750}
   transitionDuration: 1
+  businessButton: {fileID: 1154794764}
   resultUI: {fileID: 1300300251}
   resultConfirmButton: {fileID: 266944141}
   gameResultUI: {fileID: 1300300253}
@@ -10334,7 +10336,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &700211829
 RectTransform:
   m_ObjectHideFlags: 0
@@ -33478,7 +33480,7 @@ MonoBehaviour:
   moveDuration: 0.15
   stayDuration: 0.5
   waitingHeight: 100
-  cooldownTime: 60
+  cooldownTime: 45
   cooldownMask: {fileID: 1565049424}
 --- !u!114 &2106305598
 MonoBehaviour:

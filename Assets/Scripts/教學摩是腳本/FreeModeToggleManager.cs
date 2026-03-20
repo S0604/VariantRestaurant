@@ -24,7 +24,10 @@ public class FreeModeToggleManager : MonoBehaviour
     [Header("轉場設定")]
     public Image transitionImage;
     public Transform transitionImageTransform;
-    public float transitionDuration = 1.5f;
+    public float transitionDuration =10f;
+
+    [Header("UI 控制")]
+    [SerializeField] private Button businessButton;
 
     [Header("結算 UI")]
     public GameObject resultUI;
@@ -58,6 +61,8 @@ public class FreeModeToggleManager : MonoBehaviour
 
     private float remainingTime;
     public float RemainingBusinessTime => remainingTime;
+
+    private bool isTransitioning = false;
 
     // 登記現場顧客
     private HashSet<Customer> aliveCustomers = new HashSet<Customer>();
@@ -99,9 +104,10 @@ public class FreeModeToggleManager : MonoBehaviour
     public void ToggleMode()
     {
         if (isBusinessMode) return;
+        if (isTransitioning) return;
+
         StartCoroutine(PlayTransition(EnterBusinessMode));
     }
-
     private void EnterBusinessMode()
     {
         isBusinessMode = true;
@@ -235,11 +241,12 @@ public class FreeModeToggleManager : MonoBehaviour
         resultConfirmButton.onClick.RemoveAllListeners();
         resultConfirmButton.onClick.AddListener(() =>
         {
-            StartCoroutine(PlayTransitionResetOnly(() =>
-            {
-                resultUI.SetActive(false);
-                EnterClosedMode();
-            }));
+            // ✅ 1. 先切換內容（UI / 模式）
+            resultUI.SetActive(false);
+            EnterClosedMode();
+
+            // ✅ 2. 再播放遮罩打開動畫
+            StartCoroutine(PlayTransitionResetOnly());
         });
     }
     #endregion
@@ -264,62 +271,94 @@ public class FreeModeToggleManager : MonoBehaviour
 
     private IEnumerator PlayTransition(Action onSwitch)
     {
+        isTransitioning = true;
+
+        // ❌ 禁用按鈕
+        if (businessButton != null)
+            businessButton.interactable = false;
+
         float t = 0f;
 
+        // 遮罩蓋住
         while (t < transitionDuration)
         {
             t += Time.deltaTime;
             float progress = t / transitionDuration;
-            if (transitionImage != null) transitionImage.fillAmount = Mathf.Lerp(0f, 1f, progress);
-            if (transitionImageTransform != null)
-                transitionImageTransform.localScale = new Vector3(1f, Mathf.Lerp(1f, 1.4f, progress), 1f);
+
+            if (transitionImage != null)
+                transitionImage.fillAmount = Mathf.Lerp(0f, 1f, progress);
+
             yield return null;
         }
 
+        if (transitionImage != null)
+            transitionImage.fillAmount = 1f;
+
+        // 切換內容
         onSwitch?.Invoke();
 
+        // 解除遮罩
         t = 0f;
         while (t < transitionDuration)
         {
             t += Time.deltaTime;
             float progress = t / transitionDuration;
-            if (transitionImage != null) transitionImage.fillAmount = Mathf.Lerp(1f, 0f, progress);
-            if (transitionImageTransform != null)
-                transitionImageTransform.localScale = new Vector3(1f, Mathf.Lerp(1.4f, 1f, progress), 1f);
+
+            if (transitionImage != null)
+                transitionImage.fillAmount = Mathf.Lerp(1f, 0f, progress);
+
             yield return null;
         }
-    }
 
+        if (transitionImage != null)
+            transitionImage.fillAmount = 0f;
+
+        // ✅ 恢復按鈕
+        if (businessButton != null)
+            businessButton.interactable = true;
+
+        isTransitioning = false;
+    }
     private IEnumerator PlayTransitionFillOnly(Action onFilled)
     {
         float t = 0f;
+
         while (t < transitionDuration)
         {
             t += Time.deltaTime;
             float progress = t / transitionDuration;
-            if (transitionImage != null) transitionImage.fillAmount = Mathf.Lerp(0f, 1f, progress);
-            if (transitionImageTransform != null)
-                transitionImageTransform.localScale = new Vector3(1f, Mathf.Lerp(1f, 1.4f, progress), 1f);
+
+            if (transitionImage != null)
+                transitionImage.fillAmount = Mathf.Lerp(0f, 1f, progress);
+
             yield return null;
         }
+
+        if (transitionImage != null)
+            transitionImage.fillAmount = 1f;
+
         onFilled?.Invoke();
     }
-
     private IEnumerator PlayTransitionResetOnly(Action onComplete = null)
     {
         float t = 0f;
+
         while (t < transitionDuration)
         {
             t += Time.deltaTime;
             float progress = t / transitionDuration;
-            if (transitionImage != null) transitionImage.fillAmount = Mathf.Lerp(1f, 0f, progress);
-            if (transitionImageTransform != null)
-                transitionImageTransform.localScale = new Vector3(1f, Mathf.Lerp(1.4f, 1f, progress), 1f);
+
+            if (transitionImage != null)
+                transitionImage.fillAmount = Mathf.Lerp(1f, 0f, progress);
+
             yield return null;
         }
+
+        if (transitionImage != null)
+            transitionImage.fillAmount = 0f;
+
         onComplete?.Invoke();
     }
-
     #endregion
 
     #region 教學對話
