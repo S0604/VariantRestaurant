@@ -91,6 +91,9 @@ public class CookingStation : MonoBehaviour
         if (currentEnergy <= 0)
         {
             Debug.Log("能量不足，無法開始小遊戲");
+            TutorialDialogueController.Instance?.PlayChapter("14");
+            if (TutorialProgressManager.Instance != null)
+                TutorialProgressManager.Instance.CompleteEvent("EnergyDepleted");
             return;
         }
 

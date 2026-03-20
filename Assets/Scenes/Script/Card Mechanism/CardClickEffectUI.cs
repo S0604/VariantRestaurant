@@ -17,8 +17,8 @@ public class CardClickEffectUI : MonoBehaviour, IPointerClickHandler
     public float waitingHeight = 100f;
 
     [Header("冷卻設定")]
-    public float cooldownTime = 5f;            // 每張卡的冷卻時間
-    public Image cooldownMask;                 // UI 遮罩 (Image type = Filled, Fill Method = Vertical)
+    public float cooldownTime = 5f;
+    public Image cooldownMask;
 
     private Vector2 originalPos;
     private Vector3 originalScale;
@@ -26,6 +26,9 @@ public class CardClickEffectUI : MonoBehaviour, IPointerClickHandler
 
     private bool isCoolingDown = false;
     public bool IsLocked { get; private set; } = false;
+
+    // ✅ 新增：控制對話只播放一次
+    private static bool hasPlayedChapter12 = false;
 
     private void Awake()
     {
@@ -42,28 +45,22 @@ public class CardClickEffectUI : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        // 如果已經被鎖住或在冷卻 → 直接忽略
         if (IsLocked || isCoolingDown) return;
 
-        //  一旦點擊就立刻鎖住，避免重複進 queue
         IsLocked = true;
-
         CardClickManager.Instance.EnqueueCard(this);
     }
 
-    // 進場 + 停留（這部分會阻塞下一張）
     public IEnumerator PlayEnterAndStay()
     {
         IsLocked = true;
 
-        // 進場動畫
         yield return StartCoroutine(MoveToUIPosition(
             centerAnchoredPos,
             Vector3.one * zoomScale,
             Quaternion.identity,
             moveDuration));
 
-        // 👉 觸發主動技
         var card = GetComponent<CardHoverEffect>();
         if (card != null && card.activeSkill != null)
         {
@@ -71,51 +68,40 @@ public class CardClickEffectUI : MonoBehaviour, IPointerClickHandler
             card.activeSkill.Activate(player);
         }
 
-        // 🗨️ 播放教學對話（這裡改成你想播的章節名）
-        TutorialDialogueController tutorial = FindObjectOfType<TutorialDialogueController>();
-        if (tutorial != null)
+        // ✅ 只播放一次
+        if (!hasPlayedChapter12)
         {
-            //
             TutorialDialogueController.Instance.PlayChapter("12");
-            Debug.Log("🎬 已呼叫播放 12 對話");
-        }
-        else
-        {
-            Debug.LogWarning("❌ 找不到 TutorialDialogueController，無法播放對話。");
+            hasPlayedChapter12 = true;
+            Debug.Log("🎬 已播放章節 12（僅一次）");
         }
 
-        // 停留一段時間
         yield return new WaitForSeconds(stayDuration);
     }
 
-    // 離場（獨立進行，不阻塞下一張）
     public IEnumerator PlayExit()
     {
-        // 移動回原位
         yield return StartCoroutine(MoveToUIPosition(
             originalPos,
             originalScale,
             originalRotation,
             moveDuration));
 
-        // 強制重置 hover
         var hoverEffect = GetComponent<CardHoverEffect>();
         if (hoverEffect != null)
             hoverEffect.ForceExit();
 
-        //  確保完全回位後 → 進入冷卻
         rectTransform.anchoredPosition = originalPos;
         rectTransform.localScale = originalScale;
         rectTransform.localRotation = originalRotation;
 
-        // 啟動冷卻
         StartCoroutine(StartCooldown());
     }
 
     private IEnumerator StartCooldown()
     {
         isCoolingDown = true;
-        IsLocked = false; // 解鎖，但仍然因為冷卻無法被點擊
+        IsLocked = false;
 
         if (cooldownMask != null)
         {
@@ -137,20 +123,18 @@ public class CardClickEffectUI : MonoBehaviour, IPointerClickHandler
         if (cooldownMask != null)
             cooldownMask.fillAmount = 0f;
 
-        isCoolingDown = false; // 完成冷卻，允許再次使用
+        isCoolingDown = false;
     }
 
     public void SetWaitingState(bool active)
     {
         if (active)
         {
-            // Z=0、Y 抬高
             rectTransform.localRotation = Quaternion.identity;
             rectTransform.anchoredPosition = new Vector2(originalPos.x, originalPos.y + waitingHeight);
         }
         else
         {
-            // 還原
             rectTransform.anchoredPosition = originalPos;
             rectTransform.localRotation = originalRotation;
         }

@@ -27,8 +27,7 @@ public class Customer : MonoBehaviour
         if (targetCamera == null)
             targetCamera = Camera.main;
 
-        // 通知 ModeToggleManager 有新顧客
-        ModeToggleManager.Instance?.RegisterCustomer(this);
+        FreeModeToggleManager.Instance?.RegisterCustomer(this);
     }
 
     private void Update()
@@ -46,21 +45,25 @@ public class Customer : MonoBehaviour
 
         if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance && !agent.hasPath)
         {
-            if (isLeaving && Vector3.Distance(transform.position, spawnPoint.position) < 0.5f)
+            // ===== 離場完成 =====
+            if (isLeaving)
             {
-                ModeToggleManager.Instance?.UnregisterCustomer(this);
-                Destroy(gameObject);
+                if (Vector3.Distance(transform.position, spawnPoint.position) < 0.5f)
+                {
+                    Despawn();
+                }
                 return;
             }
 
-            if (!isIdle && !isLeaving)
+            // ===== Idle =====
+            if (!isIdle)
             {
                 animator.SetFloat("BlendX", faceDirection.x);
                 animator.SetFloat("BlendY", faceDirection.z);
                 isIdle = true;
                 idleTimer = 0f;
             }
-            else if (!hasGeneratedOrder && !isLeaving)
+            else if (!hasGeneratedOrder)
             {
                 idleTimer += Time.deltaTime;
                 if (idleTimer >= 0.5f && customerOrder != null && menuDatabase != null)
@@ -82,7 +85,7 @@ public class Customer : MonoBehaviour
 
     private void TryJoinQueue()
     {
-        if (ModeToggleManager.Instance != null && ModeToggleManager.Instance.IsClosingPhase)
+        if (FreeModeToggleManager.Instance != null && FreeModeToggleManager.Instance.IsClosingPhase)
         {
             LeaveImmediately();
             return;
@@ -108,34 +111,52 @@ public class Customer : MonoBehaviour
 
     public void ReceiveOrder()
     {
-        Debug.Log($"{gameObject.name} 收到餐點，立即離開");
         LeaveImmediately();
     }
 
-    // 強制離開並銷毀
+    // ===== 離場開始 =====
     public void LeaveImmediately()
     {
         if (isLeaving) return;
         isLeaving = true;
 
         CustomerQueueManager.Instance?.LeaveQueue(this);
-        ModeToggleManager.Instance?.UnregisterCustomer(this);
 
         if (agent != null && spawnPoint != null)
+        {
+            agent.isStopped = false;
             agent.SetDestination(spawnPoint.position);
+        }
 
+        // 保險：5秒後強制消失
+        StartCoroutine(AutoDespawnFallback(5f));
+    }
+
+    private IEnumerator AutoDespawnFallback(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        if (isLeaving)
+        {
+            Debug.LogWarning($"Fallback Despawn: {name}");
+            Despawn();
+        }
+    }
+
+    // ===== 統一銷毀出口 =====
+    private void Despawn()
+    {
+        FreeModeToggleManager.Instance?.OnCustomerDespawn(this);
         Destroy(gameObject);
     }
 
-    // 給 CustomerQueueManager 呼叫
     public void ForceLeaveAndDespawn()
     {
         LeaveImmediately();
     }
+
     public void LeaveAndDespawn()
     {
-        LeaveImmediately(); // 呼叫已有的強制離開方法
+        LeaveImmediately();
     }
-
-    // 如果你之前有 ForceLeaveAndDespawn，也可以加一個
 }

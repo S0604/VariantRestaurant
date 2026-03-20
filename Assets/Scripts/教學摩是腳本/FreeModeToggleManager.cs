@@ -24,7 +24,10 @@ public class FreeModeToggleManager : MonoBehaviour
     [Header("轉場設定")]
     public Image transitionImage;
     public Transform transitionImageTransform;
-    public float transitionDuration = 1.5f;
+    public float transitionDuration =10f;
+
+    [Header("UI 控制")]
+    [SerializeField] private Button businessButton;
 
     [Header("結算 UI")]
     public GameObject resultUI;
@@ -44,6 +47,9 @@ public class FreeModeToggleManager : MonoBehaviour
     [SerializeField] private float randomEventDelay = 20f;
     [SerializeField, Range(0f, 1f)] private float randomEventChance = 0.5f;
 
+    private bool hasPlayedChapter3 = false;
+    private bool hasPlayedChapter13 = false;
+
     private Coroutine randomEventCoroutine;
     private bool hasTriggeredRandomEvent = false;
 
@@ -56,8 +62,12 @@ public class FreeModeToggleManager : MonoBehaviour
     private float remainingTime;
     public float RemainingBusinessTime => remainingTime;
 
+    private bool isTransitioning = false;
+
     // 登記現場顧客
     private HashSet<Customer> aliveCustomers = new HashSet<Customer>();
+
+    private int leavingCustomerCount = 0;
 
     private void Awake()
     {
@@ -94,9 +104,10 @@ public class FreeModeToggleManager : MonoBehaviour
     public void ToggleMode()
     {
         if (isBusinessMode) return;
+        if (isTransitioning) return;
+
         StartCoroutine(PlayTransition(EnterBusinessMode));
     }
-
     private void EnterBusinessMode()
     {
         isBusinessMode = true;
@@ -184,7 +195,6 @@ public class FreeModeToggleManager : MonoBehaviour
     {
         aliveCustomers.Remove(customer);
     }
-
     private void ForceRemoveAllCustomers()
     {
         foreach (var c in new List<Customer>(aliveCustomers))
@@ -200,38 +210,45 @@ public class FreeModeToggleManager : MonoBehaviour
     private IEnumerator HandleClosingPhase()
     {
         isClosingPhase = true;
+
         Debug.Log("Business ending soon. Start closing phase.");
 
-        // 強制顧客離開隊伍
-        ForceRemoveAllCustomers();
+        // 設定離場數量
+        leavingCustomerCount = aliveCustomers.Count;
 
-        // 等待顧客完全消失
-        while (aliveCustomers.Count > 0)
+        // 讓所有顧客開始離場
+        foreach (var c in new List<Customer>(aliveCustomers))
+        {
+            if (c != null)
+                c.LeaveImmediately();
+        }
+
+        // 等待全部離開
+        while (leavingCustomerCount > 0)
         {
             yield return null;
         }
 
         Debug.Log("All customers left. Show result UI.");
 
-        // 播放轉場動畫並顯示結算 UI
+        // 轉場 + 結算
         yield return PlayTransitionFillOnly(() =>
         {
             resultUI.SetActive(true);
             gameResultUI?.Show();
         });
 
-        // 按鈕事件：按下後還原轉場，關閉結算 UI，回歇業模式
         resultConfirmButton.onClick.RemoveAllListeners();
         resultConfirmButton.onClick.AddListener(() =>
         {
-            StartCoroutine(PlayTransitionResetOnly(() =>
-            {
-                resultUI.SetActive(false);
-                EnterClosedMode();
-            }));
+            // ✅ 1. 先切換內容（UI / 模式）
+            resultUI.SetActive(false);
+            EnterClosedMode();
+
+            // ✅ 2. 再播放遮罩打開動畫
+            StartCoroutine(PlayTransitionResetOnly());
         });
     }
-
     #endregion
 
     #region 背包清空
@@ -254,80 +271,134 @@ public class FreeModeToggleManager : MonoBehaviour
 
     private IEnumerator PlayTransition(Action onSwitch)
     {
+        isTransitioning = true;
+
+        // ❌ 禁用按鈕
+        if (businessButton != null)
+            businessButton.interactable = false;
+
         float t = 0f;
 
+        // 遮罩蓋住
         while (t < transitionDuration)
         {
             t += Time.deltaTime;
             float progress = t / transitionDuration;
-            if (transitionImage != null) transitionImage.fillAmount = Mathf.Lerp(0f, 1f, progress);
-            if (transitionImageTransform != null)
-                transitionImageTransform.localScale = new Vector3(1f, Mathf.Lerp(1f, 1.4f, progress), 1f);
+
+            if (transitionImage != null)
+                transitionImage.fillAmount = Mathf.Lerp(0f, 1f, progress);
+
             yield return null;
         }
 
+        if (transitionImage != null)
+            transitionImage.fillAmount = 1f;
+
+        // 切換內容
         onSwitch?.Invoke();
 
+        // 解除遮罩
         t = 0f;
         while (t < transitionDuration)
         {
             t += Time.deltaTime;
             float progress = t / transitionDuration;
-            if (transitionImage != null) transitionImage.fillAmount = Mathf.Lerp(1f, 0f, progress);
-            if (transitionImageTransform != null)
-                transitionImageTransform.localScale = new Vector3(1f, Mathf.Lerp(1.4f, 1f, progress), 1f);
+
+            if (transitionImage != null)
+                transitionImage.fillAmount = Mathf.Lerp(1f, 0f, progress);
+
             yield return null;
         }
-    }
 
+        if (transitionImage != null)
+            transitionImage.fillAmount = 0f;
+
+        // ✅ 恢復按鈕
+        if (businessButton != null)
+            businessButton.interactable = true;
+
+        isTransitioning = false;
+    }
     private IEnumerator PlayTransitionFillOnly(Action onFilled)
     {
         float t = 0f;
+
         while (t < transitionDuration)
         {
             t += Time.deltaTime;
             float progress = t / transitionDuration;
-            if (transitionImage != null) transitionImage.fillAmount = Mathf.Lerp(0f, 1f, progress);
-            if (transitionImageTransform != null)
-                transitionImageTransform.localScale = new Vector3(1f, Mathf.Lerp(1f, 1.4f, progress), 1f);
+
+            if (transitionImage != null)
+                transitionImage.fillAmount = Mathf.Lerp(0f, 1f, progress);
+
             yield return null;
         }
+
+        if (transitionImage != null)
+            transitionImage.fillAmount = 1f;
+
         onFilled?.Invoke();
     }
-
     private IEnumerator PlayTransitionResetOnly(Action onComplete = null)
     {
         float t = 0f;
+
         while (t < transitionDuration)
         {
             t += Time.deltaTime;
             float progress = t / transitionDuration;
-            if (transitionImage != null) transitionImage.fillAmount = Mathf.Lerp(1f, 0f, progress);
-            if (transitionImageTransform != null)
-                transitionImageTransform.localScale = new Vector3(1f, Mathf.Lerp(1.4f, 1f, progress), 1f);
+
+            if (transitionImage != null)
+                transitionImage.fillAmount = Mathf.Lerp(1f, 0f, progress);
+
             yield return null;
         }
+
+        if (transitionImage != null)
+            transitionImage.fillAmount = 0f;
+
         onComplete?.Invoke();
     }
-
     #endregion
 
     #region 教學對話
 
     public IEnumerator PlayChapterAfterDelay(string chapterID, float delay)
     {
+        // 防止同一場重複播放
+        if (chapterID == "3" && hasPlayedChapter3) yield break;
+        if (chapterID == "13" && hasPlayedChapter13) yield break;
+
         yield return new WaitForSeconds(delay);
 
         if (TutorialDialogueController.Instance != null)
             yield return TutorialDialogueController.Instance.PlaySingleChapter(chapterID);
 
-        // 對話13結束，自由營業開始
+        // 標記已播放
+        if (chapterID == "3") hasPlayedChapter3 = true;
+        if (chapterID == "13") hasPlayedChapter13 = true;
+
+        // Chapter 13 結束後開放時間
         if (chapterID == "13")
         {
             AllowTimeFlow = true;
             Debug.Log("Chapter 13 finished. Free business timer starts.");
         }
     }
-
     #endregion
+
+    #region 顧客離場回報
+
+    public void OnCustomerDespawn(Customer customer)
+    {
+        if (aliveCustomers.Contains(customer))
+            aliveCustomers.Remove(customer);
+
+        leavingCustomerCount--;
+
+        if (leavingCustomerCount < 0)
+            leavingCustomerCount = 0;
+    }
+    #endregion
+
 }
