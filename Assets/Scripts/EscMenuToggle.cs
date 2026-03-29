@@ -2,18 +2,27 @@
 
 public class EscMenuToggle : MonoBehaviour
 {
-    [Header("指向你的選項面板 (Panel)")]
-    public GameObject optionsMenu;
+    [Header("主選單面板")]
+    [SerializeField] private GameObject optionsMenu;
 
-    // 如果關閉時需要隱藏滑鼠，改成 false（依你的遊戲需求）
-    public bool hideCursorWhenClosed = false;
+    [Header("存讀檔子面板控制")]
+    [SerializeField] private SaveLoadMenuUI saveLoadMenuUI;
+
+    [Header("滑鼠設定")]
+    [SerializeField] private bool hideCursorWhenClosed = false;
 
     private bool isOpen = false;
 
-    void Update()
+    private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            if (saveLoadMenuUI != null && saveLoadMenuUI.IsSubPanelOpen)
+            {
+                saveLoadMenuUI.CloseAllSubPanels();
+                return;
+            }
+
             ToggleMenu();
         }
     }
@@ -22,15 +31,16 @@ public class EscMenuToggle : MonoBehaviour
     {
         isOpen = !isOpen;
 
-        optionsMenu.SetActive(isOpen);
+        if (optionsMenu != null)
+        {
+            optionsMenu.SetActive(isOpen);
+        }
 
-        // 暫停或恢復遊戲
         Time.timeScale = isOpen ? 0f : 1f;
 
-        // 滑鼠控制
         if (isOpen)
         {
-            Cursor.lockState = CursorLockMode.None; // 滑鼠自由活動
+            Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
         else
@@ -43,10 +53,35 @@ public class EscMenuToggle : MonoBehaviour
     public void CloseMenu()
     {
         isOpen = false;
-        optionsMenu.SetActive(false);
-        Time.timeScale = 1f;
 
+        if (optionsMenu != null)
+        {
+            optionsMenu.SetActive(false);
+        }
+
+        if (saveLoadMenuUI != null)
+        {
+            saveLoadMenuUI.CloseAllSubPanels();
+        }
+
+        Time.timeScale = 1f;
         Cursor.lockState = hideCursorWhenClosed ? CursorLockMode.Locked : CursorLockMode.None;
         Cursor.visible = !hideCursorWhenClosed;
+    }
+
+    public void OpenSavePanel()
+    {
+        if (saveLoadMenuUI != null)
+        {
+            saveLoadMenuUI.OpenSavePanel();
+        }
+    }
+
+    public void OpenLoadPanel()
+    {
+        if (saveLoadMenuUI != null)
+        {
+            saveLoadMenuUI.OpenLoadPanel();
+        }
     }
 }
