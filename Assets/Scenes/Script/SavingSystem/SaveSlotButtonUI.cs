@@ -6,6 +6,7 @@ public class SaveSlotButtonUI : MonoBehaviour
 {
     [Header("UI")]
     [SerializeField] private TMP_Text slotNameText;
+    [SerializeField] private TMP_Text saveTypeText;
     [SerializeField] private TMP_Text saveTimeText;
     [SerializeField] private TMP_Text sceneNameText;
     [SerializeField] private Button button;
@@ -13,6 +14,7 @@ public class SaveSlotButtonUI : MonoBehaviour
     private int slotIndex;
     private bool isAutoSave;
     private bool isLoadMode;
+    private string fileName;
     private SaveLoadMenuUI parentUI;
 
     public void Setup(SaveSlotMetaData meta, bool loadMode, SaveLoadMenuUI owner)
@@ -20,13 +22,17 @@ public class SaveSlotButtonUI : MonoBehaviour
         slotIndex = meta.slotIndex;
         isAutoSave = meta.isAutoSave;
         isLoadMode = loadMode;
+        fileName = meta.fileName;
         parentUI = owner;
 
         if (slotNameText != null)
             slotNameText.text = meta.displayName;
 
+        if (saveTypeText != null)
+            saveTypeText.text = meta.isAutoSave ? "類型: 自動存檔" : "類型: 手動存檔";
+
         if (saveTimeText != null)
-            saveTimeText.text = meta.saveTime;
+            saveTimeText.text = $"時間: {meta.saveTime}";
 
         if (sceneNameText != null)
             sceneNameText.text = $"場景: {meta.sceneName}";
@@ -42,7 +48,7 @@ public class SaveSlotButtonUI : MonoBehaviour
             }
             else
             {
-                button.interactable = true;
+                button.interactable = !meta.isAutoSave;
                 button.onClick.AddListener(OnClickSave);
             }
         }
@@ -52,7 +58,7 @@ public class SaveSlotButtonUI : MonoBehaviour
     {
         if (parentUI != null)
         {
-            parentUI.HandleSaveSlotClick(slotIndex, isAutoSave);
+            parentUI.HandleSaveSlotClick(slotIndex, isAutoSave, fileName);
         }
     }
 
@@ -60,7 +66,7 @@ public class SaveSlotButtonUI : MonoBehaviour
     {
         if (parentUI != null)
         {
-            parentUI.HandleLoadSlotClick(slotIndex, isAutoSave);
+            parentUI.HandleLoadSlotClick(slotIndex, isAutoSave, fileName);
         }
     }
 }

@@ -107,18 +107,14 @@ public class SaveLoadMenuUI : MonoBehaviour
         }
     }
 
-    public void HandleSaveSlotClick(int slotIndex, bool isAutoSave)
+    public void HandleSaveSlotClick(int slotIndex, bool isAutoSave, string fileName)
     {
         EnsureSaveManager();
 
         if (saveManager == null)
             return;
 
-        if (isAutoSave)
-        {
-            saveManager.SaveAuto();
-        }
-        else
+        if (!isAutoSave)
         {
             saveManager.SaveSlot(slotIndex);
         }
@@ -127,7 +123,7 @@ public class SaveLoadMenuUI : MonoBehaviour
         RefreshLoadPanel();
     }
 
-    public void HandleLoadSlotClick(int slotIndex, bool isAutoSave)
+    public void HandleLoadSlotClick(int slotIndex, bool isAutoSave, string fileName)
     {
         EnsureSaveManager();
 
@@ -136,7 +132,7 @@ public class SaveLoadMenuUI : MonoBehaviour
 
         if (isAutoSave)
         {
-            saveManager.LoadAuto();
+            saveManager.LoadAutoByFileName(fileName);
         }
         else
         {

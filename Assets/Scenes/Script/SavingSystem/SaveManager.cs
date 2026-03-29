@@ -16,6 +16,7 @@ public class SaveSlotMetaData
     public string displayName;
     public string fileName;
     public string fullPath;
+    public string fileID;
 }
 
 public class SaveManager : MonoBehaviour
@@ -25,17 +26,21 @@ public class SaveManager : MonoBehaviour
     [Header("自動存檔")]
     [SerializeField] private bool enableAutoSave = true;
     [SerializeField] private float autoSaveInterval = 300f;
+    [SerializeField] private int maxAutoSaveCount = 10;
 
     [Header("手動存檔槽數量")]
     [SerializeField] private int manualSlotCount = 3;
 
-    private const string AUTO_SAVE_FILE = "autosave.json";
+    private const string MANUAL_FILE_PREFIX = "save_slot_";
+    private const string AUTO_FILE_PREFIX = "autosave_";
+    private const string FILE_EXTENSION = ".json";
 
     private Coroutine autoSaveCoroutine;
     private SaveFileData pendingLoadData;
     private bool isWaitingSceneLoad = false;
 
     public int ManualSlotCount => manualSlotCount;
+    public int MaxAutoSaveCount => maxAutoSaveCount;
 
     private void Awake()
     {
@@ -124,12 +129,16 @@ public class SaveManager : MonoBehaviour
 
     public void SaveAuto()
     {
-        SaveToFile(AUTO_SAVE_FILE, true, 0);
+        string fileID = GenerateAutoSaveFileID();
+        string fileName = fileID + FILE_EXTENSION;
+
+        SaveToFile(fileName, true, 0, fileID);
+        CleanupOldAutoSaves();
     }
 
-    public void LoadAuto()
+    public void LoadAutoByFileName(string fileName)
     {
-        LoadFromFile(AUTO_SAVE_FILE);
+        LoadFromFile(fileName);
     }
 
     public bool HasManualSave(int slotIndex)
@@ -138,11 +147,6 @@ public class SaveManager : MonoBehaviour
             return false;
 
         return File.Exists(GetFullPath(GetManualSlotFileName(slotIndex)));
-    }
-
-    public bool HasAutoSave()
-    {
-        return File.Exists(GetFullPath(AUTO_SAVE_FILE));
     }
 
     public string GetSavePathInfo()
@@ -157,11 +161,12 @@ public class SaveManager : MonoBehaviour
             slotIndex = slotIndex,
             isAutoSave = false,
             hasData = false,
-            displayName = $"存檔槽 {slotIndex}",
+            displayName = $"手動存檔 {slotIndex}",
             fileName = GetManualSlotFileName(slotIndex),
             fullPath = GetFullPath(GetManualSlotFileName(slotIndex)),
             saveTime = "空槽位",
-            sceneName = "-"
+            sceneName = "-",
+            fileID = $"manual_{slotIndex}"
         };
 
         if (!File.Exists(meta.fullPath))
@@ -173,51 +178,35 @@ public class SaveManager : MonoBehaviour
             meta.hasData = true;
             meta.saveTime = string.IsNullOrEmpty(data.saveTime) ? "未知時間" : data.saveTime;
             meta.sceneName = string.IsNullOrEmpty(data.sceneName) ? "-" : data.sceneName;
+            meta.fileID = string.IsNullOrEmpty(data.fileID) ? $"manual_{slotIndex}" : data.fileID;
         }
 
         return meta;
     }
 
-    public SaveSlotMetaData GetAutoSaveMetaData()
-    {
-        SaveSlotMetaData meta = new SaveSlotMetaData
-        {
-            slotIndex = 0,
-            isAutoSave = true,
-            hasData = false,
-            displayName = "自動存檔",
-            fileName = AUTO_SAVE_FILE,
-            fullPath = GetFullPath(AUTO_SAVE_FILE),
-            saveTime = "無自動存檔",
-            sceneName = "-"
-        };
-
-        if (!File.Exists(meta.fullPath))
-            return meta;
-
-        SaveFileData data = ReadSaveFile(meta.fullPath);
-        if (data != null)
-        {
-            meta.hasData = true;
-            meta.saveTime = string.IsNullOrEmpty(data.saveTime) ? "未知時間" : data.saveTime;
-            meta.sceneName = string.IsNullOrEmpty(data.sceneName) ? "-" : data.sceneName;
-        }
-
-        return meta;
-    }
-
-    public List<SaveSlotMetaData> GetAllLoadableSlotsSorted(bool includeAutoSave = true)
+    public List<SaveSlotMetaData> GetAutoSaveMetaDataList()
     {
         List<SaveSlotMetaData> list = new List<SaveSlotMetaData>();
+        string[] files = Directory.GetFiles(Application.persistentDataPath, $"{AUTO_FILE_PREFIX}*{FILE_EXTENSION}");
 
-        if (includeAutoSave)
+        foreach (string fullPath in files)
         {
-            list.Add(GetAutoSaveMetaData());
-        }
+            SaveFileData data = ReadSaveFile(fullPath);
 
-        for (int i = 1; i <= manualSlotCount; i++)
-        {
-            list.Add(GetManualSlotMetaData(i));
+            SaveSlotMetaData meta = new SaveSlotMetaData
+            {
+                slotIndex = 0,
+                isAutoSave = true,
+                hasData = data != null,
+                displayName = "自動存檔",
+                fileName = Path.GetFileName(fullPath),
+                fullPath = fullPath,
+                saveTime = data != null && !string.IsNullOrEmpty(data.saveTime) ? data.saveTime : "未知時間",
+                sceneName = data != null && !string.IsNullOrEmpty(data.sceneName) ? data.sceneName : "-",
+                fileID = data != null && !string.IsNullOrEmpty(data.fileID) ? data.fileID : Path.GetFileNameWithoutExtension(fullPath)
+            };
+
+            list.Add(meta);
         }
 
         list.Sort((a, b) =>
@@ -228,6 +217,81 @@ public class SaveManager : MonoBehaviour
         });
 
         return list;
+    }
+
+    public List<SaveSlotMetaData> GetAllLoadableSlotsSorted(bool includeAutoSaves = true)
+    {
+        List<SaveSlotMetaData> list = new List<SaveSlotMetaData>();
+
+        for (int i = 1; i <= manualSlotCount; i++)
+        {
+            list.Add(GetManualSlotMetaData(i));
+        }
+
+        if (includeAutoSaves)
+        {
+            list.AddRange(GetAutoSaveMetaDataList());
+        }
+
+        list.Sort((a, b) =>
+        {
+            bool aHasData = a.hasData;
+            bool bHasData = b.hasData;
+
+            if (aHasData != bHasData)
+                return bHasData.CompareTo(aHasData);
+
+            DateTime ta = ParseTime(a.saveTime);
+            DateTime tb = ParseTime(b.saveTime);
+            return tb.CompareTo(ta);
+        });
+
+        return list;
+    }
+
+    public void DeleteAutoSaveByFileName(string fileName)
+    {
+        string fullPath = GetFullPath(fileName);
+
+        if (File.Exists(fullPath))
+        {
+            File.Delete(fullPath);
+            Debug.Log($"[SaveManager] 已刪除自動存檔: {fileName}");
+        }
+    }
+
+    private void CleanupOldAutoSaves()
+    {
+        List<SaveSlotMetaData> autoSaves = GetAutoSaveMetaDataList();
+
+        if (maxAutoSaveCount <= 0)
+        {
+            foreach (var save in autoSaves)
+            {
+                if (File.Exists(save.fullPath))
+                {
+                    File.Delete(save.fullPath);
+                }
+            }
+            return;
+        }
+
+        if (autoSaves.Count <= maxAutoSaveCount)
+            return;
+
+        for (int i = maxAutoSaveCount; i < autoSaves.Count; i++)
+        {
+            if (File.Exists(autoSaves[i].fullPath))
+            {
+                File.Delete(autoSaves[i].fullPath);
+                Debug.Log($"[SaveManager] 自動刪除最舊自動存檔: {autoSaves[i].fileName}");
+            }
+        }
+    }
+
+    private string GenerateAutoSaveFileID()
+    {
+        return $"{AUTO_FILE_PREFIX}{DateTime.Now:yyyyMMdd_HHmmss}";
     }
 
     private DateTime ParseTime(string timeString)
@@ -243,14 +307,15 @@ public class SaveManager : MonoBehaviour
         return slotIndex >= 1 && slotIndex <= manualSlotCount;
     }
 
-    private void SaveToFile(string fileName, bool isAutoSave, int slotIndex)
+    private void SaveToFile(string fileName, bool isAutoSave, int slotIndex, string fileID = "")
     {
         SaveFileData fileData = new SaveFileData
         {
             saveTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
             sceneName = SceneManager.GetActiveScene().name,
             isAutoSave = isAutoSave,
-            slotIndex = slotIndex
+            slotIndex = slotIndex,
+            fileID = string.IsNullOrEmpty(fileID) ? Path.GetFileNameWithoutExtension(fileName) : fileID
         };
 
         ISaveable[] saveables = FindAllSaveables();
@@ -421,7 +486,7 @@ public class SaveManager : MonoBehaviour
 
     private string GetManualSlotFileName(int slotIndex)
     {
-        return $"save_slot_{slotIndex}.json";
+        return $"{MANUAL_FILE_PREFIX}{slotIndex}{FILE_EXTENSION}";
     }
 
     private string GetFullPath(string fileName)

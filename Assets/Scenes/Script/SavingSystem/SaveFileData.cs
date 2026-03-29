@@ -15,5 +15,6 @@ public class SaveFileData
     public string sceneName;
     public bool isAutoSave;
     public int slotIndex;
+    public string fileID;
     public List<SaveRecord> records = new List<SaveRecord>();
 }
