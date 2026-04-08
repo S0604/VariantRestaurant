@@ -9,31 +9,47 @@ public class PlayerStats
     public int customerFlow = 0;
     public int experience = 0;
     public int level = 1;
-
-    // ★ 新增：星級
     public int stars = 0;
 }
 
-public class PlayerData : MonoBehaviour
+[Serializable]
+public class PlayerDataSaveData
+{
+    public int money;
+    public int popularity;
+    public int customerFlow;
+    public int experience;
+    public int level;
+    public int stars;
+}
+
+public class PlayerData : MonoBehaviour, ISaveable
 {
     public static PlayerData Instance { get; private set; }
 
     [Header("Data")]
     public PlayerStats stats = new PlayerStats();
-    public LevelTableSO levelTable; // ← 在 Inspector 指定
+    public LevelTableSO levelTable;
+
+    [Header("Save")]
+    [SerializeField] private string uniqueID = "PlayerData";
 
     public event Action OnStatsChanged;
-    public event Action<int> OnLevelUp;   // 給音效/演出/UI
-    public event Action<int> OnStarsChanged; // ★ 新增：星級變更事件（可選）
+    public event Action<int> OnLevelUp;
+    public event Action<int> OnStarsChanged;
 
     void Awake()
     {
-        if (Instance && Instance != this) { Destroy(gameObject); return; }
+        if (Instance && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
 
-    // 經驗與等級 --------------------
     public void AddExperience(int amount)
     {
         if (amount <= 0) return;
@@ -48,7 +64,6 @@ public class PlayerData : MonoBehaviour
 
         int maxLv = levelTable.MaxLevel;
 
-        // 連跳等
         while (stats.level < maxLv)
         {
             int need = levelTable.GetRequiredExp(stats.level);
@@ -60,7 +75,6 @@ public class PlayerData : MonoBehaviour
             Debug.Log($"升級！目前等級：{stats.level}");
         }
 
-        // 滿級時經驗不要再往上疊，夾在需求上限（顯示用）
         if (stats.level >= maxLv)
         {
             int need = levelTable.GetRequiredExp(stats.level);
@@ -68,7 +82,6 @@ public class PlayerData : MonoBehaviour
         }
     }
 
-    // 金錢與屬性 --------------------
     public bool CanAfford(int cost) => cost <= stats.money;
 
     public bool SpendMoney(int cost)
@@ -79,11 +92,24 @@ public class PlayerData : MonoBehaviour
         return true;
     }
 
-    public void AddMoney(int amount) { stats.money += Mathf.Max(0, amount); NotifyStatsChanged(); }
-    public void AddPopularity(int amount) { stats.popularity += amount; NotifyStatsChanged(); }
-    public void AddCustomerFlow(int amount) { stats.customerFlow += amount; NotifyStatsChanged(); }
+    public void AddMoney(int amount)
+    {
+        stats.money += Mathf.Max(0, amount);
+        NotifyStatsChanged();
+    }
 
-    // ★ 星級（Stars）----------------
+    public void AddPopularity(int amount)
+    {
+        stats.popularity += amount;
+        NotifyStatsChanged();
+    }
+
+    public void AddCustomerFlow(int amount)
+    {
+        stats.customerFlow += amount;
+        NotifyStatsChanged();
+    }
+
     public int GetStars() => stats.stars;
 
     public void AddStars(int amount)
@@ -98,11 +124,72 @@ public class PlayerData : MonoBehaviour
     {
         value = Mathf.Max(0, value);
         if (stats.stars == value) return;
+
         stats.stars = value;
         OnStarsChanged?.Invoke(stats.stars);
         NotifyStatsChanged();
     }
 
-    // 事件 --------------------------
-    private void NotifyStatsChanged() => OnStatsChanged?.Invoke();
+    private void NotifyStatsChanged()
+    {
+        OnStatsChanged?.Invoke();
+    }
+
+    public string GetUniqueID()
+    {
+        return uniqueID;
+    }
+
+    public string CaptureAsJson()
+    {
+        PlayerDataSaveData data = new PlayerDataSaveData
+        {
+            money = stats.money,
+            popularity = stats.popularity,
+            customerFlow = stats.customerFlow,
+            experience = stats.experience,
+            level = stats.level,
+            stars = stats.stars
+        };
+
+        return JsonUtility.ToJson(data);
+    }
+
+    public void RestoreFromJson(string json)
+    {
+        if (string.IsNullOrEmpty(json))
+            return;
+
+        PlayerDataSaveData data = JsonUtility.FromJson<PlayerDataSaveData>(json);
+        if (data == null)
+            return;
+
+        stats.money = data.money;
+        stats.popularity = data.popularity;
+        stats.customerFlow = data.customerFlow;
+        stats.experience = data.experience;
+        stats.level = Mathf.Max(1, data.level);
+        stats.stars = Mathf.Max(0, data.stars);
+
+        if (levelTable != null)
+        {
+            int maxLv = levelTable.MaxLevel;
+            stats.level = Mathf.Clamp(stats.level, 1, maxLv);
+
+            int need = levelTable.GetRequiredExp(stats.level);
+            if (need > 0)
+            {
+                stats.experience = Mathf.Clamp(stats.experience, 0, need);
+            }
+            else
+            {
+                stats.experience = Mathf.Max(0, stats.experience);
+            }
+        }
+
+        OnStarsChanged?.Invoke(stats.stars);
+        NotifyStatsChanged();
+
+        Debug.Log("[Save] PlayerData 已還原");
+    }
 }

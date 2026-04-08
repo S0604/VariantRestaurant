@@ -96,11 +96,34 @@ public class SaveManager : MonoBehaviour
         {
             yield return new WaitForSecondsRealtime(autoSaveInterval);
 
-            if (enableAutoSave && !isWaitingSceneLoad)
+            if (enableAutoSave && !isWaitingSceneLoad && CanSaveNow())
             {
                 SaveAuto();
             }
         }
+    }
+
+    public bool CanSaveNow()
+    {
+        if (FreeModeToggleManager.Instance == null)
+            return true;
+
+        return !FreeModeToggleManager.Instance.IsBusinessMode;
+    }
+
+    public bool CanLoadNow()
+    {
+        return true;
+    }
+
+    public string GetSaveBlockedReason()
+    {
+        if (FreeModeToggleManager.Instance != null && FreeModeToggleManager.Instance.IsBusinessMode)
+        {
+            return "營業模式中不可存檔";
+        }
+
+        return string.Empty;
     }
 
     public void SaveSlot(int slotIndex)
@@ -108,6 +131,12 @@ public class SaveManager : MonoBehaviour
         if (!IsValidManualSlot(slotIndex))
         {
             Debug.LogWarning($"[SaveManager] 無效的手動存檔槽位: {slotIndex}");
+            return;
+        }
+
+        if (!CanSaveNow())
+        {
+            Debug.Log("[SaveManager] 目前為營業模式，禁止手動存檔");
             return;
         }
 
@@ -129,6 +158,12 @@ public class SaveManager : MonoBehaviour
 
     public void SaveAuto()
     {
+        if (!CanSaveNow())
+        {
+            Debug.Log("[SaveManager] 目前為營業模式，禁止自動存檔");
+            return;
+        }
+
         string fileID = GenerateAutoSaveFileID();
         string fileName = fileID + FILE_EXTENSION;
 
@@ -147,6 +182,17 @@ public class SaveManager : MonoBehaviour
             return false;
 
         return File.Exists(GetFullPath(GetManualSlotFileName(slotIndex)));
+    }
+
+    public bool HasAnyLoadableData()
+    {
+        for (int i = 1; i <= manualSlotCount; i++)
+        {
+            if (HasManualSave(i))
+                return true;
+        }
+
+        return GetAutoSaveMetaDataList().Count > 0;
     }
 
     public string GetSavePathInfo()
@@ -187,6 +233,10 @@ public class SaveManager : MonoBehaviour
     public List<SaveSlotMetaData> GetAutoSaveMetaDataList()
     {
         List<SaveSlotMetaData> list = new List<SaveSlotMetaData>();
+
+        if (!Directory.Exists(Application.persistentDataPath))
+            return list;
+
         string[] files = Directory.GetFiles(Application.persistentDataPath, $"{AUTO_FILE_PREFIX}*{FILE_EXTENSION}");
 
         foreach (string fullPath in files)
@@ -223,28 +273,17 @@ public class SaveManager : MonoBehaviour
     {
         List<SaveSlotMetaData> list = new List<SaveSlotMetaData>();
 
+        // 手動存檔固定順序 1 -> 2 -> 3
         for (int i = 1; i <= manualSlotCount; i++)
         {
             list.Add(GetManualSlotMetaData(i));
         }
 
+        // 自動存檔另外依時間排序後接在後面
         if (includeAutoSaves)
         {
             list.AddRange(GetAutoSaveMetaDataList());
         }
-
-        list.Sort((a, b) =>
-        {
-            bool aHasData = a.hasData;
-            bool bHasData = b.hasData;
-
-            if (aHasData != bHasData)
-                return bHasData.CompareTo(aHasData);
-
-            DateTime ta = ParseTime(a.saveTime);
-            DateTime tb = ParseTime(b.saveTime);
-            return tb.CompareTo(ta);
-        });
 
         return list;
     }

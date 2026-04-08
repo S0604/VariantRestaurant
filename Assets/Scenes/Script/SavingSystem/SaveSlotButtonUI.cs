@@ -13,7 +13,6 @@ public class SaveSlotButtonUI : MonoBehaviour
 
     private int slotIndex;
     private bool isAutoSave;
-    private bool isLoadMode;
     private string fileName;
     private SaveLoadMenuUI parentUI;
 
@@ -21,7 +20,6 @@ public class SaveSlotButtonUI : MonoBehaviour
     {
         slotIndex = meta.slotIndex;
         isAutoSave = meta.isAutoSave;
-        isLoadMode = loadMode;
         fileName = meta.fileName;
         parentUI = owner;
 
@@ -43,12 +41,14 @@ public class SaveSlotButtonUI : MonoBehaviour
 
             if (loadMode)
             {
-                button.interactable = meta.hasData;
+                bool canLoad = owner != null && owner.CanUseLoadSlots();
+                button.interactable = meta.hasData && canLoad;
                 button.onClick.AddListener(OnClickLoad);
             }
             else
             {
-                button.interactable = !meta.isAutoSave;
+                bool canSave = owner != null && owner.CanUseSaveSlots();
+                button.interactable = !meta.isAutoSave && canSave;
                 button.onClick.AddListener(OnClickSave);
             }
         }

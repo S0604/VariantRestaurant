@@ -2,8 +2,8 @@
 
 public class EscMenuToggle : MonoBehaviour
 {
-    [Header("主選單根面板")]
-    [SerializeField] private GameObject optionsMenu;
+    [Header("ESC 選單顯示根物件")]
+    [SerializeField] private GameObject menuVisualRoot;
 
     [Header("Esc 開啟時預設顯示的最上層面板")]
     [SerializeField] private GameObject defaultTopPanel;
@@ -18,6 +18,21 @@ public class EscMenuToggle : MonoBehaviour
     [SerializeField] private bool forceShowDefaultTopPanelOnOpen = true;
 
     private bool isOpen = false;
+
+    private void Awake()
+    {
+        if (saveLoadMenuUI == null)
+        {
+            saveLoadMenuUI = GetComponentInChildren<SaveLoadMenuUI>(true);
+        }
+
+        if (menuVisualRoot != null)
+        {
+            menuVisualRoot.SetActive(false);
+        }
+
+        isOpen = false;
+    }
 
     private void Update()
     {
@@ -53,22 +68,18 @@ public class EscMenuToggle : MonoBehaviour
     public void ToggleMenu()
     {
         if (isOpen)
-        {
             CloseMenu();
-        }
         else
-        {
             OpenMenu();
-        }
     }
 
     public void OpenMenu()
     {
         isOpen = true;
 
-        if (optionsMenu != null)
+        if (menuVisualRoot != null)
         {
-            optionsMenu.SetActive(true);
+            menuVisualRoot.SetActive(true);
         }
 
         if (saveLoadMenuUI != null)
@@ -95,9 +106,9 @@ public class EscMenuToggle : MonoBehaviour
             saveLoadMenuUI.CloseAllSubPanels();
         }
 
-        if (optionsMenu != null)
+        if (menuVisualRoot != null)
         {
-            optionsMenu.SetActive(false);
+            menuVisualRoot.SetActive(false);
         }
 
         Time.timeScale = 1f;
@@ -123,24 +134,26 @@ public class EscMenuToggle : MonoBehaviour
 
     public void ShowDefaultTopPanel()
     {
-        if (optionsMenu == null)
+        if (defaultTopPanel == null)
             return;
 
-        DeactivateAllChildren(optionsMenu);
-
-        if (defaultTopPanel != null)
+        Transform panelParent = defaultTopPanel.transform.parent;
+        if (panelParent == null)
         {
             defaultTopPanel.SetActive(true);
+            return;
         }
+
+        for (int i = 0; i < panelParent.childCount; i++)
+        {
+            panelParent.GetChild(i).gameObject.SetActive(false);
+        }
+
+        defaultTopPanel.SetActive(true);
     }
 
-    private void DeactivateAllChildren(GameObject parent)
+    public bool IsMenuOpen()
     {
-        Transform parentTransform = parent.transform;
-
-        for (int i = 0; i < parentTransform.childCount; i++)
-        {
-            parentTransform.GetChild(i).gameObject.SetActive(false);
-        }
+        return isOpen;
     }
 }

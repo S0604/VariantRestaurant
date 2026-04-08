@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class SaveLoadMenuUI : MonoBehaviour
@@ -15,6 +16,12 @@ public class SaveLoadMenuUI : MonoBehaviour
 
     [Header("槽位 Prefab")]
     [SerializeField] private SaveSlotButtonUI slotButtonPrefab;
+
+    [Header("提示文字")]
+    [SerializeField] private TMP_Text saveBlockedHintText;
+
+    [Header("ESC 選單控制")]
+    [SerializeField] private EscMenuToggle escMenuToggle;
 
     [Header("設定")]
     [SerializeField] private bool includeAutoSaveInLoadPanel = true;
@@ -35,6 +42,42 @@ public class SaveLoadMenuUI : MonoBehaviour
     {
         saveManager = SaveManager.Instance;
         CloseAllSubPanels();
+        UpdateSaveBlockedHint(false);
+
+        if (escMenuToggle == null)
+        {
+            escMenuToggle = GetComponentInParent<EscMenuToggle>(true);
+        }
+    }
+
+    public bool CanUseSaveSlots()
+    {
+        EnsureSaveManager();
+
+        if (saveManager == null)
+            return false;
+
+        return saveManager.CanSaveNow();
+    }
+
+    public bool CanUseLoadSlots()
+    {
+        EnsureSaveManager();
+
+        if (saveManager == null)
+            return false;
+
+        return saveManager.CanLoadNow();
+    }
+
+    public string GetSaveBlockedReason()
+    {
+        EnsureSaveManager();
+
+        if (saveManager == null)
+            return "找不到 SaveManager";
+
+        return saveManager.GetSaveBlockedReason();
     }
 
     public void OpenSavePanel()
@@ -60,6 +103,7 @@ public class SaveLoadMenuUI : MonoBehaviour
         if (loadPanel != null)
             loadPanel.SetActive(true);
 
+        UpdateSaveBlockedHint(false);
         RefreshLoadPanel();
     }
 
@@ -70,6 +114,8 @@ public class SaveLoadMenuUI : MonoBehaviour
 
         if (loadPanel != null)
             loadPanel.SetActive(false);
+
+        UpdateSaveBlockedHint(false);
     }
 
     public void RefreshSavePanel()
@@ -80,6 +126,9 @@ public class SaveLoadMenuUI : MonoBehaviour
             return;
 
         ClearChildren(saveSlotContainer);
+
+        bool canSaveNow = saveManager.CanSaveNow();
+        UpdateSaveBlockedHint(!canSaveNow);
 
         for (int i = 1; i <= saveManager.ManualSlotCount; i++)
         {
@@ -97,6 +146,7 @@ public class SaveLoadMenuUI : MonoBehaviour
             return;
 
         ClearChildren(loadSlotContainer);
+        UpdateSaveBlockedHint(false);
 
         List<SaveSlotMetaData> slots = saveManager.GetAllLoadableSlotsSorted(includeAutoSaveInLoadPanel);
 
@@ -114,6 +164,14 @@ public class SaveLoadMenuUI : MonoBehaviour
         if (saveManager == null)
             return;
 
+        if (!saveManager.CanSaveNow())
+        {
+            UpdateSaveBlockedHint(true);
+            Debug.Log($"[SaveLoadMenuUI] {saveManager.GetSaveBlockedReason()}");
+            RefreshSavePanel();
+            return;
+        }
+
         if (!isAutoSave)
         {
             saveManager.SaveSlot(slotIndex);
@@ -121,6 +179,7 @@ public class SaveLoadMenuUI : MonoBehaviour
 
         RefreshSavePanel();
         RefreshLoadPanel();
+        CloseWholeEscMenu();
     }
 
     public void HandleLoadSlotClick(int slotIndex, bool isAutoSave, string fileName)
@@ -137,6 +196,36 @@ public class SaveLoadMenuUI : MonoBehaviour
         else
         {
             saveManager.LoadSlot(slotIndex);
+        }
+
+        CloseWholeEscMenu();
+    }
+
+    private void CloseWholeEscMenu()
+    {
+        if (escMenuToggle != null)
+        {
+            escMenuToggle.CloseMenu();
+        }
+        else
+        {
+            CloseAllSubPanels();
+        }
+    }
+
+    private void UpdateSaveBlockedHint(bool show)
+    {
+        if (saveBlockedHintText == null)
+            return;
+
+        if (show)
+        {
+            saveBlockedHintText.gameObject.SetActive(true);
+            saveBlockedHintText.text = GetSaveBlockedReason();
+        }
+        else
+        {
+            saveBlockedHintText.gameObject.SetActive(false);
         }
     }
 
