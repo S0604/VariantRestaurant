@@ -24190,13 +24190,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stats:
-    money: 1000
-    popularity: 1000
-    customerFlow: 1000
-    experience: 499
-    level: 1
-    stars: 0
-  levelTable: {fileID: 11400000, guid: c49eab2a1b78ed348beba1991cdc68e3, type: 2}
+    money: 100000
+    popularity: 100000
+    customerFlow: 100000
+    experience: 0
+    level: 10
+    stars: 1
+  levelTable: {fileID: 0}
+  levelTablesByStars:
+  - {fileID: 11400000, guid: c49eab2a1b78ed348beba1991cdc68e3, type: 2}
+  - {fileID: 11400000, guid: e87bfb8c9671bc24db040c47c5287129, type: 2}
+  - {fileID: 11400000, guid: 65cb071d6944a53408880313ddc59927, type: 2}
+  - {fileID: 11400000, guid: c4e2dcc6d13f1554192fdfe8fd6515d3, type: 2}
 --- !u!114 &1683407090
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29155,7 +29160,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1877141153}
-  - component: {fileID: 1877141155}
   - component: {fileID: 1877141154}
   m_Layer: 5
   m_Name: "\u6578\u503CUI"
@@ -29196,26 +29200,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1877141152}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c729eef3c31ae5f48be95f9e7438d601, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  levelIcon: {fileID: 906248238}
-  experienceSlider: {fileID: 1686869330}
---- !u!114 &1877141155
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1877141152}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c2c9c04ec7bd2b1449fbb9cba0317cfc, type: 3}
+  m_Script: {fileID: 11500000, guid: 2e6d5a2fad873ff478fe1e994332b106, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   moneyText: {fileID: 482834440}
   popularityText: {fileID: 1481715484}
   customerFlowText: {fileID: 1171442645}
+  levelIcon: {fileID: 906248238}
   experienceSlider: {fileID: 1686869330}
 --- !u!1 &1881258695
 GameObject:

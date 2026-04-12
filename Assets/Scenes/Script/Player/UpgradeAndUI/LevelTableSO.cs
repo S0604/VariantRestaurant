@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
@@ -17,6 +17,6 @@ public class LevelTableSO : ScriptableObject
     public LevelData GetLevelData(int level) => levels.Find(l => l.level == level);
     public int GetRequiredExp(int level) => GetLevelData(level)?.requiredExp ?? 0;
     public Sprite GetLevelSprite(int level) => GetLevelData(level)?.levelSprite;
-    public int MaxLevel => levels.Count > 0 ? levels[^1].level : 1; // ³Ì«á¤@µ§ªº level
+    public int MaxLevel => levels.Count > 0 ? levels[^1].level : 1; // Â³ÃŒÂ«Ã¡Â¤@ÂµÂ§ÂªÂº level
 }
 
