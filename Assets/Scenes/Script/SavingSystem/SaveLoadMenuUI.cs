@@ -26,6 +26,9 @@ public class SaveLoadMenuUI : MonoBehaviour
     [Header("設定")]
     [SerializeField] private bool includeAutoSaveInLoadPanel = true;
 
+    [Header("測試用刪檔")]
+    [SerializeField] private bool closeEscMenuAfterDelete = false;
+
     private SaveManager saveManager;
 
     public bool IsSubPanelOpen
@@ -35,6 +38,24 @@ public class SaveLoadMenuUI : MonoBehaviour
             bool saveOpen = savePanel != null && savePanel.activeSelf;
             bool loadOpen = loadPanel != null && loadPanel.activeSelf;
             return saveOpen || loadOpen;
+        }
+    }
+
+    public void DeleteAllSaveFilesFromUI()
+    {
+        EnsureSaveManager();
+
+        if (saveManager == null)
+            return;
+
+        saveManager.DeleteAllSaveFiles();
+
+        RefreshSavePanel();
+        RefreshLoadPanel();
+
+        if (closeEscMenuAfterDelete && escMenuToggle != null)
+        {
+            escMenuToggle.CloseMenu();
         }
     }
 

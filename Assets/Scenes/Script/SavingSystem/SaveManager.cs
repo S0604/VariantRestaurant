@@ -532,4 +532,53 @@ public class SaveManager : MonoBehaviour
     {
         return Path.Combine(Application.persistentDataPath, fileName);
     }
+
+    public void DeleteAllSaveFiles()
+    {
+        // 刪除手動存檔
+        for (int i = 1; i <= manualSlotCount; i++)
+        {
+            string manualPath = GetFullPath(GetManualSlotFileName(i));
+            if (File.Exists(manualPath))
+            {
+                File.Delete(manualPath);
+                Debug.Log($"[SaveManager] 已刪除手動存檔: {Path.GetFileName(manualPath)}");
+            }
+        }
+
+        // 刪除所有自動存檔
+        if (Directory.Exists(Application.persistentDataPath))
+        {
+            string[] autoFiles = Directory.GetFiles(Application.persistentDataPath, $"{AUTO_FILE_PREFIX}*{FILE_EXTENSION}");
+
+            foreach (string autoPath in autoFiles)
+            {
+                if (File.Exists(autoPath))
+                {
+                    File.Delete(autoPath);
+                    Debug.Log($"[SaveManager] 已刪除自動存檔: {Path.GetFileName(autoPath)}");
+                }
+            }
+        }
+
+        Debug.Log("[SaveManager] 所有存檔資料已刪除");
+    }
+
+    public bool HasAnySaveFiles()
+    {
+        for (int i = 1; i <= manualSlotCount; i++)
+        {
+            if (File.Exists(GetFullPath(GetManualSlotFileName(i))))
+                return true;
+        }
+
+        if (Directory.Exists(Application.persistentDataPath))
+        {
+            string[] autoFiles = Directory.GetFiles(Application.persistentDataPath, $"{AUTO_FILE_PREFIX}*{FILE_EXTENSION}");
+            if (autoFiles.Length > 0)
+                return true;
+        }
+
+        return false;
+    }
 }
