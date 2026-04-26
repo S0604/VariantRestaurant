@@ -24195,7 +24195,7 @@ MonoBehaviour:
     customerFlow: 100000
     experience: 0
     level: 10
-    stars: 1
+    stars: 0
   levelTable: {fileID: 0}
   levelTablesByStars:
   - {fileID: 11400000, guid: c49eab2a1b78ed348beba1991cdc68e3, type: 2}
