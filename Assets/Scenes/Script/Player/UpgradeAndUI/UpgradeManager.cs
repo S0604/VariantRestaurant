@@ -3,7 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class UpgradeManager : MonoBehaviour
+[Serializable]
+public class UpgradeLevelEntry
+{
+    public string upgradeId;
+    public int level;
+}
+
+[Serializable]
+public class UpgradeManagerSaveData
+{
+    public List<UpgradeLevelEntry> levels = new List<UpgradeLevelEntry>();
+}
+
+public class UpgradeManager : MonoBehaviour, ISaveable
 {
     public static UpgradeManager Instance;
 
@@ -16,6 +29,9 @@ public class UpgradeManager : MonoBehaviour
     [Header("相容欄位（舊系統可用）")]
     public int supplyAmount = 3;
 
+    [Header("Save")]
+    [SerializeField] private string uniqueID = "UpgradeManager";
+
     private readonly Dictionary<string, int> _levels = new();
 
     private void Awake()
@@ -25,10 +41,11 @@ public class UpgradeManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        LoadLevelsFromPrefs();
+        LoadLevelsFromPrefsAsFallback();
         ReapplyRuntimeEffects();
         BroadcastAllCurrentLevels();
     }
@@ -48,7 +65,7 @@ public class UpgradeManager : MonoBehaviour
         BroadcastAllCurrentLevels();
     }
 
-    private void LoadLevelsFromPrefs()
+    private void LoadLevelsFromPrefsAsFallback()
     {
         _levels.Clear();
 
@@ -60,10 +77,6 @@ public class UpgradeManager : MonoBehaviour
             _levels[def.upgradeId] = Mathf.Clamp(lv, 0, def.maxLevel);
         }
     }
-
-    // =========================
-    //  Public API
-    // =========================
 
     public float GetValue(UpgradeType type)
     {
@@ -84,9 +97,6 @@ public class UpgradeManager : MonoBehaviour
         if (def) SetLevel(def.upgradeId, level);
     }
 
-    /// <summary>
-    /// 重置單一升級（不做退款，只把等級回到 0）
-    /// </summary>
     public void ResetUpgrade(UpgradeType type)
     {
         var def = GetDef(type);
@@ -94,9 +104,6 @@ public class UpgradeManager : MonoBehaviour
         SetLevel(def.upgradeId, 0);
     }
 
-    /// <summary>
-    /// 以 upgradeId 重置（給特定 UI 或 debug 用）
-    /// </summary>
     public void ResetUpgrade(string upgradeId)
     {
         if (string.IsNullOrEmpty(upgradeId)) return;
@@ -107,9 +114,6 @@ public class UpgradeManager : MonoBehaviour
         SetLevel(def.upgradeId, 0);
     }
 
-    /// <summary>
-    /// 重置所有升級（不做退款）
-    /// </summary>
     public void ResetAllUpgrades()
     {
         foreach (var def in upgradeDefs)
@@ -119,25 +123,43 @@ public class UpgradeManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 若你在 Inspector 改了 upgradeDefs 或 upgradeId，需要重新載入一次
-    /// </summary>
     public void RebuildFromDefinitions()
     {
-        LoadLevelsFromPrefs();
+        Dictionary<string, int> oldLevels = new Dictionary<string, int>(_levels);
+
+        _levels.Clear();
+
+        foreach (var def in upgradeDefs)
+        {
+            if (!def) continue;
+
+            int lv = 0;
+            if (oldLevels.TryGetValue(def.upgradeId, out int savedLv))
+            {
+                lv = Mathf.Clamp(savedLv, 0, def.maxLevel);
+            }
+            else
+            {
+                lv = Mathf.Clamp(PlayerPrefs.GetInt($"UPG_{def.upgradeId}", 0), 0, def.maxLevel);
+            }
+
+            _levels[def.upgradeId] = lv;
+        }
+
+        SyncLevelsToPrefs();
         ReapplyRuntimeEffects();
         BroadcastAllCurrentLevels();
     }
 
-    // =========================
-    //  Internal
-    // =========================
+    private UpgradeDefinition GetDef(UpgradeType type)
+    {
+        return upgradeDefs.Find(d => d && d.type == type);
+    }
 
-    private UpgradeDefinition GetDef(UpgradeType type) =>
-        upgradeDefs.Find(d => d && d.type == type);
-
-    private int GetLevel(string key) =>
-        _levels.TryGetValue(key, out var lv) ? lv : 0;
+    private int GetLevel(string key)
+    {
+        return _levels.TryGetValue(key, out var lv) ? lv : 0;
+    }
 
     private void SetLevel(string key, int lv)
     {
@@ -160,7 +182,6 @@ public class UpgradeManager : MonoBehaviour
 
     private void ReapplyRuntimeEffects()
     {
-        // 舊系統相容：supplyAmount 仍維持可用
         var supplyDef = GetDef(UpgradeType.SupplyPickupAmount);
         if (supplyDef)
         {
@@ -174,8 +195,87 @@ public class UpgradeManager : MonoBehaviour
         foreach (var def in upgradeDefs)
         {
             if (!def) continue;
+
             int lv = GetLevel(def.upgradeId);
             OnAnyLevelChanged?.Invoke(def.type, lv);
+            OnLevelChanged?.Invoke(def.type, lv);
         }
+    }
+
+    private void SyncLevelsToPrefs()
+    {
+        foreach (var def in upgradeDefs)
+        {
+            if (!def) continue;
+
+            int lv = GetLevel(def.upgradeId);
+            PlayerPrefs.SetInt($"UPG_{def.upgradeId}", lv);
+        }
+
+        PlayerPrefs.Save();
+    }
+
+    public string GetUniqueID()
+    {
+        return uniqueID;
+    }
+
+    public string CaptureAsJson()
+    {
+        UpgradeManagerSaveData data = new UpgradeManagerSaveData();
+
+        foreach (var def in upgradeDefs)
+        {
+            if (!def) continue;
+
+            UpgradeLevelEntry entry = new UpgradeLevelEntry
+            {
+                upgradeId = def.upgradeId,
+                level = GetLevel(def.upgradeId)
+            };
+
+            data.levels.Add(entry);
+        }
+
+        return JsonUtility.ToJson(data);
+    }
+
+    public void RestoreFromJson(string json)
+    {
+        if (string.IsNullOrEmpty(json))
+            return;
+
+        UpgradeManagerSaveData data = JsonUtility.FromJson<UpgradeManagerSaveData>(json);
+        if (data == null)
+            return;
+
+        _levels.Clear();
+
+        foreach (var def in upgradeDefs)
+        {
+            if (!def) continue;
+            _levels[def.upgradeId] = 0;
+        }
+
+        if (data.levels != null)
+        {
+            foreach (var entry in data.levels)
+            {
+                if (entry == null || string.IsNullOrEmpty(entry.upgradeId))
+                    continue;
+
+                var def = upgradeDefs.Find(d => d && d.upgradeId == entry.upgradeId);
+                if (!def)
+                    continue;
+
+                _levels[entry.upgradeId] = Mathf.Clamp(entry.level, 0, def.maxLevel);
+            }
+        }
+
+        SyncLevelsToPrefs();
+        ReapplyRuntimeEffects();
+        BroadcastAllCurrentLevels();
+
+        Debug.Log("[Save] UpgradeManager 已還原");
     }
 }

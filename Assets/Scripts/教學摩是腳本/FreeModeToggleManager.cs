@@ -4,9 +4,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class FreeModeToggleManager : MonoBehaviour
+[Serializable]
+public class FreeModeSaveData
+{
+    public bool isBusinessMode;
+    public bool isClosingPhase;
+    public float remainingTime;
+    public bool allowTimeFlow;
+    public bool hasPlayedChapter3;
+    public bool hasPlayedChapter13;
+    public bool hasTriggeredRandomEvent;
+}
+
+public class FreeModeToggleManager : MonoBehaviour, ISaveable
 {
     public static FreeModeToggleManager Instance;
+
+    [Header("Save")]
+    [SerializeField] private string uniqueID = "FreeModeToggleManager";
 
     [Header("營業設定")]
     public float businessDuration = 180f;
@@ -24,7 +39,7 @@ public class FreeModeToggleManager : MonoBehaviour
     [Header("轉場設定")]
     public Image transitionImage;
     public Transform transitionImageTransform;
-    public float transitionDuration =10f;
+    public float transitionDuration = 10f;
 
     [Header("UI 控制")]
     [SerializeField] private Button businessButton;
@@ -64,15 +79,17 @@ public class FreeModeToggleManager : MonoBehaviour
 
     private bool isTransitioning = false;
 
-    // 登記現場顧客
     private HashSet<Customer> aliveCustomers = new HashSet<Customer>();
-
     private int leavingCustomerCount = 0;
 
     private void Awake()
     {
         if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
     }
 
     private void Start()
@@ -85,7 +102,12 @@ public class FreeModeToggleManager : MonoBehaviour
         if (!isBusinessMode || !allowTimeFlow) return;
 
         remainingTime -= Time.deltaTime;
-        timeSystem?.UpdateTimeVisual(Mathf.Clamp01(remainingTime / businessDuration));
+        remainingTime = Mathf.Max(0f, remainingTime);
+
+        if (timeSystem != null && businessDuration > 0f)
+        {
+            timeSystem.UpdateTimeVisual(Mathf.Clamp01(remainingTime / businessDuration));
+        }
 
         if (!isClosingPhase && remainingTime <= closingBufferTime)
         {
@@ -99,8 +121,6 @@ public class FreeModeToggleManager : MonoBehaviour
         }
     }
 
-    #region 營業模式切換
-
     public void ToggleMode()
     {
         if (isBusinessMode) return;
@@ -108,6 +128,7 @@ public class FreeModeToggleManager : MonoBehaviour
 
         StartCoroutine(PlayTransition(EnterBusinessMode));
     }
+
     private void EnterBusinessMode()
     {
         isBusinessMode = true;
@@ -124,10 +145,8 @@ public class FreeModeToggleManager : MonoBehaviour
 
         Debug.Log("Enter Free Business Mode");
 
-        // 轉場後延遲播放 Chapter3
         StartCoroutine(PlayChapterAfterDelay("3", 1.6f));
 
-        // Random Event: 每次進入營業模式只排程一次
         hasTriggeredRandomEvent = false;
         if (randomEventCoroutine != null)
         {
@@ -141,6 +160,7 @@ public class FreeModeToggleManager : MonoBehaviour
     {
         isBusinessMode = false;
         isClosingPhase = false;
+        remainingTime = 0f;
 
         timeSystem?.ResetTimeVisual();
 
@@ -152,26 +172,21 @@ public class FreeModeToggleManager : MonoBehaviour
         businessMusicSource?.Stop();
         closedMusicSource?.Play();
 
-        // 切回歇業時停止事件排程，避免歇業後還觸發
         if (randomEventCoroutine != null)
         {
             StopCoroutine(randomEventCoroutine);
             randomEventCoroutine = null;
         }
+
         hasTriggeredRandomEvent = false;
 
         Debug.Log("Enter Closed Mode");
     }
 
-    #endregion
-
-    #region Random Event
-
     private IEnumerator TriggerRandomEventAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
 
-        // 確保還在營業模式，且只觸發一次
         if (!isBusinessMode || hasTriggeredRandomEvent) yield break;
 
         hasTriggeredRandomEvent = true;
@@ -182,10 +197,6 @@ public class FreeModeToggleManager : MonoBehaviour
         }
     }
 
-    #endregion
-
-    #region 顧客管理
-
     public void RegisterCustomer(Customer customer)
     {
         aliveCustomers.Add(customer);
@@ -195,6 +206,7 @@ public class FreeModeToggleManager : MonoBehaviour
     {
         aliveCustomers.Remove(customer);
     }
+
     private void ForceRemoveAllCustomers()
     {
         foreach (var c in new List<Customer>(aliveCustomers))
@@ -203,27 +215,20 @@ public class FreeModeToggleManager : MonoBehaviour
         }
     }
 
-    #endregion
-
-    #region 關店流程
-
     private IEnumerator HandleClosingPhase()
     {
         isClosingPhase = true;
 
         Debug.Log("Business ending soon. Start closing phase.");
 
-        // 設定離場數量
         leavingCustomerCount = aliveCustomers.Count;
 
-        // 讓所有顧客開始離場
         foreach (var c in new List<Customer>(aliveCustomers))
         {
             if (c != null)
                 c.LeaveImmediately();
         }
 
-        // 等待全部離開
         while (leavingCustomerCount > 0)
         {
             yield return null;
@@ -231,27 +236,27 @@ public class FreeModeToggleManager : MonoBehaviour
 
         Debug.Log("All customers left. Show result UI.");
 
-        // 轉場 + 結算
         yield return PlayTransitionFillOnly(() =>
         {
-            resultUI.SetActive(true);
+            if (resultUI != null)
+                resultUI.SetActive(true);
+
             gameResultUI?.Show();
         });
 
-        resultConfirmButton.onClick.RemoveAllListeners();
-        resultConfirmButton.onClick.AddListener(() =>
+        if (resultConfirmButton != null)
         {
-            // ✅ 1. 先切換內容（UI / 模式）
-            resultUI.SetActive(false);
-            EnterClosedMode();
+            resultConfirmButton.onClick.RemoveAllListeners();
+            resultConfirmButton.onClick.AddListener(() =>
+            {
+                if (resultUI != null)
+                    resultUI.SetActive(false);
 
-            // ✅ 2. 再播放遮罩打開動畫
-            StartCoroutine(PlayTransitionResetOnly());
-        });
+                EnterClosedMode();
+                StartCoroutine(PlayTransitionResetOnly());
+            });
+        }
     }
-    #endregion
-
-    #region 背包清空
 
     private void ClearAllInventories()
     {
@@ -259,27 +264,28 @@ public class FreeModeToggleManager : MonoBehaviour
             InventoryManager.Instance.ClearInventory();
     }
 
-    #endregion
-
-    #region 轉場動畫
-
     private void SetActiveGroup(GameObject[] uiGroup, MonoBehaviour[] scriptGroup, bool isActive)
     {
-        foreach (var go in uiGroup) if (go != null) go.SetActive(isActive);
-        foreach (var script in scriptGroup) if (script != null) script.enabled = isActive;
+        foreach (var go in uiGroup)
+        {
+            if (go != null) go.SetActive(isActive);
+        }
+
+        foreach (var script in scriptGroup)
+        {
+            if (script != null) script.enabled = isActive;
+        }
     }
 
     private IEnumerator PlayTransition(Action onSwitch)
     {
         isTransitioning = true;
 
-        // ❌ 禁用按鈕
         if (businessButton != null)
             businessButton.interactable = false;
 
         float t = 0f;
 
-        // 遮罩蓋住
         while (t < transitionDuration)
         {
             t += Time.deltaTime;
@@ -294,10 +300,8 @@ public class FreeModeToggleManager : MonoBehaviour
         if (transitionImage != null)
             transitionImage.fillAmount = 1f;
 
-        // 切換內容
         onSwitch?.Invoke();
 
-        // 解除遮罩
         t = 0f;
         while (t < transitionDuration)
         {
@@ -313,12 +317,12 @@ public class FreeModeToggleManager : MonoBehaviour
         if (transitionImage != null)
             transitionImage.fillAmount = 0f;
 
-        // ✅ 恢復按鈕
         if (businessButton != null)
             businessButton.interactable = true;
 
         isTransitioning = false;
     }
+
     private IEnumerator PlayTransitionFillOnly(Action onFilled)
     {
         float t = 0f;
@@ -339,6 +343,7 @@ public class FreeModeToggleManager : MonoBehaviour
 
         onFilled?.Invoke();
     }
+
     private IEnumerator PlayTransitionResetOnly(Action onComplete = null)
     {
         float t = 0f;
@@ -359,13 +364,9 @@ public class FreeModeToggleManager : MonoBehaviour
 
         onComplete?.Invoke();
     }
-    #endregion
-
-    #region 教學對話
 
     public IEnumerator PlayChapterAfterDelay(string chapterID, float delay)
     {
-        // 防止同一場重複播放
         if (chapterID == "3" && hasPlayedChapter3) yield break;
         if (chapterID == "13" && hasPlayedChapter13) yield break;
 
@@ -374,20 +375,15 @@ public class FreeModeToggleManager : MonoBehaviour
         if (TutorialDialogueController.Instance != null)
             yield return TutorialDialogueController.Instance.PlaySingleChapter(chapterID);
 
-        // 標記已播放
         if (chapterID == "3") hasPlayedChapter3 = true;
         if (chapterID == "13") hasPlayedChapter13 = true;
 
-        // Chapter 13 結束後開放時間
         if (chapterID == "13")
         {
             AllowTimeFlow = true;
             Debug.Log("Chapter 13 finished. Free business timer starts.");
         }
     }
-    #endregion
-
-    #region 顧客離場回報
 
     public void OnCustomerDespawn(Customer customer)
     {
@@ -399,6 +395,92 @@ public class FreeModeToggleManager : MonoBehaviour
         if (leavingCustomerCount < 0)
             leavingCustomerCount = 0;
     }
-    #endregion
 
+    public string GetUniqueID()
+    {
+        return uniqueID;
+    }
+
+    public string CaptureAsJson()
+    {
+        FreeModeSaveData data = new FreeModeSaveData
+        {
+            isBusinessMode = isBusinessMode,
+            isClosingPhase = isClosingPhase,
+            remainingTime = remainingTime,
+            allowTimeFlow = allowTimeFlow,
+            hasPlayedChapter3 = hasPlayedChapter3,
+            hasPlayedChapter13 = hasPlayedChapter13,
+            hasTriggeredRandomEvent = hasTriggeredRandomEvent
+        };
+
+        return JsonUtility.ToJson(data);
+    }
+
+    public void RestoreFromJson(string json)
+    {
+        if (string.IsNullOrEmpty(json))
+            return;
+
+        FreeModeSaveData data = JsonUtility.FromJson<FreeModeSaveData>(json);
+        if (data == null)
+            return;
+
+        if (randomEventCoroutine != null)
+        {
+            StopCoroutine(randomEventCoroutine);
+            randomEventCoroutine = null;
+        }
+
+        allowTimeFlow = data.allowTimeFlow;
+        hasPlayedChapter3 = data.hasPlayedChapter3;
+        hasPlayedChapter13 = data.hasPlayedChapter13;
+        hasTriggeredRandomEvent = data.hasTriggeredRandomEvent;
+        isClosingPhase = data.isClosingPhase;
+        remainingTime = Mathf.Clamp(data.remainingTime, 0f, businessDuration);
+
+        ApplyModeStateFromSave(data.isBusinessMode);
+
+        Debug.Log("[Save] FreeModeToggleManager 已還原");
+    }
+
+    private void ApplyModeStateFromSave(bool targetBusinessMode)
+    {
+        isBusinessMode = targetBusinessMode;
+
+        if (isBusinessMode)
+        {
+            SetActiveGroup(businessModeUIs, businessModeScripts, true);
+            SetActiveGroup(closedModeUIs, closedModeScripts, false);
+
+            businessMusicSource?.Play();
+            closedMusicSource?.Stop();
+
+            if (timeSystem != null && businessDuration > 0f)
+            {
+                timeSystem.UpdateTimeVisual(Mathf.Clamp01(remainingTime / businessDuration));
+            }
+
+            if (!hasTriggeredRandomEvent)
+            {
+                randomEventCoroutine = StartCoroutine(TriggerRandomEventAfterDelay(randomEventDelay));
+            }
+        }
+        else
+        {
+            SetActiveGroup(businessModeUIs, businessModeScripts, false);
+            SetActiveGroup(closedModeUIs, closedModeScripts, true);
+
+            businessMusicSource?.Stop();
+            closedMusicSource?.Play();
+
+            timeSystem?.ResetTimeVisual();
+        }
+
+        if (resultUI != null)
+            resultUI.SetActive(false);
+
+        if (businessButton != null)
+            businessButton.interactable = !isTransitioning;
+    }
 }

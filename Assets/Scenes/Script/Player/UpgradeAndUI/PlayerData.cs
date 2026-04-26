@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
@@ -10,25 +9,31 @@ public class PlayerStats
     public int customerFlow = 0;
     public int experience = 0;
     public int level = 1;
-
-    // ⭐ 星級
     public int stars = 0;
 }
 
-public class PlayerData : MonoBehaviour
+[Serializable]
+public class PlayerDataSaveData
+{
+    public int money;
+    public int popularity;
+    public int customerFlow;
+    public int experience;
+    public int level;
+    public int stars;
+}
+
+public class PlayerData : MonoBehaviour, ISaveable
 {
     public static PlayerData Instance { get; private set; }
 
     [Header("Data")]
     public PlayerStats stats = new PlayerStats();
-
-    [Header("Level Table (Current)")]
     public LevelTableSO levelTable;
 
-    [Header("Level Tables By Stars")]
-    public List<LevelTableSO> levelTablesByStars;
+    [Header("Save")]
+    [SerializeField] private string uniqueID = "PlayerData";
 
-    // 🔔 事件
     public event Action OnStatsChanged;
     public event Action<int> OnLevelUp;
     public event Action<int> OnStarsChanged;
@@ -43,51 +48,22 @@ public class PlayerData : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
-
-        ApplyStarLevelTable(); // ⭐ 初始化只切表，不重置
     }
 
-    // =========================
-    // ⭐ 星級 → 切換成長曲線（不重置）
-    // =========================
-    void ApplyStarLevelTable()
-    {
-        if (levelTablesByStars == null || levelTablesByStars.Count == 0)
-            return;
-
-        int index = Mathf.Clamp(stats.stars, 0, levelTablesByStars.Count - 1);
-
-        levelTable = levelTablesByStars[index];
-
-        Debug.Log($"[PlayerData] 切換LevelTable → Stars: {stats.stars} | index: {index}");
-    }
-
-    // ⭐ 重置等級進度（只在星級變動時呼叫）
-    void ResetLevelProgress()
-    {
-        stats.level = 1;
-        stats.experience = 0;
-    }
-
-    // =========================
-    // EXP / 等級
-    // =========================
     public void AddExperience(int amount)
     {
         if (amount <= 0) return;
-
         stats.experience += amount;
         CheckLevelUp();
         NotifyStatsChanged();
     }
 
-    void CheckLevelUp()
+    private void CheckLevelUp()
     {
         if (!levelTable) return;
 
         int maxLv = levelTable.MaxLevel;
 
-        // 🔁 連續升級
         while (stats.level < maxLv)
         {
             int need = levelTable.GetRequiredExp(stats.level);
@@ -95,12 +71,10 @@ public class PlayerData : MonoBehaviour
 
             stats.experience -= need;
             stats.level++;
-
             OnLevelUp?.Invoke(stats.level);
             Debug.Log($"升級！目前等級：{stats.level}");
         }
 
-        // 🧱 滿級處理
         if (stats.level >= maxLv)
         {
             int need = levelTable.GetRequiredExp(stats.level);
@@ -108,15 +82,11 @@ public class PlayerData : MonoBehaviour
         }
     }
 
-    // =========================
-    // 💰 金錢 / 屬性
-    // =========================
     public bool CanAfford(int cost) => cost <= stats.money;
 
     public bool SpendMoney(int cost)
     {
         if (!CanAfford(cost)) return false;
-
         stats.money -= cost;
         NotifyStatsChanged();
         return true;
@@ -140,25 +110,12 @@ public class PlayerData : MonoBehaviour
         NotifyStatsChanged();
     }
 
-    // =========================
-    // ⭐ Stars（只有這裡會重置等級）
-    // =========================
     public int GetStars() => stats.stars;
 
     public void AddStars(int amount)
     {
         if (amount == 0) return;
-
-        int oldStars = stats.stars;
-
         stats.stars = Mathf.Max(0, stats.stars + amount);
-
-        if (stats.stars != oldStars)
-        {
-            ApplyStarLevelTable();
-            ResetLevelProgress(); // ⭐ 只有星級變動才重置
-        }
-
         OnStarsChanged?.Invoke(stats.stars);
         NotifyStatsChanged();
     }
@@ -166,23 +123,73 @@ public class PlayerData : MonoBehaviour
     public void SetStars(int value)
     {
         value = Mathf.Max(0, value);
-
         if (stats.stars == value) return;
 
         stats.stars = value;
-
-        ApplyStarLevelTable();
-        ResetLevelProgress(); // ⭐ 只有星級變動才重置
-
         OnStarsChanged?.Invoke(stats.stars);
         NotifyStatsChanged();
     }
 
-    // =========================
-    // 🔔 事件通知
-    // =========================
-    void NotifyStatsChanged()
+    private void NotifyStatsChanged()
     {
         OnStatsChanged?.Invoke();
+    }
+
+    public string GetUniqueID()
+    {
+        return uniqueID;
+    }
+
+    public string CaptureAsJson()
+    {
+        PlayerDataSaveData data = new PlayerDataSaveData
+        {
+            money = stats.money,
+            popularity = stats.popularity,
+            customerFlow = stats.customerFlow,
+            experience = stats.experience,
+            level = stats.level,
+            stars = stats.stars
+        };
+
+        return JsonUtility.ToJson(data);
+    }
+
+    public void RestoreFromJson(string json)
+    {
+        if (string.IsNullOrEmpty(json))
+            return;
+
+        PlayerDataSaveData data = JsonUtility.FromJson<PlayerDataSaveData>(json);
+        if (data == null)
+            return;
+
+        stats.money = data.money;
+        stats.popularity = data.popularity;
+        stats.customerFlow = data.customerFlow;
+        stats.experience = data.experience;
+        stats.level = Mathf.Max(1, data.level);
+        stats.stars = Mathf.Max(0, data.stars);
+
+        if (levelTable != null)
+        {
+            int maxLv = levelTable.MaxLevel;
+            stats.level = Mathf.Clamp(stats.level, 1, maxLv);
+
+            int need = levelTable.GetRequiredExp(stats.level);
+            if (need > 0)
+            {
+                stats.experience = Mathf.Clamp(stats.experience, 0, need);
+            }
+            else
+            {
+                stats.experience = Mathf.Max(0, stats.experience);
+            }
+        }
+
+        OnStarsChanged?.Invoke(stats.stars);
+        NotifyStatsChanged();
+
+        Debug.Log("[Save] PlayerData 已還原");
     }
 }
