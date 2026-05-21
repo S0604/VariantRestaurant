@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -23,12 +23,12 @@ public class SaveManager : MonoBehaviour
 {
     public static SaveManager Instance { get; private set; }
 
-    [Header("¦Û°Ê¦sÀÉ")]
+    [Header("è‡ªå‹•å­˜æª”")]
     [SerializeField] private bool enableAutoSave = true;
     [SerializeField] private float autoSaveInterval = 300f;
     [SerializeField] private int maxAutoSaveCount = 10;
 
-    [Header("¤â°Ê¦sÀÉ¼Ñ¼Æ¶q")]
+    [Header("æ‰‹å‹•å­˜æª”æ§½æ•¸")]
     [SerializeField] private int manualSlotCount = 3;
 
     private const string MANUAL_FILE_PREFIX = "save_slot_";
@@ -120,7 +120,7 @@ public class SaveManager : MonoBehaviour
     {
         if (FreeModeToggleManager.Instance != null && FreeModeToggleManager.Instance.IsBusinessMode)
         {
-            return "Àç·~¼Ò¦¡¤¤¤£¥i¦sÀÉ";
+            return "Ã€Ã§Â·~Â¼Ã’Â¦Â¡Â¤Â¤Â¤Â£Â¥iÂ¦sÃ€Ã‰";
         }
 
         return string.Empty;
@@ -130,13 +130,13 @@ public class SaveManager : MonoBehaviour
     {
         if (!IsValidManualSlot(slotIndex))
         {
-            Debug.LogWarning($"[SaveManager] µL®Äªº¤â°Ê¦sÀÉ¼Ñ¦ì: {slotIndex}");
+            Debug.LogWarning($"[SaveManager] ÂµLÂ®Ã„ÂªÂºÂ¤Ã¢Â°ÃŠÂ¦sÃ€Ã‰Â¼Ã‘Â¦Ã¬: {slotIndex}");
             return;
         }
 
         if (!CanSaveNow())
         {
-            Debug.Log("[SaveManager] ¥Ø«e¬°Àç·~¼Ò¦¡¡A¸T¤î¤â°Ê¦sÀÉ");
+            Debug.Log("[SaveManager] Â¥Ã˜Â«eÂ¬Â°Ã€Ã§Â·~Â¼Ã’Â¦Â¡Â¡AÂ¸TÂ¤Ã®Â¤Ã¢Â°ÃŠÂ¦sÃ€Ã‰");
             return;
         }
 
@@ -148,7 +148,7 @@ public class SaveManager : MonoBehaviour
     {
         if (!IsValidManualSlot(slotIndex))
         {
-            Debug.LogWarning($"[SaveManager] µL®Äªº¤â°ÊÅªÀÉ¼Ñ¦ì: {slotIndex}");
+            Debug.LogWarning($"[SaveManager] ÂµLÂ®Ã„ÂªÂºÂ¤Ã¢Â°ÃŠÃ…ÂªÃ€Ã‰Â¼Ã‘Â¦Ã¬: {slotIndex}");
             return;
         }
 
@@ -160,7 +160,7 @@ public class SaveManager : MonoBehaviour
     {
         if (!CanSaveNow())
         {
-            Debug.Log("[SaveManager] ¥Ø«e¬°Àç·~¼Ò¦¡¡A¸T¤î¦Û°Ê¦sÀÉ");
+            Debug.Log("[SaveManager] Â¥Ã˜Â«eÂ¬Â°Ã€Ã§Â·~Â¼Ã’Â¦Â¡Â¡AÂ¸TÂ¤Ã®Â¦Ã›Â°ÃŠÂ¦sÃ€Ã‰");
             return;
         }
 
@@ -207,10 +207,10 @@ public class SaveManager : MonoBehaviour
             slotIndex = slotIndex,
             isAutoSave = false,
             hasData = false,
-            displayName = $"¤â°Ê¦sÀÉ {slotIndex}",
+            displayName = $"Â¤Ã¢Â°ÃŠÂ¦sÃ€Ã‰ {slotIndex}",
             fileName = GetManualSlotFileName(slotIndex),
             fullPath = GetFullPath(GetManualSlotFileName(slotIndex)),
-            saveTime = "ªÅ¼Ñ¦ì",
+            saveTime = "ÂªÃ…Â¼Ã‘Â¦Ã¬",
             sceneName = "-",
             fileID = $"manual_{slotIndex}"
         };
@@ -222,7 +222,7 @@ public class SaveManager : MonoBehaviour
         if (data != null)
         {
             meta.hasData = true;
-            meta.saveTime = string.IsNullOrEmpty(data.saveTime) ? "¥¼ª¾®É¶¡" : data.saveTime;
+            meta.saveTime = string.IsNullOrEmpty(data.saveTime) ? "Â¥Â¼ÂªÂ¾Â®Ã‰Â¶Â¡" : data.saveTime;
             meta.sceneName = string.IsNullOrEmpty(data.sceneName) ? "-" : data.sceneName;
             meta.fileID = string.IsNullOrEmpty(data.fileID) ? $"manual_{slotIndex}" : data.fileID;
         }
@@ -248,10 +248,10 @@ public class SaveManager : MonoBehaviour
                 slotIndex = 0,
                 isAutoSave = true,
                 hasData = data != null,
-                displayName = "¦Û°Ê¦sÀÉ",
+                displayName = "Â¦Ã›Â°ÃŠÂ¦sÃ€Ã‰",
                 fileName = Path.GetFileName(fullPath),
                 fullPath = fullPath,
-                saveTime = data != null && !string.IsNullOrEmpty(data.saveTime) ? data.saveTime : "¥¼ª¾®É¶¡",
+                saveTime = data != null && !string.IsNullOrEmpty(data.saveTime) ? data.saveTime : "Â¥Â¼ÂªÂ¾Â®Ã‰Â¶Â¡",
                 sceneName = data != null && !string.IsNullOrEmpty(data.sceneName) ? data.sceneName : "-",
                 fileID = data != null && !string.IsNullOrEmpty(data.fileID) ? data.fileID : Path.GetFileNameWithoutExtension(fullPath)
             };
@@ -273,13 +273,13 @@ public class SaveManager : MonoBehaviour
     {
         List<SaveSlotMetaData> list = new List<SaveSlotMetaData>();
 
-        // ¤â°Ê¦sÀÉ©T©w¶¶§Ç 1 -> 2 -> 3
+        // Â¤Ã¢Â°ÃŠÂ¦sÃ€Ã‰Â©TÂ©wÂ¶Â¶Â§Ã‡ 1 -> 2 -> 3
         for (int i = 1; i <= manualSlotCount; i++)
         {
             list.Add(GetManualSlotMetaData(i));
         }
 
-        // ¦Û°Ê¦sÀÉ¥t¥~¨Ì®É¶¡±Æ§Ç«á±µ¦b«á­±
+        // Â¦Ã›Â°ÃŠÂ¦sÃ€Ã‰Â¥tÂ¥~Â¨ÃŒÂ®Ã‰Â¶Â¡Â±Ã†Â§Ã‡Â«Ã¡Â±ÂµÂ¦bÂ«Ã¡Â­Â±
         if (includeAutoSaves)
         {
             list.AddRange(GetAutoSaveMetaDataList());
@@ -295,7 +295,7 @@ public class SaveManager : MonoBehaviour
         if (File.Exists(fullPath))
         {
             File.Delete(fullPath);
-            Debug.Log($"[SaveManager] ¤w§R°£¦Û°Ê¦sÀÉ: {fileName}");
+            Debug.Log($"[SaveManager] Â¤wÂ§RÂ°Â£Â¦Ã›Â°ÃŠÂ¦sÃ€Ã‰: {fileName}");
         }
     }
 
@@ -323,7 +323,7 @@ public class SaveManager : MonoBehaviour
             if (File.Exists(autoSaves[i].fullPath))
             {
                 File.Delete(autoSaves[i].fullPath);
-                Debug.Log($"[SaveManager] ¦Û°Ê§R°£³ÌÂÂ¦Û°Ê¦sÀÉ: {autoSaves[i].fileName}");
+                Debug.Log($"[SaveManager] Â¦Ã›Â°ÃŠÂ§RÂ°Â£Â³ÃŒÃ‚Ã‚Â¦Ã›Â°ÃŠÂ¦sÃ€Ã‰: {autoSaves[i].fileName}");
             }
         }
     }
@@ -369,16 +369,15 @@ public class SaveManager : MonoBehaviour
 
             if (string.IsNullOrEmpty(id))
             {
-                Debug.LogWarning($"[SaveManager] µo²{ªÅªº UniqueID¡A¤w²¤¹L: {saveable}");
+                Debug.LogWarning($"[SaveManager] ç™¼ç¾ç©ºçš„ UniqueIDï¼Œå·²è·³éŽ: {saveable}");
                 continue;
             }
 
             if (usedIDs.Contains(id))
             {
-                Debug.LogWarning($"[SaveManager] µo²{­«½Æ UniqueID: {id}¡A«á­±ªº¸ê®Æ¤w²¤¹L");
+                Debug.LogWarning($"[SaveManager] ç™¼ç¾é‡è¤‡ UniqueID: {id}ï¼Œå¾Œé¢çš„è³‡æ–™å·²è·³éŽ");
                 continue;
             }
-
             usedIDs.Add(id);
 
             SaveRecord record = new SaveRecord
@@ -394,7 +393,7 @@ public class SaveManager : MonoBehaviour
         string path = GetFullPath(fileName);
 
         File.WriteAllText(path, json);
-        Debug.Log($"[SaveManager] ¦sÀÉ§¹¦¨: {path}");
+        Debug.Log($"[SaveManager] Â¦sÃ€Ã‰Â§Â¹Â¦Â¨: {path}");
     }
 
     private void LoadFromFile(string fileName)
@@ -403,7 +402,7 @@ public class SaveManager : MonoBehaviour
 
         if (!File.Exists(path))
         {
-            Debug.LogWarning($"[SaveManager] §ä¤£¨ì¦sÀÉÀÉ®×: {path}");
+            Debug.LogWarning($"[SaveManager] Â§Ã¤Â¤Â£Â¨Ã¬Â¦sÃ€Ã‰Ã€Ã‰Â®Ã—: {path}");
             return;
         }
 
@@ -411,13 +410,13 @@ public class SaveManager : MonoBehaviour
 
         if (fileData == null)
         {
-            Debug.LogError("[SaveManager] ÅªÀÉ¥¢±Ñ¡AJSON ¸ÑªR¬° null");
+            Debug.LogError("[SaveManager] Ã…ÂªÃ€Ã‰Â¥Â¢Â±Ã‘Â¡AJSON Â¸Ã‘ÂªRÂ¬Â° null");
             return;
         }
 
         if (string.IsNullOrEmpty(fileData.sceneName))
         {
-            Debug.LogWarning("[SaveManager] ¦sÀÉ¤¤¨S¦³ sceneName¡A±Nª½±µ¹Á¸ÕÁÙ­ì¥Ø«e³õ´ºª«¥ó");
+            Debug.LogWarning("[SaveManager] Â¦sÃ€Ã‰Â¤Â¤Â¨SÂ¦Â³ sceneNameÂ¡AÂ±NÂªÂ½Â±ÂµÂ¹ÃÂ¸Ã•ÃÃ™Â­Ã¬Â¥Ã˜Â«eÂ³ÃµÂ´ÂºÂªÂ«Â¥Ã³");
             ApplyLoadedData(fileData);
             return;
         }
@@ -466,7 +465,7 @@ public class SaveManager : MonoBehaviour
     {
         if (fileData == null)
         {
-            Debug.LogWarning("[SaveManager] ApplyLoadedData ¦¬¨ì null");
+            Debug.LogWarning("[SaveManager] ApplyLoadedData Â¦Â¬Â¨Ã¬ null");
             return;
         }
 
@@ -489,7 +488,7 @@ public class SaveManager : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning($"[SaveManager] ³õ´º¤¤¦³­«½Æ UniqueID: {id}");
+                Debug.LogWarning($"[SaveManager] Â³ÃµÂ´ÂºÂ¤Â¤Â¦Â³Â­Â«Â½Ã† UniqueID: {id}");
             }
         }
 
@@ -504,7 +503,7 @@ public class SaveManager : MonoBehaviour
             }
         }
 
-        Debug.Log($"[SaveManager] ÅªÀÉ§¹¦¨¡A³õ´º: {fileData.sceneName}¡A®É¶¡: {fileData.saveTime}");
+        Debug.Log($"[SaveManager] Ã…ÂªÃ€Ã‰Â§Â¹Â¦Â¨Â¡AÂ³ÃµÂ´Âº: {fileData.sceneName}Â¡AÂ®Ã‰Â¶Â¡: {fileData.saveTime}");
     }
 
     private ISaveable[] FindAllSaveables()
@@ -535,18 +534,18 @@ public class SaveManager : MonoBehaviour
 
     public void DeleteAllSaveFiles()
     {
-        // §R°£¤â°Ê¦sÀÉ
+        // Â§RÂ°Â£Â¤Ã¢Â°ÃŠÂ¦sÃ€Ã‰
         for (int i = 1; i <= manualSlotCount; i++)
         {
             string manualPath = GetFullPath(GetManualSlotFileName(i));
             if (File.Exists(manualPath))
             {
                 File.Delete(manualPath);
-                Debug.Log($"[SaveManager] ¤w§R°£¤â°Ê¦sÀÉ: {Path.GetFileName(manualPath)}");
+                Debug.Log($"[SaveManager] Â¤wÂ§RÂ°Â£Â¤Ã¢Â°ÃŠÂ¦sÃ€Ã‰: {Path.GetFileName(manualPath)}");
             }
         }
 
-        // §R°£©Ò¦³¦Û°Ê¦sÀÉ
+        // Â§RÂ°Â£Â©Ã’Â¦Â³Â¦Ã›Â°ÃŠÂ¦sÃ€Ã‰
         if (Directory.Exists(Application.persistentDataPath))
         {
             string[] autoFiles = Directory.GetFiles(Application.persistentDataPath, $"{AUTO_FILE_PREFIX}*{FILE_EXTENSION}");
@@ -556,12 +555,12 @@ public class SaveManager : MonoBehaviour
                 if (File.Exists(autoPath))
                 {
                     File.Delete(autoPath);
-                    Debug.Log($"[SaveManager] ¤w§R°£¦Û°Ê¦sÀÉ: {Path.GetFileName(autoPath)}");
+                    Debug.Log($"[SaveManager] Â¤wÂ§RÂ°Â£Â¦Ã›Â°ÃŠÂ¦sÃ€Ã‰: {Path.GetFileName(autoPath)}");
                 }
             }
         }
 
-        Debug.Log("[SaveManager] ©Ò¦³¦sÀÉ¸ê®Æ¤w§R°£");
+        Debug.Log("[SaveManager] Â©Ã’Â¦Â³Â¦sÃ€Ã‰Â¸ÃªÂ®Ã†Â¤wÂ§RÂ°Â£");
     }
 
     public bool HasAnySaveFiles()

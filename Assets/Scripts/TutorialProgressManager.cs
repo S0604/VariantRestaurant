@@ -183,4 +183,10 @@ public class TutorialProgressManager : MonoBehaviour, ISaveable
 
         Debug.Log("[Tutorial] 教學進度已還原，已完成事件不會重複觸發");
     }
+    public bool IsCompleted(string eventID)
+    {
+        TutorialEvent evt = tutorialEvents.Find(x => x.eventID == eventID);
+
+        return evt != null && evt.isCompleted;
+    }
 }

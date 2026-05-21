@@ -91,12 +91,24 @@ public class CookingStation : MonoBehaviour
         if (currentEnergy <= 0)
         {
             Debug.Log("能量不足，無法開始小遊戲");
-            TutorialDialogueController.Instance?.PlayChapter("14");
+
             if (TutorialProgressManager.Instance != null)
-                TutorialProgressManager.Instance.CompleteEvent("EnergyDepleted");
+            {
+                // 第一次才播放
+                if (!TutorialProgressManager.Instance.IsCompleted("EnergyDepleted"))
+                {
+                    TutorialDialogueController.Instance?.PlayChapter("14");
+                    TutorialProgressManager.Instance.CompleteEvent("EnergyDepleted");
+                }
+            }
+            else
+            {
+                // 沒有管理器時保底
+                TutorialDialogueController.Instance?.PlayChapter("14");
+            }
+
             return;
         }
-
         if (MinigameManager.Instance != null && MinigameManager.Instance.IsPlaying)
         {
             Debug.Log("已有小遊戲正在進行");
