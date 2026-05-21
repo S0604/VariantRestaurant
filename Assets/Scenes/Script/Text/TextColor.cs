@@ -2,22 +2,47 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class TextColor : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
+public class TextColor : MonoBehaviour,
+    IPointerEnterHandler,
+    IPointerExitHandler,
+    IPointerClickHandler,
+    IPointerDownHandler,
+    IPointerUpHandler
 {
     public TMP_Text buttonText;
+
+    [Header("顏色設定")]
     public Color hoverColor = Color.black;
     public Color pressedColor = Color.gray;
 
     private Color originalColor;
     private bool isHovering = false;
 
-    private void Start()
+    private void Awake()
     {
         if (buttonText == null)
         {
             buttonText = GetComponentInChildren<TMP_Text>();
         }
-        originalColor = buttonText.color;
+    }
+
+    private void OnEnable()
+    {
+        if (buttonText != null)
+        {
+            // 重新記錄目前正常顏色
+            originalColor = buttonText.color;
+
+            // 防止 alpha 被記錄成 0
+            if (originalColor.a <= 0f)
+            {
+                originalColor.a = 1f;
+            }
+
+            buttonText.color = originalColor;
+        }
+
+        isHovering = false;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -39,7 +64,10 @@ public class TextColor : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        buttonText.color = pressedColor;
+        if (buttonText != null)
+        {
+            buttonText.color = KeepAlpha(pressedColor);
+        }
     }
 
     public void OnPointerUp(PointerEventData eventData)
@@ -53,14 +81,28 @@ public class TextColor : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         {
             buttonText.color = originalColor;
         }
+
         isHovering = false;
     }
 
     private void UpdateTextColor()
     {
-        if (buttonText != null)
+        if (buttonText == null) return;
+
+        if (isHovering)
         {
-            buttonText.color = isHovering ? hoverColor : originalColor;
+            buttonText.color = KeepAlpha(hoverColor);
         }
+        else
+        {
+            buttonText.color = originalColor;
+        }
+    }
+
+    // 保留原本 alpha，避免透明
+    private Color KeepAlpha(Color targetColor)
+    {
+        targetColor.a = originalColor.a > 0 ? originalColor.a : 1f;
+        return targetColor;
     }
 }
