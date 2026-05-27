@@ -2,8 +2,12 @@
 
 public class TriggerUIController : MonoBehaviour
 {
+    private bool playerInRange = false;
+
     [Header("要顯示的UI物件")]
     public GameObject targetUI;
+    [Header("Highlight")]
+    [SerializeField] private StationHighlighter_SwapOutlineMat highlighter;
 
     private void Start()
     {
@@ -17,6 +21,8 @@ public class TriggerUIController : MonoBehaviour
         {
             if (targetUI != null)
                 targetUI.SetActive(true);
+            playerInRange = true;
+            if (highlighter) highlighter.SetHighlight(true);
         }
     }
 
@@ -26,6 +32,15 @@ public class TriggerUIController : MonoBehaviour
         {
             if (targetUI != null)
                 targetUI.SetActive(false);
+            playerInRange = false;
+            if (highlighter) highlighter.SetHighlight(false);
         }
     }
+
+    private void Awake()
+    {
+        if (!highlighter)
+            highlighter = GetComponentInChildren<StationHighlighter_SwapOutlineMat>(true);
+    }
+
 }
