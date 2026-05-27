@@ -16,8 +16,10 @@ public class Player : MonoBehaviour, ISaveable
 
     public bool canMove = true;
     private Animator animator;
+    private Rigidbody rb;
     private Vector3 lastDirection;
     private float moveSpeed = 8f;
+    private Vector3 moveInput;
     public bool isCooking = false;
 
     [Header("對話鎖定")]
@@ -26,6 +28,7 @@ public class Player : MonoBehaviour, ISaveable
     void Start()
     {
         animator = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody>();
     }
 
     void Update()
@@ -40,13 +43,14 @@ public class Player : MonoBehaviour, ISaveable
 
         Vector3 direction = new Vector3(inputX, 0, inputY);
 
+        moveInput = direction;
+
         if (direction.magnitude > 0)
         {
             if (animator != null)
                 animator.SetBool("Ismoving", true);
 
             lastDirection = direction.normalized;
-            MovePlayer(direction);
         }
         else
         {
@@ -61,9 +65,26 @@ public class Player : MonoBehaviour, ISaveable
         }
     }
 
+    void FixedUpdate()
+    {
+        if (isLocked) return;
+        if (!canMove) return;
+
+        MovePlayer(moveInput);
+    }
+
     private void MovePlayer(Vector3 direction)
     {
-        transform.position += direction.normalized * moveSpeed * Time.deltaTime;
+        if (direction.sqrMagnitude <= 0.01f)
+            return;
+
+        Vector3 targetPos =
+            rb.position +
+            direction.normalized *
+            moveSpeed *
+            Time.fixedDeltaTime;
+
+        rb.MovePosition(targetPos);
     }
 
     public string GetUniqueID()
